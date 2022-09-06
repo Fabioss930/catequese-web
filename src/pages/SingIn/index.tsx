@@ -16,7 +16,7 @@ const SignIn: React.FC = () => {
       <Content>
         <Form onSubmit={() => teste()}>
           <h1>Faça seu login</h1>
-          <Input icon={FiMail} name="email" type="text" placeholder="E-mail" />
+          <Input icon={FiMail} name="text" type="text" placeholder="Usuário" />
           <Input
             icon={FiLock}
             name="password"
