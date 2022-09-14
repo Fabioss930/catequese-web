@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.containerGlobal{
+    display: flex;
+    height: 100vh;
+}
+
+.navbarContent{
+
+    width:15%;
+    background-color: #22142b;
+    box-shadow: 5px 5px 2px 1px rgba(3, 29, 182, 0.2);
+}
+.bodyContainer{
+    background-color: #f0f0f0;
+    height: 1fr;
+    width: 100%;
+    height: 100vh;
+   padding: 50px;
+
+}
+.Kemer:hover{
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ff9000;
+    color:#ff9000
+    
+}
+
+.body{
+    margin: 5px;
+    background-color: #fff;
+
+}
+
+
+.clickLogo{
+    height: 100px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 5px 3px 1px 1px rgba(255, 255, 255, 0.219);
+}
+.header{
+    height: 100px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 10px 5px 2px 1px rgba(3, 29, 182, 0.2);
+}

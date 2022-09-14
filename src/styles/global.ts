@@ -1,5 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 
+
+// Laranja: #ff9000
+//background:  #22142b
+//Shadow: rgb(26 17 31)
+
 export default createGlobalStyle`
   * {
     margin: 0;

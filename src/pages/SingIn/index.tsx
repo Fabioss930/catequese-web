@@ -4,15 +4,29 @@ import Button from "../../components/button";
 import { FiLock, FiMail } from "react-icons/fi";
 import { Form } from "@unform/web";
 import logoimg from "../../assets/logo-paroquia.png";
+import {useNavigate} from "react-router-dom"
+
 
 import { Container, Content } from "./style";
 
-function teste() {}
+
+
 
 const SignIn: React.FC = () => {
+
+  const navigation = useNavigate()
+
+  function teste() {
+  
+    alert('Login')
+    navigation('/')
+    
+    
+  }
+
   return (
     <Container>
-      <img src={logoimg} alt="logoParoquia" />
+      <img src={logoimg}  alt="logoParoquia" />
       <Content>
         <Form onSubmit={() => teste()}>
           <h1>Faça seu login</h1>

@@ -1,0 +1,16 @@
+.container{
+    height: 100vh;
+    width: 100vw;
+    
+}
+.container-register{
+    padding: 2%;
+}
+.container-input{
+margin-top:10;
+margin-bottom:20;
+
+}
+.title{
+    color:#ff9000
+}
