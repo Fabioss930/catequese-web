@@ -1,4 +1,3 @@
-
 import People from '@mui/icons-material/People';
 import Header from '../../../components/header/header';
 import ArrowBack from '@mui/icons-material/ArrowBack'
@@ -8,7 +7,7 @@ import Input from '../../../components/input';
 import Button from '../../../components/button';
 import {useState} from 'react'
 
-import '../Register/Register.css'
+import './Register.css'
 
 
 function Users(props) {
@@ -41,7 +40,7 @@ function Users(props) {
                 placeholder='Cidade'
                 name='city'
                 value={catec?.city}
-                sx={{ width: '100%', height: 40 , color:'#fff', backgroundColor:'rgb(26 17 31)'}}
+                sx={{ width: '100%', height: 40}}
               >
                 <MenuItem value={'Batismo'}>Batismo</MenuItem>
                 <MenuItem value={'Eucaristia'}>Eucaristia</MenuItem>
