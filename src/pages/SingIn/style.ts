@@ -20,7 +20,7 @@ export const Content = styled.div`
 
   h1 {
     margin-top: 20px;
-    color: #ffffff;
+    color: #394362;
     font-size: 30px;
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
     font-weight: bold;
