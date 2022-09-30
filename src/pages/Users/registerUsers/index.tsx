@@ -54,15 +54,17 @@ const RegisterUsers: React.FC = (props: any) => {
     );
   };
 
-  function teste() {
-    console.log("Deu");
+  function teste(event:any) {
+    event.preventDefault()
+    console.log(event)
+
   }
 
   return (
     <>
       <Header title="Cadastro de Usuário" />
       <Container>
-        <Form onSubmit={() => teste()}>
+        <Form onSubmit={() => teste}>
           <GridBody>
             <FormInput>
               <Input name="name" type="text" placeholder="Nome" />
@@ -81,8 +83,8 @@ const RegisterUsers: React.FC = (props: any) => {
                   onChange={handleChange}
                   defaultValue={"Selecione"}
                 >
-                  <MenuItem value="Ativo">Catequista</MenuItem>
-                  <MenuItem value="Inativo">Coordenador</MenuItem>
+                  <MenuItem value="Cat">Catequista</MenuItem>
+                  <MenuItem value="Coord">Coordenador</MenuItem>
                 </Select>
               </FormControl>
             </FormInput>

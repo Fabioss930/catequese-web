@@ -1,10 +1,15 @@
 .container{
     height: 100vh;
-    width: 100vw;
+    width: 100%;
+  
     
 }
 .container-register{
     padding: 2%;
+    background-color: #fff;
+    box-shadow: #000 5px solid;
+   
+    
 }
 .container-input{
 margin-top:10;
@@ -12,5 +17,27 @@ margin-bottom:20;
 
 }
 .title{
-    color:#ff9000
+    color:#394362
+}
+.container-duble{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   
+}
+.button-cadastrar{
+    width: 150px;
+    height: 50px;
+    background-color: #0aa699;
+    
+}
+.button-cancelar{
+    width: 150px;
+    height: 50px;
+    background-color: #e94847;
+
+}
+.container-buttons{
+    display: flex;
+    justify-content: flex-end
 }

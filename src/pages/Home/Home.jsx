@@ -11,7 +11,10 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
+
 import People from '@mui/icons-material/People';
+import Groupe from '@mui/icons-material/GroupWork';
+import PeopleCat from '@mui/icons-material/PeopleTwoTone';
 import '../Home/home.css'
 import logo from '../../assets/logo-paroquia.png'
 import { Router, Link } from '@reach/router'
@@ -23,6 +26,7 @@ import Users from "../Users";
 import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
+import { Group } from '@mui/icons-material';
 
 
 
@@ -82,11 +86,11 @@ function ResponsiveDrawer(props) {
             <Link style={{ textDecoration: "none" }} to="#users">
               <ListItem disablePadding className="Kemer">
                 <ListItemButton
-                  selected={selectedIndex === 0}
+                  selected={selectedIndex === 1}
                   onClick={(event) => handleListItemClick(event, 1)}
                 >
                   <ListItemIcon>
-                    <HomeIcon style={{ color: "#fff" }} />
+                    <People style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"
@@ -99,11 +103,11 @@ function ResponsiveDrawer(props) {
             <Link style={{ textDecoration: "none" }} to="#catechizing">
               <ListItem disablePadding className="Kemer">
                 <ListItemButton
-                  selected={selectedIndex === 0}
+                  selected={selectedIndex === 3}
                   onClick={(event) => handleListItemClick(event, 3)}
                 >
                   <ListItemIcon>
-                    <HomeIcon style={{ color: "#fff" }} />
+                    <PeopleCat style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"
@@ -116,11 +120,11 @@ function ResponsiveDrawer(props) {
             <Link style={{ textDecoration: "none" }} to="#classes">
               <ListItem disablePadding className="Kemer">
                 <ListItemButton
-                  selected={selectedIndex === 0}
+                  selected={selectedIndex === 5}
                   onClick={(event) => handleListItemClick(event, 5)}
                 >
                   <ListItemIcon>
-                    <HomeIcon style={{ color: "#fff" }} />
+                    <Groupe style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"

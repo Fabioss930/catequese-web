@@ -25,22 +25,18 @@ import { ContentButtons } from "./style";
 const columns = [
   { id: "id", label: "Id", minWidth: 17 },
   { id: "name", label: "Nome", minWidth: 100 },
-  { id: "sacramento", label: "Sacramento", minWidth: 100, align: "center" },
-  {
-    id: "email",
-    label: "Email",
-    minWidth: 100,
-    align: "center",
-    align: "center",
-  },
+  { id: "Telefone", label: "Telefone", minWidth: 100, align: "center" },
   { id: "dataDeNasc", label: "Data de Nasc", minWidth: 100, align: "center" },
+  { id: "idade", label: "Idade", minWidth: 100, align: "center" },
+
   { id: "dataDeCad", label: "Data de Cad", minWidth: 100, align: "center" },
-  { id: "type_user", label: "Tipo de Usuario", minWidth: 100, align: "center" },
+  { id: "sacramento", label: "Sacramento", minWidth: 100, align: "center" },
+  { id: "turma", label: "Turma", minWidth: 100, align: "center" },
   { id: "action", label: "Ações", minWidth: 50, align: "center" },
 ];
 
 function Catechizing(props) {
-  const actions = [{ icon: <SaveIcon />, name: "Cadastro de Catequizando" }];
+  
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -50,6 +46,7 @@ function Catechizing(props) {
       name: "kemer",
       email: "kemer_souza@hotmail.com",
       sacramento: "--",
+      idade:'22',
       dataDeNasc: "12/01/2000",
       dataDeCad: "05/09/2022",
     },
@@ -58,6 +55,7 @@ function Catechizing(props) {
       name: "kemer",
       email: "kemer_souza@hotmail.com",
       sacramento: "--",
+      idade:'22',
       dataDeNasc: "12/01/2000",
       dataDeCad: "05/09/2022",
     },
@@ -66,6 +64,7 @@ function Catechizing(props) {
       name: "kemer",
       email: "kemer_souza@hotmail.com",
       sacramento: "--",
+      idade:'22',
       dataDeNasc: "12/01/2000",
       dataDeCad: "05/09/2022",
     },
@@ -74,6 +73,8 @@ function Catechizing(props) {
       name: "kemer",
       email: "kemer_souza@hotmail.com",
       sacramento: "--",
+      idade:'22',
+      turma:'T01',
       dataDeNasc: "12/01/2000",
       dataDeCad: "05/09/2022",
     },
@@ -82,6 +83,7 @@ function Catechizing(props) {
       name: "kemer",
       email: "kemer_souza@hotmail.com",
       sacramento: "--",
+      idade:'22',
       dataDeNasc: "12/01/2000",
       dataDeCad: "05/09/2022",
     },
@@ -153,7 +155,7 @@ function Catechizing(props) {
             <Form style={{ display: "flex", alignItems: "center" }}>
               <Input
                 name="text"
-                placeholder="Pesquisar"
+                placeholder="Pesquisar Nome"
                 style={{ marginLeft: 20 }}
               ></Input>
               <SearchIcon />
@@ -185,16 +187,16 @@ function Catechizing(props) {
             </Button>
           </ContentButtons>
         </div>
-        <Paper sx={{ width: "100%", overflow: "hidden", padding: 5 }}>
-          <TableContainer sx={{ maxHeight: 450 }}>
+        <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
+          <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
-                <TableRow>
+                <TableRow sx={{ height: 40 }}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth }}
+                      
                     >
                       {column.label}
                     </TableCell>
@@ -207,6 +209,7 @@ function Catechizing(props) {
                   .map((row) => {
                     return (
                       <TableRow
+                        style={{height:40}}
                         hover
                         role="checkbox"
                         tabIndex={-1}
@@ -215,23 +218,22 @@ function Catechizing(props) {
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
-                            <TableCell key={column.id} align={column.align}>
+                            <TableCell key={column.id} align={column.align}  >
                               {column.id == "action" ? (
-                                <div>
+                                <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
                                   <Button
                                     variant="contained"
-                                    sx={[
-                                      styleButtom,
-                                      { backgroundColor: "#ff9000" },
-                                    ]}
-                                    size="5"
+                                    
+                                    style={{marginRight:5,backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
+                                    
+                                    
                                     onClick={() => console.log(row.id)}
                                   >
                                     <Edit fontSize="small" />
                                   </Button>
                                   <Button
-                                    variant="contained"
-                                    sx={styleButtom}
+                                    variant="outlined"
+                                    style={{backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
                                     onClick={() => console.log(row.id)}
                                   >
                                     <Search fontSize="small" />
@@ -270,34 +272,10 @@ function Catechizing(props) {
       } */}
       </div>
 
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{
-          position: "absolute",
-          bottom: 50,
-          right: 20,
-          height: 150,
-          width: 150,
-        }}
-        icon={<SpeedDialIcon />}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={(event) => props.navTo(event, 1)}
-          />
-        ))}
-      </SpeedDial>
+      
     </div>
   );
 }
-const styleButtom = {
-  margin: 0.3,
-  with: 10,
-  padding: 0,
-  height: 20,
-};
+
 
 export default Catechizing;
