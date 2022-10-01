@@ -2,22 +2,47 @@ import React, { useState } from "react";
 import Header from "../../../components/header/header";
 import { Container, GridBody, FormInput, ContentButtons } from "./style";
 import { Form } from "@unform/web";
-import Input from "../../../components/input";
+
 import InputLabel from "@mui/material/InputLabel";
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { MenuItem, Select, SelectChangeEvent, Input, TextField } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "../../../components/button";
 import CSS from "csstype";
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import {createUsers} from '../../../services/api'
+
+
+
+type CreateUserData = {
+  nome: string;
+  tipo: string;
+  senha: string;
+  login: string;
+  turma: [];
+  confirmSenha: string;
+}
+
+const createUserSchema = yup.object().shape({
+  nome: yup.string(),
+  tipo: yup.string(),
+  senha: yup.string(),
+  login: yup.string(),
+  turma: yup.array(),
+  confirmSenha: yup.string()
+}
+)
+
+
+
 
 const RegisterUsers: React.FC = (props: any) => {
-  const [profile, setProfile] = useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setProfile(event.target.value as string);
-  };
+  const { register, handleSubmit, formState: { errors } } = useForm<CreateUserData>({ resolver: yupResolver(createUserSchema) })
+  const [gang, setGang] = React.useState<string[]>([]); 
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -29,6 +54,7 @@ const RegisterUsers: React.FC = (props: any) => {
       },
     },
   };
+  
 
   const names = [
     "Turma 1",
@@ -42,35 +68,67 @@ const RegisterUsers: React.FC = (props: any) => {
     "Turma 9",
   ];
 
-  const [gang, setGang] = React.useState<string[]>([]);
-
-  const handleChange2 = (event: SelectChangeEvent<typeof gang>) => {
+  const handleChange = (event: SelectChangeEvent<typeof gang>) => { //Lida com a mudanças do select de turmas
     const {
       target: { value },
     } = event;
     setGang(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
-  function teste(event:any) {
-    event.preventDefault()
-    console.log(event)
 
+
+  const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {  //Submit do formulario
+
+    try {
+      const res = await createUsers(data)
+      if(res.status===202){
+        alert('Usuario cadastrado com sucesso!')
+        props.navTo('',1)
+
+      }else{
+        alert('Erro ao cadastrar usuario')
+        console.log(res.message)
+      }
+
+      
+    } catch (error) {
+      alert('Erro ao Cadastrar Usuario')
+      
+    }
+    
+    
   }
+
+
 
   return (
     <>
       <Header title="Cadastro de Usuário" />
       <Container>
-        <Form onSubmit={() => teste}>
+        <Form onSubmit={handleSubmit(handleSubmitForm)}>
           <GridBody>
             <FormInput>
-              <Input name="name" type="text" placeholder="Nome" />
+              <TextField
+                id="outlined-basic"
+                label="Nome"
+                sx={{ width: '100%' }}
+                type="text"
+                placeholder="Nome"
+                //@ts-ignore 
+                name="nome"
+
+                {...register("nome")} />
             </FormInput>
             <FormInput>
-              <Input name="email" type="email" placeholder="Email" />
+              <TextField
+                id="outlined-basic"
+                label="Email"
+                sx={{ width: '100%' }}
+                //@ts-ignore
+                name="login"
+                type="email" placeholder="Email"  {...register('login')} />
             </FormInput>
             <FormInput>
               <FormControl style={{ width: "100%" }}>
@@ -78,13 +136,14 @@ const RegisterUsers: React.FC = (props: any) => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={profile}
                   label="Função"
-                  onChange={handleChange}
-                  defaultValue={"Selecione"}
+                  //@ts-ignore                  
+                  placeholder="Função"
+                  {...register('tipo')}
                 >
-                  <MenuItem value="Cat">Catequista</MenuItem>
-                  <MenuItem value="Coord">Coordenador</MenuItem>
+
+                  <MenuItem value="CAT">Catequista</MenuItem>
+                  <MenuItem value="COORD">Coordenador</MenuItem>
                 </Select>
               </FormControl>
             </FormInput>
@@ -95,11 +154,15 @@ const RegisterUsers: React.FC = (props: any) => {
                   labelId="demo-multiple-checkbox-label"
                   id="demo-multiple-checkbox"
                   multiple
-                  value={gang}
-                  onChange={handleChange2}
                   input={<OutlinedInput label="Turma" />}
+                  //@ts-ignore
                   renderValue={(selected) => selected.join(", ")}
+                  //@ts-ignore
+                  name="turma"
+                  {...register('turma')}
                   MenuProps={MenuProps}
+                  value={gang}
+                  onChange={handleChange}
                 >
                   {names.map((name) => (
                     <MenuItem key={name} value={name}>
@@ -112,14 +175,27 @@ const RegisterUsers: React.FC = (props: any) => {
             </FormInput>
             <div style={{ display: "flex", width: "100%" }}>
               <FormInput style={{ width: "100%", marginRight: "8px" }}>
-                <Input name="senha" type="password" placeholder="Senha" />
+                <TextField
+                  id="outlined-basic"
+                  label="Senha"
+                  sx={{ width: '100%' }}
+                  type="password"
+                  placeholder="Senha"
+                  //@ts-ignore
+                  name="senha"
+                  {...register('senha')} />
               </FormInput>
               <FormInput style={{ width: "100%", marginLeft: "8px" }}>
-                <Input
-                  name="confirmeSenha"
+                <TextField
+                  id="outlined-basic"
+                  label="Senha"
+                  sx={{ width: '100%' }}
                   type="password"
                   placeholder="Confirme a senha"
-                />
+                  //@ts-ignore
+                  name="confirmSenha"
+                  {...register('confirmSenha')} />
+
               </FormInput>
             </div>
             <ContentButtons>

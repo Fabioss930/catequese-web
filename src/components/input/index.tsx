@@ -1,4 +1,5 @@
 import { useField } from "@unform/core";
+
 import React, {
   InputHTMLAttributes,
   useCallback,
@@ -14,8 +15,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   icon?: React.ComponentType<IconBaseProps>;
 }
-
-const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
+//props: InputProps) => JSX.Element
+const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }:InputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
