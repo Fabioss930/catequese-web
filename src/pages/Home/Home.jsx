@@ -26,7 +26,8 @@ import Users from "../Users";
 import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
-import { Group, Groups } from "@mui/icons-material";
+import { Group } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -34,10 +35,12 @@ const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
 
+
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const navigation = useNavigate()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -48,6 +51,12 @@ function ResponsiveDrawer(props) {
     setSelectedIndex(index);
   };
 
+  React.useEffect(()=>{
+
+    const loged = JSON.parse(localStorage.getItem('loged')) ||null
+    console.log(loged)
+    if(!loged?.loged) navigation("Login")
+  },[])
  
 
   

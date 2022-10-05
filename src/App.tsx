@@ -10,12 +10,10 @@ import Users from "./pages/Users/registerUsers";
 const App: React.FC = () => (
   <>
     <Router>
-      <Routes>
-        <Route path="/Login" element={<SignIn />}></Route>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/Classes" element={<Classes />} />
-        <Route path="/RegisterClasses" element={<RegisterClasses />} />
-        <Route path="/Users" element={<Users />} />
+      <Routes >
+        <Route path="/Login" element={<SignIn/>}></Route>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="*" element={<Home/>}></Route>
       </Routes>
     </Router>
     <GlobalStyle />

@@ -11,9 +11,14 @@ import { Container, Content } from "./style";
 const SignIn: React.FC = () => {
   const navigation = useNavigate();
 
-  function teste() {
-    navigation("");
+ const teste = ()=> {
+  
+    localStorage.setItem('loged',JSON.stringify({loged:true}))
+    navigation('/')
   }
+
+
+  
 
   return (
     <Container>
