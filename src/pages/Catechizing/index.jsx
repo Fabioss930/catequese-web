@@ -175,16 +175,7 @@ function Catechizing(props) {
               Cadastrar
             </Button>
 
-            <Button
-              style={{
-                width: "150px",
-                height: "50px",
-                background: "#e94847",
-                color: "#fff",
-              }}
-            >
-              Remover
-            </Button>
+            
           </ContentButtons>
         </div>
         <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>

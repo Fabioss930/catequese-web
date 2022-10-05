@@ -11,6 +11,13 @@
    
     
 }
+.formControlContainer{
+    box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+-webkit-box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+-moz-box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+padding: 2% 2%;
+
+}
 .container-input{
 margin-top:10;
 margin-bottom:20;

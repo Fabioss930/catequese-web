@@ -142,8 +142,8 @@ const RegisterUsers: React.FC = (props: any) => {
                   {...register('tipo')}
                 >
 
-                  <MenuItem value="CAT">Catequista</MenuItem>
-                  <MenuItem value="COORD">Coordenador</MenuItem>
+                  <MenuItem value="CATEQUISTA">Catequista</MenuItem>
+                  <MenuItem value="COORDENADOR">Coordenador</MenuItem>
                 </Select>
               </FormControl>
             </FormInput>

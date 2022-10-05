@@ -34,30 +34,7 @@ const Users = (props) => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      nome: "kemer",
-      login: "kemer_souza@hotmail.com",
-      tipo: "Coord",
-      data_cad:'20/07/2000'
-    },
-    {
-      id: 2,
-      nome: "kemer",
-      login: "kemer_souza@hotmail.com",
-      tipo: "Coord",
-      data_cad:'20/07/2000'
-      
-    },
-    {
-      id: 3,
-      nome: "kemer",
-      login: "kemer_souza@hotmail.com",
-      tipo: "Coord",
-      data_cad:'20/07/2000'
-      
-    }])
+  const [rows, setRows] = useState([])
 
 
     useEffect(()=>{
@@ -68,7 +45,13 @@ const Users = (props) => {
 
     const getUsersApi = async()=>{
       const users = await getUsers()
-      setRows(users)
+      if (users) {
+        console.log(users)
+        setRows(users)
+        
+      }else{
+        console.log('Nao foi possivel buscar usuarios ')
+      }
     }
 
 
@@ -85,6 +68,70 @@ const Users = (props) => {
     };
 
 
+    const renderTable = ()=>{
+      return(
+        <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
+        <TableContainer sx={{ maxHeight: '100%' }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow sx={{ height: 40 }}>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    
+                    
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      style={{height:40}}
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.id}
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}  >
+                            {column.id == "action" ? (
+                              <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
+                                
+                              </div>
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+      )
+    }
+console.log(rows.length)
+
 
   return (
     <>
@@ -96,64 +143,8 @@ const Users = (props) => {
         <Button style={Remover}>Remover</Button>
       </ContentButtons>
       <Container>
-      <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
-          <TableContainer sx={{ maxHeight: '100%' }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow sx={{ height: 40 }}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      
-                      
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    return (
-                      <TableRow
-                        style={{height:40}}
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.id}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}  >
-                              {column.id == "action" ? (
-                                <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
-                                  
-                                </div>
-                              ) : (
-                                value
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
+       {rows.length>=0?renderTable():<h4 style={{color:'#000', width:'100%', textAlign:'center'}}>Nenhum Usuario Cadastrado!</h4>}
+      
       </Container>
     </>
   );
