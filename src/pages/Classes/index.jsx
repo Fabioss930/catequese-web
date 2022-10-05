@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "../../components/button";
 import Header from "../../components/header/header";
-import { Container, ContentButtons } from "./style";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,33 +9,22 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Edit } from "@mui/icons-material";
-import { Search } from "@mui/icons-material";
-import { getUsers } from "../../services/api";
-import { padding } from "polished";
-import { flexbox } from "@mui/system";
+import { Container, ContentButtons } from "./style";
 
-const columns = [
-  { id: "nome", label: "NOME" },
-  { id: "login", label: "LOGIN" },
-  { id: "tipo", label: "PERFIL" },
-  { id: "data_cad", label: "CADASTRO" },
-];
+import { getClasses } from "../../services/api";
 
-const Users = (props) => {
+const Classes = (props) => {
+  const columns = [
+    { id: "descricao", label: "NOME DA TURMA" },
+    { id: "dia_semana", label: "DIA DA SEMANA" },
+    { id: "hora", label: "HORÁRIO" },
+    { id: "status", label: "STATUS" },
+    { id: "data_cad", label: "CADASTRO" },
+    { id: "data_conclusao", label: "CONCLUSÃO" },
+  ];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    getUsersApi();
-  }, []);
-
-  const getUsersApi = async () => {
-    const users = await getUsers();
-
-    setRows(users);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -48,13 +36,24 @@ const Users = (props) => {
     setPage(0);
   };
 
+  useEffect(() => {
+    getClassesApi();
+  }, []);
+
+  const getClassesApi = async () => {
+    const classes = await getClasses();
+
+    setRows(classes);
+  };
+
   return (
     <>
-      <Header title="Usuários" />
+      <Header title="Turmas" />
       <ContentButtons>
-        <Button style={Cadastrar} onClick={(event) => props.navTo(event, 2)}>
+        <Button style={Cadastrar} onClick={(event) => props.navTo(event, 6)}>
           Cadastrar
         </Button>
+
         <Button style={Remover}>Remover</Button>
       </ContentButtons>
       <Container>
@@ -131,14 +130,12 @@ const Cadastrar = {
   height: "50px",
   background: "#0aa699",
   marginRight: "10px",
-  color: "#fff",
 };
 
 const Remover = {
   width: "150px",
   height: "50px",
   background: "#e94847",
-  color: "#fff",
 };
 
 const Label = {
@@ -147,4 +144,4 @@ const Label = {
   fontWeight: "bold",
 };
 
-export default Users;
+export default Classes;

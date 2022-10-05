@@ -133,7 +133,7 @@ function ResponsiveDrawer(props) {
                   onClick={(event) => handleListItemClick(event, 5)}
                 >
                   <ListItemIcon>
-                    <Groupe style={{ color: "#fff" }} />
+                    <Groups style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"
