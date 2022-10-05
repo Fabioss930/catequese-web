@@ -13,7 +13,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import People from '@mui/icons-material/People';
-import Groupe from '@mui/icons-material/GroupWork';
+
 import PeopleCat from '@mui/icons-material/PeopleTwoTone';
 import '../Home/home.css'
 import logo from '../../assets/logo-paroquia.png'
@@ -133,7 +133,7 @@ function ResponsiveDrawer(props) {
                   onClick={(event) => handleListItemClick(event, 5)}
                 >
                   <ListItemIcon>
-                    <Groups style={{ color: "#fff" }} />
+                    <Group style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"
