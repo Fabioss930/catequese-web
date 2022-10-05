@@ -26,7 +26,7 @@ import Users from "../Users";
 import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
-import { Group } from '@mui/icons-material';
+import { Group, Groups } from "@mui/icons-material";
 
 
 
@@ -124,7 +124,7 @@ function ResponsiveDrawer(props) {
                   onClick={(event) => handleListItemClick(event, 5)}
                 >
                   <ListItemIcon>
-                    <Groupe style={{ color: "#fff" }} />
+                    <Groups style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText
                     className="text-button"

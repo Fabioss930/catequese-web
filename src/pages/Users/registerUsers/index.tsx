@@ -37,12 +37,13 @@ const createUserSchema = yup.object().shape({
 }
 )
 
-
-
-
 const RegisterUsers: React.FC = (props: any) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateUserData>({ resolver: yupResolver(createUserSchema) })
-  const [gang, setGang] = React.useState<string[]>([]); 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateUserData>({ resolver: yupResolver(createUserSchema) });
+  const [gang, setGang] = React.useState<string[]>([]);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -54,54 +55,44 @@ const RegisterUsers: React.FC = (props: any) => {
       },
     },
   };
-  
 
-  const names = [
-    "Turma 1",
-    "Turma 2",
-    "Turma 3",
-    "Turma 4",
-    "Turma 5,",
-    "Turma 6",
-    "Turma 7",
-    "Turma 8",
-    "Turma 9",
-  ];
+  // const names = [
+  //   "Turma 1",
+  //   "Turma 2",
+  //   "Turma 3",
+  //   "Turma 4",
+  //   "Turma 5,",
+  //   "Turma 6",
+  //   "Turma 7",
+  //   "Turma 8",
+  //   "Turma 9",
+  // ];
 
-  const handleChange = (event: SelectChangeEvent<typeof gang>) => { //Lida com a mudanças do select de turmas
-    const {
-      target: { value },
-    } = event;
-    setGang(
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
+  // const handleChange = (event: SelectChangeEvent<typeof gang>) => { //Lida com a mudanças do select de turmas
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setGang(
+  //     typeof value === 'string' ? value.split(',') : value,
+  //   );
+  // };
 
-
-
-  const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {  //Submit do formulario
+  const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {
+    //Submit do formulario
 
     try {
-      const res = await createUsers(data)
-      if(res.status===202){
-        alert('Usuario cadastrado com sucesso!')
-        props.navTo('',1)
-
-      }else{
-        alert('Erro ao cadastrar usuario')
-        console.log(res.message)
+      const res = await createUsers(data);
+      if (res.status === 202) {
+        alert("Usuario cadastrado com sucesso!");
+        props.navTo("", 1);
+      } else {
+        alert("Erro ao cadastrar usuario");
+        console.log(res.message);
       }
-
-      
     } catch (error) {
-      alert('Erro ao Cadastrar Usuario')
-      
+      alert("Erro ao Cadastrar Usuario");
     }
-    
-    
-  }
-
-
+  };
 
   return (
     <>
@@ -113,22 +104,25 @@ const RegisterUsers: React.FC = (props: any) => {
               <TextField
                 id="outlined-basic"
                 label="Nome"
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
                 type="text"
                 placeholder="Nome"
-                //@ts-ignore 
+                //@ts-ignore
                 name="nome"
-
-                {...register("nome")} />
+                {...register("nome")}
+              />
             </FormInput>
             <FormInput>
               <TextField
                 id="outlined-basic"
                 label="Email"
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
                 //@ts-ignore
                 name="login"
-                type="email" placeholder="Email"  {...register('login')} />
+                type="email"
+                placeholder="Email"
+                {...register("login")}
+              />
             </FormInput>
             <FormInput>
               <FormControl style={{ width: "100%" }}>
@@ -137,17 +131,16 @@ const RegisterUsers: React.FC = (props: any) => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Função"
-                  //@ts-ignore                  
+                  //@ts-ignore
                   placeholder="Função"
-                  {...register('tipo')}
+                  {...register("tipo")}
                 >
-
-                  <MenuItem value="CAT">Catequista</MenuItem>
-                  <MenuItem value="COORD">Coordenador</MenuItem>
+                  <MenuItem value="CATEQUISTA">Catequista</MenuItem>
+                  <MenuItem value="COORDENADOR">Coordenador</MenuItem>
                 </Select>
               </FormControl>
             </FormInput>
-            <FormInput>
+            {/* <FormInput>
               <FormControl style={{ width: "100%" }}>
                 <InputLabel id="demo-multiple-checkbox-label">Turma</InputLabel>
                 <Select
@@ -172,30 +165,31 @@ const RegisterUsers: React.FC = (props: any) => {
                   ))}
                 </Select>
               </FormControl>
-            </FormInput>
+            </FormInput> */}
             <div style={{ display: "flex", width: "100%" }}>
               <FormInput style={{ width: "100%", marginRight: "8px" }}>
                 <TextField
                   id="outlined-basic"
                   label="Senha"
-                  sx={{ width: '100%' }}
+                  sx={{ width: "100%" }}
                   type="password"
                   placeholder="Senha"
                   //@ts-ignore
                   name="senha"
-                  {...register('senha')} />
+                  {...register("senha")}
+                />
               </FormInput>
               <FormInput style={{ width: "100%", marginLeft: "8px" }}>
                 <TextField
                   id="outlined-basic"
                   label="Senha"
-                  sx={{ width: '100%' }}
+                  sx={{ width: "100%" }}
                   type="password"
                   placeholder="Confirme a senha"
                   //@ts-ignore
                   name="confirmSenha"
-                  {...register('confirmSenha')} />
-
+                  {...register("confirmSenha")}
+                />
               </FormInput>
             </div>
             <ContentButtons>
