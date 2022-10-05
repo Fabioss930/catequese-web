@@ -10,9 +10,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Button from '../../../components/button';
 import { useEffect, useState } from 'react'
 
-import './Register.css'
+import './Alter.css'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { createCatechizing, getClasses } from '../../../services/api';
+import { createCatechizing, getClasses, getOneCatechizing, getOneUser} from '../../../services/api';
 
 
 
@@ -78,6 +78,7 @@ function Users(props) {
 
   useEffect(()=>{
     getTurmas()
+    getUser(props.id)
 
   },[])
 
@@ -90,7 +91,21 @@ function Users(props) {
 
   const getTurmas =  async()=>{
       const turmasApi = await getClasses()
+      
       setTurmas([...turmasApi])
+  }
+
+  const getUser = async (id)=>{
+    
+    const user = await getOneCatechizing(id)
+    const date = new Date(user.data_nascimento)
+      console.log(user)
+      setNome(user.nome)
+      setEstado_civil(user.estado_civil)
+      setData_nascimento(date)
+      setStatus('A')
+    
+    
   }
 
   const MenuProps = { //Pertence as configurações de estilo do select turma
@@ -221,7 +236,7 @@ function Users(props) {
 
   return (
     <div className='container'>
-      <Header title='Catequizandos > Cadastro' />
+      <Header title='Catequizandos > Alteração' />
       <div style={{ padding: 20 }}>
 
         <ArrowBack onClick={(event) => props.navTo(event, 3)} sx={{ ":hover": { color: '#ff9000' }, color: '#394362' }} />
@@ -488,7 +503,7 @@ function Users(props) {
 
 
             <div className='container-buttons'>
-              <Button className="button-cadastrar" onClick={onSubmitForm}>Cadastrar</Button>
+              <Button className="button-cadastrar" onClick={onSubmitForm}>Salvar Atualizaçao</Button>
               <Button className='button-cancelar' onClick={event => props.navTo(event, 4)}>Cancelar</Button>
               <Alert ></Alert>
 

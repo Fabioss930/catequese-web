@@ -18,6 +18,7 @@ const createUsers = async (data) => {
       };
     })
     .catch((error) => {
+
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -34,6 +35,22 @@ const getUsers = async () => {
     console.log("ERRO");
   }
 };
+
+const getOneUser = async (id) => {
+
+  return api(`/usuario/${id}`).then((item) => item.data).catch(() => null)
+}
+
+const login = async (userLogin) => {
+  console.log(userLogin)
+
+  return await api
+    .post("/usuario/login", userLogin)
+    .then((a) => a.data)
+    .catch((error) => null);
+}
+
+
 
 const getClasses = async () => {
   try {
@@ -64,4 +81,105 @@ const classeCatechizing = async (data) => {
     });
 };
 
-export { createUsers, getUsers, getClasses, classeCatechizing, api };
+const createCatechizing = async (data) => {
+  console.log(data)
+  return await api
+    .post("/catequizando", data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error)
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+
+}
+
+const getCatechizing = async () => {
+
+  try {
+    return await api("/catequizando")
+      .then((a) => a.data)
+      .catch((error) => console.log("Erro pegar usuarios", error));
+  } catch (error) {
+    console.log("ERRO");
+  }
+
+}
+const getOneCatechizing = async (id) => {
+
+  return api(`/catequizando/${id}`).then((item) => item.data).catch(() => null)
+}
+
+const deleteCatechizing = async (id) => {
+
+  api.delete(`/catequizando/${id}`).then((a) => a.status).catch((error) => console.log(error))
+
+}
+const deleteUser = async (id) => {
+ 
+
+  api.delete(`/usuario/${id}`).then((a) => console.log(a)).catch((error) => console.log(error))
+
+}
+const alterCatechizing = async (data) => {
+  console.log(data)
+  return await api
+    .post("/catequizando", data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error)
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+
+}
+
+const documents = async (documents,id)=>{
+
+  return await api
+    .post("/documentos")
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error)
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+
+}
+
+export {
+  createUsers,
+  getUsers, getOneUser,
+  deleteUser,
+  getClasses,
+  classeCatechizing,
+  api,
+  createCatechizing,
+  getCatechizing,
+  getOneCatechizing,
+  deleteCatechizing,
+  login,
+  alterCatechizing,
+
+};

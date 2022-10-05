@@ -26,6 +26,7 @@ import Users from "../Users";
 import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
+import Alter from '../Catechizing/Alter/Alter'
 import { Group } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,13 +42,16 @@ function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigation = useNavigate()
+  const [refresh, setRfresh] = useState(false)
+  const [id ,setId] = useState('')
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
 
-  const handleListItemClick = (event, index) => { //Função passada por referencia para navegar entre as telas
+  const handleListItemClick = (event, index,id='') => { //Função passada por referencia para navegar entre as telas
+    setId(id)
     setSelectedIndex(index);
   };
 
@@ -57,6 +61,7 @@ function ResponsiveDrawer(props) {
     console.log(loged)
     if(!loged?.loged) navigation("Login")
   },[])
+
  
 
   
@@ -235,6 +240,7 @@ function ResponsiveDrawer(props) {
             default={selectedIndex === 3}
             path="#catechizing"
             navTo={handleListItemClick}
+            refresh={setRfresh}
           />
           <Register
             default={selectedIndex === 4}
@@ -250,6 +256,13 @@ function ResponsiveDrawer(props) {
             default={selectedIndex === 6}
             path="#registerClasses"
             navTo={handleListItemClick}
+          />
+          <Alter 
+          default={selectedIndex===8}
+          path="#alterCatechizing"
+          navTo={handleListItemClick}
+          id={id}
+        
           />
         </Router>
       </Box>

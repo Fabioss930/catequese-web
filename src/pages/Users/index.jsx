@@ -10,9 +10,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Edit } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { Search } from "@mui/icons-material";
-import { getUsers } from "../../services/api";
+import { deleteUser, getUsers } from "../../services/api";
 import { padding } from "polished";
 import { flexbox } from "@mui/system";
 
@@ -21,6 +21,7 @@ const columns = [
   { id: "login", label: "LOGIN" },
   { id: "tipo", label: "PERFIL" },
   { id: "data_cad", label: "CADASTRO" },
+  {id:"action",label:"AÇÕES"}
 ];
 
 const Users = (props) => {
@@ -47,6 +48,14 @@ const Users = (props) => {
 
     setPage(0);
   };
+  const deleteUserr = async(id)=>{
+    const deleted = await deleteUser(id)
+    alert('Usuario Deletado com sucesso')
+    
+    //Nao ta atualizando a Tela
+    
+
+  }
 
   return (
     <>
@@ -91,15 +100,27 @@ const Users = (props) => {
                               style={{ color: "#576475" }}
                             >
                               {column.id === "action" ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    margin: 1,
-                                    paddingBottom: 10,
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                  }}
-                                ></div>
+                                <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
+                                <Button
+                                  variant="contained"
+                                  
+                                  style={{marginRight:5,backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
+                                  
+                                  
+                                  onClick={() => props.navTo('',8,row.id)}
+                                >
+
+                                  <Edit fontSize="small" />
+                                </Button>
+                                
+                                <Button
+                                  variant="outlined"
+                                  style={{backgroundColor: "#1a2845", marginLeft:5,height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
+                                  onClick={() => deleteUserr(row.id)}
+                                >
+                                  <Delete/>
+                                </Button>
+                              </div>
                               ) : (
                                 value
                               )}
