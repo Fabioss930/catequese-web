@@ -143,7 +143,7 @@ const Users = (props) => {
                                     style={{ marginRight: 5, backgroundColor: "#1a2845", height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
 
-                                    onClick={() => props.navTo('', 8, row.id)}
+                                    onClick={() => alert('A alteração ainda não esta disponível, tenha paciencia!')}
                                   >
 
                                     <Edit fontSize="small" />
