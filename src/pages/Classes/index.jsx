@@ -20,7 +20,7 @@ const Classes = (props) => {
     { id: "hora", label: "HORÁRIO" },
     { id: "status", label: "STATUS" },
     { id: "data_cad", label: "CADASTRO" },
-    { id: "data_conclusao", label: "CONCLUSÃO" },
+    // { id: "data_conclusao", label: "CONCLUSÃO" },
   ];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

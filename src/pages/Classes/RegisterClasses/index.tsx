@@ -22,13 +22,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { date } from "yup/lib/locale";
+import { Co2Sharp, RestartAlt } from "@mui/icons-material";
 
 interface Props {
+  id: number;
   nome: string;
 }
 
 interface PropsId {
-  id: string;
+  id: number;
 }
 
 interface PropsClasses {
@@ -38,33 +40,46 @@ interface PropsClasses {
   data_conclusao?: string;
 }
 
+interface PropsClassesUsers {
+  login: string;
+  senha: string;
+  tipo: string;
+  nome: string;
+  id: number,
+  data_cad: string;
+}
+
 interface PropsCatechizing {
   turmaId: string;
   usuariosId: string;
 }
 
 const RegisterClasses: React.FC = (props: any) => {
-  const [dates, setDates] = useState([]);
+  const [usuariosId, setUsuariosId] = useState <PropsId[]>([]);
   const [value, setValue] = React.useState<Dayjs | null>(
     dayjs("2018-01-01T00:00:00.000Z")
   );
 
-  const [names, setNames] = useState([]);
+  const [names, setNames] = useState<Props[]>([]);
 
   useEffect(() => {
     listUsers();
   }, []);
-  let usuariosId: any = [];
+
   const listUsers = useCallback(async () => {
     const users = await getUsers();
-    const idUsers = users.map((item: PropsId) => item.id);
+    const usersCat = users.filter((item: PropsClassesUsers)=> item.tipo !== 'COORDENADOR')
+    const totalUser = usersCat.map((item: Props) => ({
+      id: item.id,
+      nome: item.nome,
+    }));
+    console.log(totalUser);
 
-    usuariosId.push({
-      id: idUsers,
-    });
+    // const userName = users.map((item: Props) => ({
+    //   id: item.id,
 
-    const name = users.map((item: Props) => item.nome);
-    setNames(name);
+    // }));
+    setNames(totalUser);
   }, []);
   // const handleChange = (event: SelectChangeEvent) => {
   //   setDay(event.target.value as string);
@@ -82,16 +97,32 @@ const RegisterClasses: React.FC = (props: any) => {
   };
 
   const [personName, setPersonName] = React.useState<string[]>([]);
+  const [personNameId, setPersonNameId] = React.useState<string[]>([]);
+  
 
-  const handleChange2 = (event: SelectChangeEvent<typeof personName>) => {
+  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
-      target: { value },
+      target: {value},
     } = event;
-    setPersonName(
+  setPersonName(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    console.log(value);
   };
+
+  
+ 
+  const handleChangeUserId=(id:any)=> {
+    setUsuariosId([...usuariosId, id]) 
+    
+    
+    // const userId = usuariosId.includes(id) ? usuariosId:[...usuariosId, id];
+    // setUsuariosId(userId);
+    
+    
+  }
+  
 
   const createClasseSchema = yup.object().shape({
     dia_semana: yup.string(),
@@ -132,7 +163,7 @@ const RegisterClasses: React.FC = (props: any) => {
         turmaId: dataClasse.id,
         usuariosId,
       };
-      console.log(data);
+
       const response = await classeCatechizing(data);
 
       if (response.status === 202 || response.status === 200) {
@@ -215,15 +246,18 @@ const RegisterClasses: React.FC = (props: any) => {
                   id="demo-multiple-checkbox"
                   multiple
                   value={personName}
-                  onChange={handleChange2}
+                  onChange={handleChange}
                   input={<OutlinedInput label="Catequistas" />}
                   renderValue={(selected) => selected.join(", ")}
                   MenuProps={MenuProps}
                 >
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      <Checkbox checked={personName.indexOf(name) > -1} />
-                      <ListItemText primary={name} />
+                  {names.map((item) => (
+                    <MenuItem key={item.id} value={item.nome}>
+                      <Checkbox
+                        checked={personName.indexOf(item.nome) > -1}
+                        
+                      />
+                      <ListItemText primary={item.nome} onClick={() => handleChangeUserId(item.id)} />
                     </MenuItem>
                   ))}
                 </Select>
@@ -259,7 +293,7 @@ const RegisterClasses: React.FC = (props: any) => {
       </Container>
     </>
   );
-};;;;;;;;;;;;;;;;;;
+};
 
 const Cadastrar: CSS.Properties = {
   width: "150px",
