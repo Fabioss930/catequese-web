@@ -7,14 +7,24 @@ import logoimg from "../../assets/logo-paroquia.png";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Content } from "./style";
+import { login } from "../../services/api";
 
 const SignIn: React.FC = () => {
   const navigation = useNavigate();
 
- const teste = ()=> {
+ const teste = async (event:any)=> {
+    
   
-    localStorage.setItem('loged',JSON.stringify({loged:true}))
-    navigation('/')
+    const data = await login(event)
+    console.log("O que veio ",data)
+    if(data) {
+      localStorage.setItem('loged',JSON.stringify({loged:data?true:false})) 
+      localStorage.setItem('idUser',data.tokenCatequese.id)
+      navigation('/')
+    }else{
+      alert('Usuario ou senha incorretos')
+    }
+   
   }
 
 
@@ -24,12 +34,12 @@ const SignIn: React.FC = () => {
     <Container>
       <img src={logoimg} alt="logoParoquia" />
       <Content>
-        <Form onSubmit={() => teste()}>
+        <Form onSubmit={(event) => teste(event)}>
           <h1>Faça seu login</h1>
-          <Input icon={FiUser} name="text" type="text" placeholder="Usuário" />
+          <Input icon={FiUser} name="login" type="text" placeholder="Usuário" />
           <Input
             icon={FiLock}
-            name="password"
+            name="senha"
             type="password"
             placeholder="Senha"
           />

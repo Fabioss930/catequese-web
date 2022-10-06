@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 
 // Laranja: #ff9000
-//background:  #22142b
+//background:  #1a2845
 //Shadow: rgb(26 17 31)
 
 export default createGlobalStyle`

@@ -1,11 +1,7 @@
 import Home from "@mui/icons-material/Home";
-import react, { useState, useContext, Children } from "react";
+import react, { useState, useContext, Children, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Header from "../../components/header/header";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
-import SaveIcon from "@mui/icons-material/PersonAdd";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,129 +11,88 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "../../components/button";
-import { Search } from "@mui/icons-material";
+import ModalConfirm from '../../components/modalConfirm'
+import { Delete } from "@mui/icons-material";
 import { Edit } from "@mui/icons-material";
 import Input from "../../components/input";
 import { Form } from "@unform/web";
 import SearchIcon from "@mui/icons-material/Search";
 import { ContentButtons } from "./style";
+import { deleteCatechizing, getCatechizing } from "../../services/api";
+
+//<IMaskInput name='number' style={{ maxWidth: 200, height: 50, marginLeft: 10, marginBottom: 10 }} className="form-control" placeholder="(67) 9 0000-0000" mask='(00) 0 0000-0000' onChange={(text) => onChange(text.target)}
 
 const columns = [
-  { id: "id", label: "Id", minWidth: 17 },
-  { id: "name", label: "Nome", minWidth: 100 },
-  { id: "Telefone", label: "Telefone", minWidth: 100, align: "center" },
-  { id: "dataDeNasc", label: "Data de Nasc", minWidth: 100, align: "center" },
-  { id: "idade", label: "Idade", minWidth: 100, align: "center" },
 
-  { id: "dataDeCad", label: "Data de Cad", minWidth: 100, align: "center" },
-  { id: "sacramento", label: "Sacramento", minWidth: 100, align: "center" },
+  { id: "nome", label: "Nome", minWidth: 100 },
+  { id: "data_nascimento", label: "Data de Nasc", minWidth: 100, align: "center" },
+
+  { id: "todos_sac", label: "Todos Sacramentos", minWidth: 100, align: "center" },
+  { id: "padrinho", label: "padrinho/Madrinha", minWidth: 100, align: "center" },
   { id: "turma", label: "Turma", minWidth: 100, align: "center" },
   { id: "action", label: "Ações", minWidth: 50, align: "center" },
 ];
 
 function Catechizing(props) {
-  
+
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      idade:'22',
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 2,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      idade:'22',
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      idade:'22',
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      idade:'22',
-      turma:'T01',
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      idade:'22',
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-    {
-      id: 3,
-      name: "kemer",
-      email: "kemer_souza@hotmail.com",
-      sacramento: "--",
-      dataDeNasc: "12/01/2000",
-      dataDeCad: "05/09/2022",
-    },
-  ]);
+  const [search, setSearch] = useState('')
+  const [catechizingAll, setCatechizingAll] = useState([])
+  const [catechizingFilter, setCatechizingFilter] = useState([]);
+  const [modalConfirm, setModalConfirm] = useState({ 
+    openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
+     id: null });  //id: Atributo que provê o id caso queira usar para excluir
+
+
+
+  useEffect(() => {
+   
+    getCatequizandos()
+  }, [])
+
+
+  const onChangeSearch = (text) => {
+
+    setSearch(text)
+    const filter = catechizingAll.filter(cat => cat.nome.includes(text))
+    setCatechizingFilter(filter)
+  }
+
+
+
+  const getCatequizandos = async () => {
+
+    const cat = await getCatechizing() ///Busca na api
+    const p = cat.map((a) => {
+      const date = new Date(a?.data_nascimento)
+      return {
+        ...a,
+        data_nascimento: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+        todos_sac: a.todos_sac == 'S' ? "Sim" : "Nao",
+        padrinho: a.padrinho == 'S' ? "Sim" : 'Nao'
+
+      }
+    })
+
+    setCatechizingAll(p)
+  }
+
+  const handleModalConfirm = (id) => {
+    
+    setModalConfirm(
+      {
+        openOrClose: !modalConfirm.openOrClose,
+        id: id
+      })
+
+
+  }
+
 
   const handleChangePage = (event, newPage) => {
+    
     setPage(newPage);
   };
 
@@ -146,38 +101,31 @@ function Catechizing(props) {
     setPage(0);
   };
 
-  return (
-    <div>
-      <Header title="Catequizandos" />
-      <div style={{ paddingLeft: 50 }}>
-        <div style={{ display: "flex" }}>
-          <div style={{ width: 200, paddingTop: 10, marginBottom: 10 }}>
-            <Form style={{ display: "flex", alignItems: "center" }}>
-              <Input
-                name="text"
-                placeholder="Pesquisar Nome"
-                style={{ marginLeft: 20 }}
-              ></Input>
-              <SearchIcon />
-            </Form>
-          </div>
-          <ContentButtons>
-            <Button
-              style={{
-                width: "150px",
-                height: "50px",
-                background: "#0aa699",
-                marginRight: "10px",
-                color: "#fff",
-              }}
-              onClick={(event) => props.navTo(event, 4)}
-            >
-              Cadastrar
-            </Button>
+  const deleteCatequizando = async (id) => {
+    
+    const res = await deleteCatechizing(id)
+    if (res.status) {
+      console.log('ANTES', catechizingFilter)
+      const newCatechizing = catechizingAll.filter((cat) => cat.id != id)
+      // const newCatechizingFilter = catechizingFilter.filter((cat)=>cat.id!=id)
+      console.log("DEPOIS", newCatechizing)
+      setSearch('')
+      setCatechizingFilter(newCatechizing)
+      setCatechizingAll(newCatechizing)
+      handleModalConfirm(!modalConfirm)
+    } else {
+      alert('Erro ao cadastrar usuario!')
+    }
 
-            
-          </ContentButtons>
-        </div>
+
+
+  }
+
+  const renderTable = (catechizing) => {
+    
+    if (catechizing) {
+      
+      return (
         <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
@@ -187,7 +135,7 @@ function Catechizing(props) {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      
+
                     >
                       {column.label}
                     </TableCell>
@@ -195,12 +143,12 @@ function Catechizing(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {catechizing
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     return (
                       <TableRow
-                        style={{height:40}}
+                        style={{ height: 40 }}
                         hover
                         role="checkbox"
                         tabIndex={-1}
@@ -211,23 +159,25 @@ function Catechizing(props) {
                           return (
                             <TableCell key={column.id} align={column.align}  >
                               {column.id == "action" ? (
-                                <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
+                                <div style={{ display: 'flex', margin: 1, paddingBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
                                   <Button
                                     variant="contained"
-                                    
-                                    style={{marginRight:5,backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
-                                    
-                                    
-                                    onClick={() => console.log(row.id)}
+
+                                    style={{ marginRight: 5, backgroundColor: "#1a2845", height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+
+
+                                    onClick={() => alert('A alteração ainda não esta disponível, tenha paciencia!')}//props.navTo('', 8, row.id)
                                   >
+
                                     <Edit fontSize="small" />
                                   </Button>
+
                                   <Button
                                     variant="outlined"
-                                    style={{backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
-                                    onClick={() => console.log(row.id)}
+                                    style={{ backgroundColor: "#1a2845", marginLeft: 5, height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    onClick={() => handleModalConfirm(row.id)}
                                   >
-                                    <Search fontSize="small" />
+                                    <Delete />
                                   </Button>
                                 </div>
                               ) : (
@@ -244,26 +194,59 @@ function Catechizing(props) {
           </TableContainer>
           <TablePagination
             component="div"
-            count={rows.length}
+            count={catechizing.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
-        {/* {
-         catequizandos.map((a)=>{
-           return(
-             <div style={{heigth:'200px',width:'100%', background:'red', padding:20, margin:5}}>
-              {a.nome}
-            </div>
-          )
-          
-        })
-      } */}
+      )
+    }
+  }
+
+  return (
+    <div>
+      <ModalConfirm data={modalConfirm} closeModal={handleModalConfirm} afterFunction={deleteCatequizando} title='Tem certeza que deseja excluir ?' />
+      <Header title="Catequizandos" />
+      <div style={{ paddingLeft: 50 }}>
+        <div style={{ display: "flex", alignItems:'center' }}>
+          <div style={{ width: 200, paddingTop: 10 }}>
+            <Form style={{ display: "flex", alignItems: "center" }}>
+              <Input
+                name="text"
+                placeholder="Pesquisar Nome"
+                value={search}
+                onChange={(event) => onChangeSearch(event.target.value)}
+                style={{ marginLeft: 20 }}
+              ></Input>
+            
+            </Form>
+          </div>
+          <ContentButtons>
+            <Button
+              style={{
+                width: "150px",
+                height: "50px",
+                background: "#0aa699",
+                marginRight: "10px",
+                color: "#fff",
+              }}
+              onClick={(event) => props.navTo(event, 4)}
+            >
+              Cadastrar
+            </Button>
+
+
+          </ContentButtons>
+        </div>
+
+        {renderTable(search == '' ? catechizingAll : catechizingFilter)}
+
+
       </div>
 
-      
+
     </div>
   );
 }

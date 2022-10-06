@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Output from '@mui/icons-material/Output';
 import Person from '@mui/icons-material/Person';
 import './styles.css'
+import { useNavigate } from "react-router-dom";
+import { getOneUser } from "../../services/api";
 export default function Header(props){
+  const navigation = useNavigate()
+  const [nomeUser, setNomeUser] = useState('')
+
+  useEffect(()=>{
+    
+    getUser()
+
+  },[])
+
+  const getUser = async ()=>{
+      
+      const user = await getOneUser(localStorage.getItem('idUser'))
+      setNomeUser(user.nome||"Admin")
+  }
+  const logof = ()=>{
+    if(localStorage.getItem('loged')) localStorage.removeItem('loged')
+    navigation('/login')
+
+  }
 
 
     return (
@@ -34,10 +55,11 @@ export default function Header(props){
             className="texthover"
           >
             <Person></Person>
-            <h5>Kemer Wander</h5>
+            <h5>{nomeUser}</h5>
           </div>
-
+          <div onClick={()=>logof()}>
           <Output className="texthover"></Output>
+          </div>
         </div>
       </header>
     );
