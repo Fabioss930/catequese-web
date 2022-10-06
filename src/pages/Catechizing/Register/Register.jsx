@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import './Register.css'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { createCatechizing, getClasses } from '../../../services/api';
-
+import { IMaskInput } from 'react-imask';
 
 
 function Users(props) {
@@ -308,14 +308,15 @@ function Users(props) {
 
 
             </div>
-            <div className='container-duble'>
-              <FormControl sx={{ width: '49%' }}>
+            <div className='container-duble' style={{marginBottom:10, marginTop:10}}>
+              <FormControl sx={{ width: '49%', justifyContent:'center' }}>
 
-                <Input name='text' placeholder='numero' type='text' style={{ fontSize: 15 }} />
+              <IMaskInput name='number' style={{ marginBottom:-10, height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="NUmero 1" mask='(00) 0 0000-0000'/>
               </FormControl>
               <FormControl sx={{ width: '49%' }}>
 
-                <Input name='text' placeholder='Numero 2' type='text' style={{ fontSize: 15 }} />
+              <IMaskInput name='number' style={{  marginBottom:-10,height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="Numero 2" mask='(00) 0 0000-0000'/>
+
               </FormControl>
             </div>
 

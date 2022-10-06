@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getOneUser } from "../../services/api";
 export default function Header(props){
   const navigation = useNavigate()
-  const [nomeUser, setNomeUser] = useState('Usuario')
+  const [nomeUser, setNomeUser] = useState('')
 
   useEffect(()=>{
     
@@ -17,7 +17,7 @@ export default function Header(props){
   const getUser = async ()=>{
       
       const user = await getOneUser(localStorage.getItem('idUser'))
-      setNomeUser(user.nome)
+      setNomeUser(user.nome||"Admin")
   }
   const logof = ()=>{
     if(localStorage.getItem('loged')) localStorage.removeItem('loged')

@@ -118,14 +118,18 @@ const getOneCatechizing = async (id) => {
 }
 
 const deleteCatechizing = async (id) => {
-
-  api.delete(`/catequizando/${id}`).then((a) => a.status).catch((error) => console.log(error))
+  try {
+    return api.delete(`/catequizando/${id}`).then((a) => a).catch((error) => error)
+  } catch (error) {
+    alert('Erro ao deletar usuario verifique sua conexao!')
+  }
+  
 
 }
 const deleteUser = async (id) => {
  
 
-  api.delete(`/usuario/${id}`).then((a) => console.log(a)).catch((error) => console.log(error))
+  return api.delete(`/usuario/${id}`).then((a) => a).catch((error) => console.log(error))
 
 }
 const alterCatechizing = async (data) => {

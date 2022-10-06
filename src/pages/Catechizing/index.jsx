@@ -11,17 +11,19 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "../../components/button";
-import { Search } from "@mui/icons-material";
+import ModalConfirm from '../../components/modalConfirm'
 import { Delete } from "@mui/icons-material";
 import { Edit } from "@mui/icons-material";
 import Input from "../../components/input";
 import { Form } from "@unform/web";
 import SearchIcon from "@mui/icons-material/Search";
 import { ContentButtons } from "./style";
-import { deleteCatechizing, getCatechizing, getUsers } from "../../services/api";
+import { deleteCatechizing, getCatechizing } from "../../services/api";
+
+//<IMaskInput name='number' style={{ maxWidth: 200, height: 50, marginLeft: 10, marginBottom: 10 }} className="form-control" placeholder="(67) 9 0000-0000" mask='(00) 0 0000-0000' onChange={(text) => onChange(text.target)}
 
 const columns = [
-  
+
   { id: "nome", label: "Nome", minWidth: 100 },
   { id: "data_nascimento", label: "Data de Nasc", minWidth: 100, align: "center" },
 
@@ -32,47 +34,65 @@ const columns = [
 ];
 
 function Catechizing(props) {
-  
+
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [search,setSearch] = useState('')
-  const [catechizingFilter, setCatechizingFilter] = useState()
-  const [catechizing, setCatechizing] = useState([]);
-
-  useEffect(()=>{
-      getCatequizandos()
-  },[])
-
-
-  
+  const [search, setSearch] = useState('')
+  const [catechizingAll, setCatechizingAll] = useState([])
+  const [catechizingFilter, setCatechizingFilter] = useState([]);
+  const [modalConfirm, setModalConfirm] = useState({ 
+    openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
+     id: null });  //id: Atributo que provê o id caso queira usar para excluir
 
 
-  const getCatequizandos = async ()=>{
 
-    const cat = await getCatechizing()
-    const p = cat.map((a)=> {
-      const date = new Date(a?.data_nascimento)
-      
-      
-      return {
-        ...a,
-        data_nascimento: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
-        todos_sac: a.todos_sac=='S'?"Sim":"Nao",
-        padrinho: a.padrinho=='S'?"Sim":'Nao'
+  useEffect(() => {
+   
+    getCatequizandos()
+  }, [])
 
-      }
-    })
-    
-    setCatechizing(p)
-    
 
+  const onChangeSearch = (text) => {
+
+    setSearch(text)
+    const filter = catechizingAll.filter(cat => cat.nome.includes(text))
+    setCatechizingFilter(filter)
   }
 
 
 
+  const getCatequizandos = async () => {
+
+    const cat = await getCatechizing() ///Busca na api
+    const p = cat.map((a) => {
+      const date = new Date(a?.data_nascimento)
+      return {
+        ...a,
+        data_nascimento: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+        todos_sac: a.todos_sac == 'S' ? "Sim" : "Nao",
+        padrinho: a.padrinho == 'S' ? "Sim" : 'Nao'
+
+      }
+    })
+
+    setCatechizingAll(p)
+  }
+
+  const handleModalConfirm = (id) => {
+    
+    setModalConfirm(
+      {
+        openOrClose: !modalConfirm.openOrClose,
+        id: id
+      })
+
+
+  }
+
 
   const handleChangePage = (event, newPage) => {
+    
     setPage(newPage);
   };
 
@@ -81,17 +101,32 @@ function Catechizing(props) {
     setPage(0);
   };
 
-  const deleteCatequizando = async(id)=>{
-    const deleted = await deleteCatechizing(id)
-    //Nao ta atualizando a Tela
+  const deleteCatequizando = async (id) => {
     
+    const res = await deleteCatechizing(id)
+    if (res.status) {
+      console.log('ANTES', catechizingFilter)
+      const newCatechizing = catechizingAll.filter((cat) => cat.id != id)
+      // const newCatechizingFilter = catechizingFilter.filter((cat)=>cat.id!=id)
+      console.log("DEPOIS", newCatechizing)
+      setSearch('')
+      setCatechizingFilter(newCatechizing)
+      setCatechizingAll(newCatechizing)
+      handleModalConfirm(!modalConfirm)
+    } else {
+      alert('Erro ao cadastrar usuario!')
+    }
+
+
 
   }
 
-  const renderTable = ()=>{
-    if(catechizing.length>0){
-    return(
-      <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
+  const renderTable = (catechizing) => {
+    
+    if (catechizing) {
+      
+      return (
+        <Paper sx={{ width: "98%", overflow: "hidden", padding: 5 }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -100,7 +135,7 @@ function Catechizing(props) {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      
+
                     >
                       {column.label}
                     </TableCell>
@@ -113,7 +148,7 @@ function Catechizing(props) {
                   .map((row) => {
                     return (
                       <TableRow
-                        style={{height:40}}
+                        style={{ height: 40 }}
                         hover
                         role="checkbox"
                         tabIndex={-1}
@@ -124,25 +159,25 @@ function Catechizing(props) {
                           return (
                             <TableCell key={column.id} align={column.align}  >
                               {column.id == "action" ? (
-                                <div style={{display:'flex',margin:1, paddingBottom:10, justifyContent:'center', alignItems:'center'}}>
+                                <div style={{ display: 'flex', margin: 1, paddingBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
                                   <Button
                                     variant="contained"
-                                    
-                                    style={{marginRight:5,backgroundColor: "#1a2845", height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
-                                    
-                                    
-                                    onClick={() => props.navTo('',8,row.id)}
+
+                                    style={{ marginRight: 5, backgroundColor: "#1a2845", height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+
+
+                                    onClick={() => props.navTo('', 8, row.id)}
                                   >
 
                                     <Edit fontSize="small" />
                                   </Button>
-                                  
+
                                   <Button
                                     variant="outlined"
-                                    style={{backgroundColor: "#1a2845", marginLeft:5,height:40, width:40, display:'flex', justifyContent:'center', alignItems:'center'}}
-                                    onClick={() => deleteCatequizando(row.id)}
+                                    style={{ backgroundColor: "#1a2845", marginLeft: 5, height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    onClick={() => handleModalConfirm(row.id)}
                                   >
-                                    <Delete/>
+                                    <Delete />
                                   </Button>
                                 </div>
                               ) : (
@@ -166,23 +201,26 @@ function Catechizing(props) {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
-    )
-                }
+      )
+    }
   }
 
   return (
     <div>
+      <ModalConfirm data={modalConfirm} closeModal={handleModalConfirm} afterFunction={deleteCatequizando} title='Tem certeza que deseja excluir ?' />
       <Header title="Catequizandos" />
       <div style={{ paddingLeft: 50 }}>
-        <div style={{ display: "flex" }}>
-          <div style={{ width: 200, paddingTop: 10, marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems:'center' }}>
+          <div style={{ width: 200, paddingTop: 10 }}>
             <Form style={{ display: "flex", alignItems: "center" }}>
               <Input
                 name="text"
                 placeholder="Pesquisar Nome"
+                value={search}
+                onChange={(event) => onChangeSearch(event.target.value)}
                 style={{ marginLeft: 20 }}
               ></Input>
-              <SearchIcon />
+            
             </Form>
           </div>
           <ContentButtons>
@@ -199,16 +237,16 @@ function Catechizing(props) {
               Cadastrar
             </Button>
 
-            
+
           </ContentButtons>
         </div>
-        
-        {renderTable()}
 
-       
+        {renderTable(search == '' ? catechizingAll : catechizingFilter)}
+
+
       </div>
 
-      
+
     </div>
   );
 }

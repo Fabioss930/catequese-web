@@ -7790,7 +7790,7 @@ react-icons@^4.4.0:
 
 react-imask@^6.4.3:
   version "6.4.3"
-  resolved "https://registry.npmjs.org/react-imask/-/react-imask-6.4.3.tgz"
+  resolved "https://registry.yarnpkg.com/react-imask/-/react-imask-6.4.3.tgz#845de954e03e98179a23b92722ed3661cbd11037"
   integrity sha512-5WyCbubQErO8Wr/zLDyUyC1zCqQXP979QXW6BNirUGsM1VxFmVG0nNfXA1PSXlgdbaXWBiBj+VJBvg/8BDzieA==
   dependencies:
     imask "^6.4.3"
