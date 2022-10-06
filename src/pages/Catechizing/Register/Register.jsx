@@ -311,7 +311,7 @@ function Users(props) {
             <div className='container-duble' style={{marginBottom:10, marginTop:10}}>
               <FormControl sx={{ width: '49%', justifyContent:'center' }}>
 
-              <IMaskInput name='number' style={{ marginBottom:-10, height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="NUmero 1" mask='(00) 0 0000-0000'/>
+              <IMaskInput name='number' style={{ marginBottom:-10, height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="Numero 1" mask='(00) 0 0000-0000'/>
               </FormControl>
               <FormControl sx={{ width: '49%' }}>
 
