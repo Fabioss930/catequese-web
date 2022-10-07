@@ -59,12 +59,14 @@ const RegisterClasses: React.FC = (props: any) => {
   const [value, setValue] = React.useState<Dayjs | null>(
     dayjs("2018-01-01T00:00:00.000Z")
   );
-
+  const [personName, setPersonName] = React.useState({ nomes: [], id: [] });
+  const [personNameId, setPersonNameId] = React.useState();
   const [names, setNames] = useState<Props[]>([]);
 
   useEffect(() => {
     listUsers();
   }, []);
+
 
   const listUsers = useCallback(async () => {
     const users = await getUsers();
@@ -75,7 +77,6 @@ const RegisterClasses: React.FC = (props: any) => {
       id: item.id,
       nome: item.nome,
     }));
-    console.log(totalUser);
     setNames(totalUser);
   }, []);
 
@@ -90,17 +91,31 @@ const RegisterClasses: React.FC = (props: any) => {
     },
   };
 
-  const [personName, setPersonName] = React.useState<string[]>([]);
-  const [personNameId, setPersonNameId] = React.useState<string[]>([]);
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    console.log();
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+
+    //@ts-ignore
+    const value: string[] = event.target.value;
+
+    //@ts-ignore
+    let vet = []
+    names.forEach((per, id) => { //compara de 'names' e 'value', se der meet ele adiciona o id correspondente
+      value.forEach(a => {
+        if (a == per.nome) {  
+          vet.push(per.id)
+        }
+      })
+    }
+    )
+    
+    setPersonName({
+      //@ts-ignore
+      nomes: typeof value === "string" ? value.split(",") : value,
+      //@ts-ignore
+      id: typeof vet === "string" ? vet.split(",") : vet
+    }
+
+
     );
   };
 
@@ -127,14 +142,19 @@ const RegisterClasses: React.FC = (props: any) => {
     formState: { errors },
   } = useForm<PropsClasses>({ resolver: yupResolver(createClasseSchema) });
   let dataClasse: any = [];
+
+
+
   const createClasses = async (data: PropsClasses) => {
     return await api
       .post("/turma", data)
       .then((response) => (dataClasse = response.data))
-      .then(() => {
+      .then((data) => {
         return {
+          
           status: 200 || 202,
           message: "Turma cadastrada",
+          data:data
         };
       })
 
@@ -146,45 +166,51 @@ const RegisterClasses: React.FC = (props: any) => {
       });
   };
 
-  const handleClasse = async () => {
+  const handleClasse = async (id:any) => { //Adicionar turma
     try {
       const data = {
         turmaId: dataClasse.id,
-        usuariosId,
+        usuariosId: personName.id,
       };
 
       const response = await classeCatechizing(data);
 
       if (response.status === 202 || response.status === 200) {
-        console.log(response);
+        alert("Catequistas cadastrados na turma ");
       }
-    } catch (error) {
+     } catch (error) {
       console.log(error);
-    }
+     }
   };
 
   const handleSubmitForm: SubmitHandler<PropsClasses> = async (data) => {
     //Submit do formulario
 
     try {
-      console.log(data);
-      const res = await createClasses(data);
+     
+      const resTurma = await createClasses(data);
+      
+      
 
-      if (res.status === 202 || res.status === 200) {
-        handleClasse();
-
+      if (resTurma.status === 202 || resTurma.status === 200) {
+        //@ts-ignore
+        await handleClasse(resTurma.data.id);
+        
+        
         alert("Turma cadastrada com sucesso!");
 
         // const idClasse = data.map((item: PropsId) => item.id);
         props.navTo("", 5);
       } else {
         alert("Erro ao cadastrar turma");
-        console.log(res.message);
+        console.log(resTurma.message);
       }
     } catch (error) {
       alert("Erro ao cadastrar turma");
     }
   };
+  console.log('Person', personName)
+  console.log('names', names)
 
   return (
     <>
@@ -237,17 +263,22 @@ const RegisterClasses: React.FC = (props: any) => {
                   labelId="demo-multiple-checkbox-label"
                   id="demo-multiple-checkbox"
                   multiple
-                  value={personName}
+                  //@ts-ignore
+                  value={personName?.nomes}
+                  //@ts-ignore
                   onChange={handleChange}
                   input={<OutlinedInput label="Catequistas" />}
-                  renderValue={(selected) => selected.join(", ")}
+                  //@ts-ignore
+                  renderValue={(selected) => { return selected.join(", ") }}
                   MenuProps={MenuProps}
                 >
                   {names.map((item) => (
+                    //@ts-ignore
                     <MenuItem key={item.id} value={item.nome}>
                       <Checkbox
-                        checked={personName.indexOf(item.nome) > -1}
-                        name={item.id}
+                        //@ts-ignore
+                        checked={personName?.nomes.includes(item.nome)}
+                        name={item.nome}
                       />
                       <ListItemText primary={item.nome} />
                     </MenuItem>
