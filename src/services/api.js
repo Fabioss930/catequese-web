@@ -63,6 +63,7 @@ const getClasses = async () => {
 };
 
 const classeCatechizing = async (data) => {
+  console.log("O que foi para api:",data)
   return await api
     .post("/turmaCatequista", data)
     .then((response) => response.data)
