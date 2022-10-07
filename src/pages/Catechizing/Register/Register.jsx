@@ -220,18 +220,29 @@ function Users(props) {
 
 
   return (
-    <div className='container'>
-      <Header title='Catequizandos > Cadastro' />
+    <div className="container">
+      <Header title="Catequizandos > Cadastro" />
       <div style={{ padding: 20 }}>
-
-        <ArrowBack onClick={(event) => props.navTo(event, 3)} sx={{ ":hover": { color: '#ff9000' }, color: '#394362' }} />
+        <ArrowBack
+          onClick={(event) => props.navTo(event, 3)}
+          sx={{ ":hover": { color: "#ff9000" }, color: "#394362" }}
+        />
         <div className="container-register">
-          <Form style={{ width: '100%', display: 'flex', flexDirection: 'column' }} >
-          
-            <TextField id="outlined-basic" label="Nome" name='text' value={nome} onChange={onChangeNome} variant="outlined" sx={{ marginBottom: 2 }} />
-            
-            <div className='container-duble'>
-              <FormControl variant="outlined" sx={{ width: '33%' }}>
+          <Form
+            style={{ width: "100%", display: "flex", flexDirection: "column" }}
+          >
+            <TextField
+              id="outlined-basic"
+              label="Nome"
+              name="text"
+              value={nome}
+              onChange={onChangeNome}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+
+            <div className="container-duble">
+              <FormControl variant="outlined" sx={{ width: "33%" }}>
                 <InputLabel id="demo-select-small">Genero</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -239,15 +250,13 @@ function Users(props) {
                   onChange={onChangeGenero}
                   label="Genero"
                   value={genero}
-
                   sx={{ height: 50 }}
                 >
-                  <MenuItem value={'M'}>Masculino</MenuItem>
-                  <MenuItem value={'F'}>Feminino</MenuItem>
-
+                  <MenuItem value={"M"}>Masculino</MenuItem>
+                  <MenuItem value={"F"}>Feminino</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" sx={{ width: '33%' }} >
+              <FormControl variant="outlined" sx={{ width: "33%" }}>
                 <InputLabel id="demo-select-small">Estado Civil</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -255,7 +264,7 @@ function Users(props) {
                   onChange={onChangeEstadoCivil}
                   label="Dia da Semana"
                   value={estado_civil}
-                  name='estado_civil'
+                  name="estado_civil"
                   sx={{ height: 50 }}
                 >
                   <MenuItem value={"C"}>Casado(a)</MenuItem>
@@ -264,64 +273,100 @@ function Users(props) {
                   <MenuItem value={"D"}>Divorciado(a)</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" sx={{ width: '33%' }} >
-                <InputLabel id="demo-select-small">Casado Civil ou Mora Junto</InputLabel>
+              <FormControl variant="outlined" sx={{ width: "33%" }}>
+                <InputLabel id="demo-select-small">
+                  Casado Civil ou Mora Junto
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   onChange={onChangeCasadoCivil}
                   label="Casado Civil ou Mora Junto"
                   value={casado_civil}
-                  name='casado'
+                  name="casado"
                   sx={{ height: 50 }}
                 >
-                  
                   <MenuItem value={"S"}>Sim</MenuItem>
                   <MenuItem value={"N"}>Não</MenuItem>
                 </Select>
               </FormControl>
             </div>
-            <div>
+            <div></div>
 
-            </div>
-
-
-
-            <div className='container-duble'>
+            <div className="container-duble">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack sx={{ width: '80%' }} spacing={3}>
+                <Stack sx={{ width: "80%" }} spacing={3}>
                   <DesktopDatePicker
                     label="Data de nascimento"
                     inputFormat="DD/MM/YYYY"
                     value={data_nascimento}
                     onChange={onChangeDataNasc}
-                    renderInput={(params) => <TextField sx={{ height: '100%', borderRadius: 10, padding: 0, marginTop: 1, marginRight: 1 }} {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        sx={{
+                          height: "100%",
+                          borderRadius: 10,
+                          padding: 0,
+                          marginTop: 1,
+                          marginRight: 1,
+                        }}
+                        {...params}
+                      />
+                    )}
                   />
                 </Stack>
               </LocalizationProvider>
-              <FormControl sx={{ width: '49%' }}>
-
-                <Input name='idade' placeholder='Idade' type='text' style={{ fontSize: 15 }} disabled value={idade + ' Anos'} />
+              <FormControl sx={{ width: "49%" }}>
+                <Input
+                  name="idade"
+                  placeholder="Idade"
+                  type="text"
+                  style={{ fontSize: 15 }}
+                  disabled
+                  value={idade + " Anos"}
+                />
               </FormControl>
-
-
-
-
             </div>
-            <div className='container-duble' style={{marginBottom:10, marginTop:10}}>
-              <FormControl sx={{ width: '49%', justifyContent:'center' }}>
-
-              <IMaskInput name='number' style={{ marginBottom:-10, height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="Numero 1" mask='(00) 0 0000-0000'/>
+            <div
+              className="container-duble"
+              style={{ marginBottom: 10, marginTop: 10 }}
+            >
+              <FormControl sx={{ width: "49%", justifyContent: "center" }}>
+                <IMaskInput
+                  name="number"
+                  style={{
+                    marginBottom: -10,
+                    height: 50,
+                    padding: 10,
+                    border: "1px solid #b2b2b2",
+                    borderRadius: 5,
+                  }}
+                  className="form-control"
+                  placeholder="Numero 1"
+                  mask="(00) 0 0000-0000"
+                />
               </FormControl>
-              <FormControl sx={{ width: '49%' }}>
-
-              <IMaskInput name='number' style={{  marginBottom:-10,height: 50,padding:10, border:'1px solid #b2b2b2', borderRadius:5 }} className="form-control" placeholder="Numero 2" mask='(00) 0 0000-0000'/>
-
+              <FormControl sx={{ width: "49%" }}>
+                <IMaskInput
+                  name="number"
+                  style={{
+                    marginBottom: -10,
+                    height: 50,
+                    padding: 10,
+                    border: "1px solid #b2b2b2",
+                    borderRadius: 5,
+                  }}
+                  className="form-control"
+                  placeholder="Numero 2"
+                  mask="(00) 0 0000-0000"
+                />
               </FormControl>
             </div>
 
             <FormControl style={{ width: "100%", marginTop: 10 }}>
-              <InputLabel id="demo-multiple-checkbox-label">Sacramentos que possui</InputLabel>
+              <InputLabel id="demo-multiple-checkbox-label">
+                Sacramentos que possui
+              </InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
@@ -331,110 +376,385 @@ function Users(props) {
                 renderValue={(selected) => selected.join(", ")}
                 //@ts-ignore
                 name="sacramentos_concluidos"
-
                 MenuProps={MenuProps}
                 value={sacramentos_concluidos}
                 onChange={onChangeSacramentosConcluidos}
               >
                 {todosSacramentos.map((name) => (
                   <MenuItem key={name} value={name}>
-                    <Checkbox checked={sacramentos_concluidos.indexOf(name) > -1} />
+                    <Checkbox
+                      checked={sacramentos_concluidos.indexOf(name) > -1}
+                    />
                     <ListItemText primary={name} />
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            {sacramentos_concluidos.includes('Crisma')||sacramentos_concluidos.includes('Batismo')&&
-            <Grow in={sacramentos_concluidos.includes('Crisma')||sacramentos_concluidos.includes('Batismo')} style={{marginTop:10}} >
-            <TextField id="outlined-basic" label="Padrinho/Madrinha *" name='text' value={padrinho_madrinha} onChange={(event)=>setPadrinho_madrinha(event.target.value)}  variant="outlined"  />
+            {sacramentos_concluidos.includes("Crisma") ||
+              (sacramentos_concluidos.includes("Batismo") && (
+                <Grow
+                  in={
+                    sacramentos_concluidos.includes("Crisma") ||
+                    sacramentos_concluidos.includes("Batismo")
+                  }
+                  style={{ marginTop: 10 }}
+                >
+                  <TextField
+                    id="outlined-basic"
+                    label="Padrinho/Madrinha *"
+                    name="text"
+                    value={padrinho_madrinha}
+                    onChange={(event) =>
+                      setPadrinho_madrinha(event.target.value)
+                    }
+                    variant="outlined"
+                  />
+                </Grow>
+              ))}
 
-            </Grow>
-              }
-           
             <div style={{ marginTop: 20 }}>
-
-              <h3 className='title'> Documentações</h3>
+              <h3 className="title"> Documentações</h3>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }}>Apresentou RG ?</FormLabel>
-                <RadioGroup onChange={onChangeDocumentos} style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' value={documentos.rg} defaultValue={"Nao Entregue"} name="rg">
-                  <FormControlLabel value="S" control={<Radio />} label="Sim" sx={documentos?.rg == "S" ? { color: '#000' } : { color: '#aaa' }} />
-                  <FormControlLabel value="N" control={<Radio />} label="Nao" sx={documentos?.rg == "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <FormControl
+                className="formControlContainer"
+                sx={{ marginTop: 2, marginBottom: 2 }}
+              >
+                <FormLabel
+                  id="demo-radio-buttons-group-label"
+                  style={{ color: "#394362" }}
+                >
+                  Apresentou RG ?
+                </FormLabel>
+                <RadioGroup
+                  onChange={onChangeDocumentos}
+                  style={{ display: "block" }}
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={documentos.rg}
+                  defaultValue={"Nao Entregue"}
+                  name="rg"
+                >
+                  <FormControlLabel
+                    value="S"
+                    control={<Radio />}
+                    label="Sim"
+                    sx={
+                      documentos?.rg == "S"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
+                  <FormControlLabel
+                    value="N"
+                    control={<Radio />}
+                    label="Nao"
+                    sx={
+                      documentos?.rg == "N"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
                 </RadioGroup>
               </FormControl>
-              <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }}>Apresentou CPF ?</FormLabel>
-                <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' value={documentos.cpf} onChange={onChangeDocumentos} name="cpf">
-                  <FormControlLabel value={"S"} control={<Radio />} label="Sim" sx={documentos?.cpf == "S" ? { color: '#000' } : { color: '#aaa' }} />
-                  <FormControlLabel value={"N"} control={<Radio />} label="Nao" sx={documentos?.cpf == "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+              <FormControl
+                className="formControlContainer"
+                sx={{ marginTop: 2, marginBottom: 2 }}
+              >
+                <FormLabel
+                  id="demo-radio-buttons-group-label"
+                  style={{ color: "#394362" }}
+                >
+                  Apresentou CPF ?
+                </FormLabel>
+                <RadioGroup
+                  style={{ display: "block" }}
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  value={documentos.cpf}
+                  onChange={onChangeDocumentos}
+                  name="cpf"
+                >
+                  <FormControlLabel
+                    value={"S"}
+                    control={<Radio />}
+                    label="Sim"
+                    sx={
+                      documentos?.cpf == "S"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
+                  <FormControlLabel
+                    value={"N"}
+                    control={<Radio />}
+                    label="Nao"
+                    sx={
+                      documentos?.cpf == "N"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
                 </RadioGroup>
               </FormControl>
-              <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }} >Comprovante de Residencia ?</FormLabel>
-                <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' defaultValue={"Nao Entregue"} name="comprovante_residencia" value={documentos?.comprovante_residencia} onChange={onChangeDocumentos}>
-                  <FormControlLabel value="S" control={<Radio />} label="Sim" sx={documentos?.comprovante_residencia === "S" ? { color: '#000' } : { color: '#aaa' }} />
-                  <FormControlLabel value="N" control={<Radio />} label="Nao" sx={documentos?.comprovante_residencia === "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+              <FormControl
+                className="formControlContainer"
+                sx={{ marginTop: 2, marginBottom: 2 }}
+              >
+                <FormLabel
+                  id="demo-radio-buttons-group-label"
+                  style={{ color: "#394362" }}
+                >
+                  Comprovante de Residencia ?
+                </FormLabel>
+                <RadioGroup
+                  style={{ display: "block" }}
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue={"Nao Entregue"}
+                  name="comprovante_residencia"
+                  value={documentos?.comprovante_residencia}
+                  onChange={onChangeDocumentos}
+                >
+                  <FormControlLabel
+                    value="S"
+                    control={<Radio />}
+                    label="Sim"
+                    sx={
+                      documentos?.comprovante_residencia === "S"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
+                  <FormControlLabel
+                    value="N"
+                    control={<Radio />}
+                    label="Nao"
+                    sx={
+                      documentos?.comprovante_residencia === "N"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
                 </RadioGroup>
               </FormControl>
-              <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }} >Comprovante de Casamento</FormLabel>
-                <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' defaultValue={"Nao Entregue"} name="CC" value={documentos?.CC} onChange={onChangeDocumentos}>
-                  <FormControlLabel value="S" control={<Radio />} label="Sim" sx={documentos?.CC === "S" ? { color: '#000' } : { color: '#aaa' }} />
-                  <FormControlLabel value="N" control={<Radio />} label="Nao" sx={documentos?.CC === "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+              <FormControl
+                className="formControlContainer"
+                sx={{ marginTop: 2, marginBottom: 2 }}
+              >
+                <FormLabel
+                  id="demo-radio-buttons-group-label"
+                  style={{ color: "#394362" }}
+                >
+                  Comprovante de Casamento
+                </FormLabel>
+                <RadioGroup
+                  style={{ display: "block" }}
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue={"Nao Entregue"}
+                  name="CC"
+                  value={documentos?.CC}
+                  onChange={onChangeDocumentos}
+                >
+                  <FormControlLabel
+                    value="S"
+                    control={<Radio />}
+                    label="Sim"
+                    sx={
+                      documentos?.CC === "S"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
+                  <FormControlLabel
+                    value="N"
+                    control={<Radio />}
+                    label="Nao"
+                    sx={
+                      documentos?.CC === "N"
+                        ? { color: "#000" }
+                        : { color: "#aaa" }
+                    }
+                  />
                 </RadioGroup>
               </FormControl>
             </div>
             <div style={{ marginTop: 20 }}>
-
-              <h3 className='title'> Documentações Comprobatorio de Sacramentos</h3>
+              <h3 className="title">
+                {" "}
+                Documentações Comprobatorio de Sacramentos
+              </h3>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              {sacramentos_concluidos.includes('Admissao') &&
-                <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                  <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }}>Comprovante de Adimissao</FormLabel>
-                  <RadioGroup onChange={onChangeDocumentosSacramentos} style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' value={documentosSacramentos.comprovante_admissao} defaultValue={"Nao Entregue"} name="comprovante_admissao">
-                    <FormControlLabel value="S" control={<Radio />} label="Entregue" sx={documentosSacramentos?.comprovante_admissao == "S" ? { color: '#000' } : { color: '#aaa' }} />
-                    <FormControlLabel value="N" control={<Radio />} label="Nao Entregue" sx={documentosSacramentos?.comprovante_admissao == "N" ? { color: '#000' } : { color: '#aaa' }} />
-
-                  </RadioGroup>
-                </FormControl>}
-              {sacramentos_concluidos.includes('Batismo') &&
-                <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                  <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }}>Comprovante de Batismo</FormLabel>
-                  <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' value={documentosSacramentos.comprovante_batismo} onChange={onChangeDocumentosSacramentos} name="comprovante_batismo">
-                    <FormControlLabel value={"S"} control={<Radio />} label="Entregue" sx={documentosSacramentos?.comprovante_batismo == "S" ? { color: '#000' } : { color: '#aaa' }} />
-                    <FormControlLabel value={"N"} control={<Radio />} label="Nao Entregue" sx={documentosSacramentos?.comprovante_batismo == "N" ? { color: '#000' } : { color: '#aaa' }} />
-
-                  </RadioGroup>
-                </FormControl>}
-              {sacramentos_concluidos.includes('Crisma') &&
-                <FormControl className='formControlContainer' sx={{ marginTop: 2, marginBottom: 2 }}>
-                  <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }} >Comprovante de Crisma</FormLabel>
-                  <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' defaultValue={"Nao Entregue"} name="comprovante_crisma" value={documentosSacramentos?.comprovante_crisma} onChange={onChangeDocumentosSacramentos}>
-                    <FormControlLabel value="S" control={<Radio />} label="Entregue" sx={documentosSacramentos?.comprovante_crisma === "S" ? { color: '#000' } : { color: '#aaa' }} />
-                    <FormControlLabel value="N" control={<Radio />} label="Nao Entregue" sx={documentosSacramentos?.comprovante_crisma === "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              {sacramentos_concluidos.includes("Admissao") && (
+                <FormControl
+                  className="formControlContainer"
+                  sx={{ marginTop: 2, marginBottom: 2 }}
+                >
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    style={{ color: "#394362" }}
+                  >
+                    Comprovante de Adimissao
+                  </FormLabel>
+                  <RadioGroup
+                    onChange={onChangeDocumentosSacramentos}
+                    style={{ display: "block" }}
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    value={documentosSacramentos.comprovante_admissao}
+                    defaultValue={"Nao Entregue"}
+                    name="comprovante_admissao"
+                  >
+                    <FormControlLabel
+                      value="S"
+                      control={<Radio />}
+                      label="Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_admissao == "S"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                    <FormControlLabel
+                      value="N"
+                      control={<Radio />}
+                      label="Nao Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_admissao == "N"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
                   </RadioGroup>
                 </FormControl>
-              }
-              {sacramentos_concluidos.includes('Eucaristia') &&
-                <FormControl className='formControlContainer' sx={[{ marginTop: 2, marginBottom: 2 }]}>
-                  <FormLabel id='demo-radio-buttons-group-label' style={{ color: '#394362' }} >Comprovante de Eucaristia</FormLabel>
-                  <RadioGroup style={{ display: 'block' }} aria-labelledby='demo-radio-buttons-group-label' defaultValue={"Nao Entregue"} name="comprovante_eucaristia" value={documentosSacramentos?.comprovante_eucaristia} onChange={onChangeDocumentosSacramentos}>
-                    <FormControlLabel value="S" control={<Radio />} label="Entregue" sx={documentosSacramentos?.comprovante_eucaristia === "S" ? { color: '#000' } : { color: '#aaa' }} />
-                    <FormControlLabel value="N" control={<Radio />} label="Nao Entregue" sx={documentosSacramentos?.comprovante_eucaristia === "N" ? { color: '#000' } : { color: '#aaa' }} />
-
+              )}
+              {sacramentos_concluidos.includes("Batismo") && (
+                <FormControl
+                  className="formControlContainer"
+                  sx={{ marginTop: 2, marginBottom: 2 }}
+                >
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    style={{ color: "#394362" }}
+                  >
+                    Comprovante de Batismo
+                  </FormLabel>
+                  <RadioGroup
+                    style={{ display: "block" }}
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    value={documentosSacramentos.comprovante_batismo}
+                    onChange={onChangeDocumentosSacramentos}
+                    name="comprovante_batismo"
+                  >
+                    <FormControlLabel
+                      value={"S"}
+                      control={<Radio />}
+                      label="Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_batismo == "S"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                    <FormControlLabel
+                      value={"N"}
+                      control={<Radio />}
+                      label="Nao Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_batismo == "N"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
                   </RadioGroup>
                 </FormControl>
-              }
+              )}
+              {sacramentos_concluidos.includes("Crisma") && (
+                <FormControl
+                  className="formControlContainer"
+                  sx={{ marginTop: 2, marginBottom: 2 }}
+                >
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    style={{ color: "#394362" }}
+                  >
+                    Comprovante de Crisma
+                  </FormLabel>
+                  <RadioGroup
+                    style={{ display: "block" }}
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue={"Nao Entregue"}
+                    name="comprovante_crisma"
+                    value={documentosSacramentos?.comprovante_crisma}
+                    onChange={onChangeDocumentosSacramentos}
+                  >
+                    <FormControlLabel
+                      value="S"
+                      control={<Radio />}
+                      label="Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_crisma === "S"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                    <FormControlLabel
+                      value="N"
+                      control={<Radio />}
+                      label="Nao Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_crisma === "N"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+              {sacramentos_concluidos.includes("Eucaristia") && (
+                <FormControl
+                  className="formControlContainer"
+                  sx={[{ marginTop: 2, marginBottom: 2 }]}
+                >
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    style={{ color: "#394362" }}
+                  >
+                    Comprovante de Eucaristia
+                  </FormLabel>
+                  <RadioGroup
+                    style={{ display: "block" }}
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue={"Nao Entregue"}
+                    name="comprovante_eucaristia"
+                    value={documentosSacramentos?.comprovante_eucaristia}
+                    onChange={onChangeDocumentosSacramentos}
+                  >
+                    <FormControlLabel
+                      value="S"
+                      control={<Radio />}
+                      label="Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_eucaristia === "S"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                    <FormControlLabel
+                      value="N"
+                      control={<Radio />}
+                      label="Nao Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_eucaristia === "N"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
             </div>
             <FormControl style={{ width: "100%", marginTop: 10 }}>
-              <InputLabel id="demo-multiple-checkbox-label">Sacramentos a performar</InputLabel>
+              <InputLabel id="demo-multiple-checkbox-label">
+                Sacramentos a performar
+              </InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
@@ -444,7 +764,6 @@ function Users(props) {
                 renderValue={(selected) => selected.join(", ")}
                 //@ts-ignore
                 name="sacramentos_concluidos"
-
                 MenuProps={MenuProps}
                 value={sacramentos}
                 onChange={onChangeSacramentos}
@@ -452,7 +771,7 @@ function Users(props) {
                 {renderSacramentosAPerformar()}
               </Select>
             </FormControl>
-            <FormControl variant="outlined" sx={{  marginTop: 2 }}>
+            <FormControl variant="outlined" sx={{ marginTop: 2 }}>
               <InputLabel id="demo-select-small">Escolha uma Turma</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -460,50 +779,48 @@ function Users(props) {
                 onChange={onChangeTurma}
                 label="Escolha uma Turma"
                 value={turmaSelecionada}
-
                 sx={{ height: 50 }}
               >
-                {turmas.map((turma)=>(
+                {turmas.map((turma) => (
                   <MenuItem value={turma}>{turma.descricao}</MenuItem>
                 ))}
-
               </Select>
             </FormControl>
-            <FormControl variant="outlined" sx={{ width: '20%', marginTop: 2 }}>
+            <FormControl variant="outlined" sx={{ width: "20%", marginTop: 2 }}>
               <InputLabel id="demo-select-small">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                onChange={(event)=>setStatus(event.target.value)}
+                onChange={(event) => setStatus(event.target.value)}
                 label="Genero"
                 value={status}
-
                 sx={{ height: 50 }}
               >
-                <MenuItem value={'A'}>Ativo</MenuItem>
-                <MenuItem value={'D'}>Desistente</MenuItem>
-
+                <MenuItem value={"A"}>Ativo</MenuItem>
+                <MenuItem value={"D"}>Desistente</MenuItem>
               </Select>
             </FormControl>
 
-
-
-            <div className='container-buttons'>
-              <Button className="button-cadastrar" onClick={onSubmitForm}>Cadastrar</Button>
-              <Button className='button-cancelar' onClick={event => props.navTo(event, 4)}>Cancelar</Button>
-              <Alert ></Alert>
-
+            <div className="container-buttons">
+              <Button
+                style={{ background: "#0aa699" }}
+                className="button-cadastrar"
+                onClick={onSubmitForm}
+              >
+                Cadastrar
+              </Button>
+              <Button
+                style={{ background: "#e94847" }}
+                className="button-cancelar"
+                onClick={(event) => props.navTo(event, 3)}
+              >
+                Cancelar
+              </Button>
+              <Alert></Alert>
             </div>
-
-
-
-
           </Form>
-
         </div>
       </div>
-
-
     </div>
   );
 }
