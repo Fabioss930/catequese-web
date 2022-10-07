@@ -166,7 +166,7 @@ const RegisterClasses: React.FC = (props: any) => {
       });
   };
 
-  const handleClasse = async (id:any) => { //Adicionar turma
+  const handleClasse = async () => { //Adicionar os catequistas na turma
     try {
       const data = {
         turmaId: dataClasse.id,
@@ -194,7 +194,7 @@ const RegisterClasses: React.FC = (props: any) => {
 
       if (resTurma.status === 202 || resTurma.status === 200) {
         //@ts-ignore
-        await handleClasse(resTurma.data.id);
+        await handleClasse();
         
         
         alert("Turma cadastrada com sucesso!");
@@ -210,7 +210,7 @@ const RegisterClasses: React.FC = (props: any) => {
     }
   };
   console.log('Person', personName)
-  console.log('names', names)
+  
 
   return (
     <>
