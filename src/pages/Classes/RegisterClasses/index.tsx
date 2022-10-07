@@ -76,11 +76,8 @@ const RegisterClasses: React.FC = (props: any) => {
       nome: item.nome,
     }));
     console.log(totalUser);
-
-   
     setNames(totalUser);
   }, []);
- 
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -223,6 +220,7 @@ const RegisterClasses: React.FC = (props: any) => {
 
                 <FormControl style={{ width: "100%", marginLeft: "8px" }}>
                   <TextField
+                    InputLabelProps={{ shrink: true }}
                     type={"time"}
                     label="Horário"
                     {...register("hora")}
