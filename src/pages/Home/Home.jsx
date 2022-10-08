@@ -1,23 +1,23 @@
-import * as React from 'react';
-import { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
+import * as React from "react";
+import { useContext, useState } from "react";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import HomeIcon from "@mui/icons-material/Home";
+import MenuIcon from "@mui/icons-material/Menu";
 
-import People from '@mui/icons-material/People';
+import People from "@mui/icons-material/People";
 
-import PeopleCat from '@mui/icons-material/PeopleTwoTone';
-import '../Home/home.css'
-import logo from '../../assets/logo-paroquia.png'
-import { Router, Link } from '@reach/router'
+import PeopleCat from "@mui/icons-material/PeopleTwoTone";
+import "../Home/home.css";
+import logo from "../../assets/logo-paroquia.png";
+import { Router, Link } from "@reach/router";
 
 import Register from "../Catechizing/Register/Register";
 import RegisterClasses from "../Classes/RegisterClasses";
@@ -26,32 +26,28 @@ import Users from "../Users";
 import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
-import Alter from '../Catechizing/Alter/Alter'
-import { Group } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import UpdateClasse from "../Classes/UpdateClasse";
+import Alter from "../Catechizing/Alter/Alter";
+import { Group } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
-
-  const [selectedIndex, setSelectedIndex] = useState({page:0, data:{}});
+  const [selectedIndex, setSelectedIndex] = useState({ page: 0, data: {} });
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const navigation = useNavigate()
-  const [refresh, setRfresh] = useState(false)
-  
-
+  const navigation = useNavigate();
+  const [refresh, setRfresh] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
-    console.log("O que veio::::",data)
-    setSelectedIndex({page:index, data:data});
-
+  const handleListItemClick = (data, index) => {
+    //Função passada por referencia para navegar entre as telas
+    console.log("O que veio::::", data);
+    setSelectedIndex({ page: index, data: data });
   };
 
   React.useEffect(() => {
@@ -252,19 +248,10 @@ const handleListItemClick = (data, index) => { //Função passada por referencia
             path="#registerClasses"
             navTo={handleListItemClick}
           />
-
           <Alter
-            default={selectedIndex === 8}
+            default={selectedIndex.page === 8}
             path="#alterCatechizing"
             navTo={handleListItemClick}
-            id={id}
-          />
-          <UpdateClasse
-            default={selectedIndex === 9}
-            path="#updateClasse"
-            navTo={handleListItemClick}
-            id={id}
-
           />
         </Router>
       </Box>
@@ -275,6 +262,5 @@ const handleListItemClick = (data, index) => { //Função passada por referencia
 ResponsiveDrawer.propTypes = {
   window: PropTypes.func,
 };
-
 
 export default ResponsiveDrawer;
