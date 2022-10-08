@@ -29,42 +29,35 @@ import Dashboard from "../Dashboard";
 import Alter from '../Catechizing/Alter/Alter'
 import { Group } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-
-
+import UpdateClasse from "../Classes/UpdateClasse";
 
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
-
-
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const navigation = useNavigate()
-  const [refresh, setRfresh] = useState(false)
-  const [id ,setId] = useState('')
+  const navigation = useNavigate();
+  const [refresh, setRfresh] = useState(false);
+  const [id, setId] = useState("");
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-
-  const handleListItemClick = (event, index,id='') => { //Função passada por referencia para navegar entre as telas
-    setId(id)
+  const handleListItemClick = (event, index, id = "") => {
+    //Função passada por referencia para navegar entre as telas
+    setId(id);
     setSelectedIndex(index);
   };
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
+    const loged = JSON.parse(localStorage.getItem("loged")) || null;
+    console.log(loged);
+    if (!loged?.loged) navigation("Login");
+  }, []);
 
-    const loged = JSON.parse(localStorage.getItem('loged')) ||null
-    console.log(loged)
-    if(!loged?.loged) navigation("Login")
-  },[])
-
- 
-
-  
   const drawer = (
     <div>
       <div
@@ -154,8 +147,8 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -257,12 +250,17 @@ function ResponsiveDrawer(props) {
             path="#registerClasses"
             navTo={handleListItemClick}
           />
-          <Alter 
-          default={selectedIndex===8}
-          path="#alterCatechizing"
-          navTo={handleListItemClick}
-          id={id}
-        
+          <Alter
+            default={selectedIndex === 8}
+            path="#alterCatechizing"
+            navTo={handleListItemClick}
+            id={id}
+          />
+          <UpdateClasse
+            default={selectedIndex === 9}
+            path="#updateClasse"
+            navTo={handleListItemClick}
+            id={id}
           />
         </Router>
       </Box>

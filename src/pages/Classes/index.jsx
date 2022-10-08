@@ -10,8 +10,10 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Container, ContentButtons } from "./style";
+import ModalConfirm from "../../components/modalConfirm";
+import { Delete, Edit } from "@mui/icons-material";
 
-import { getClasses } from "../../services/api";
+import { deleteClasse, getClasses } from "../../services/api";
 
 const Classes = (props) => {
   const columns = [
@@ -20,11 +22,16 @@ const Classes = (props) => {
     { id: "hora", label: "HORÁRIO" },
     { id: "status", label: "STATUS" },
     { id: "data_cad", label: "CADASTRO" },
+    { id: "action", label: "AÇÕES" },
     // { id: "data_conclusao", label: "CONCLUSÃO" },
   ];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
+  const [modalConfirm, setModalConfirm] = useState({
+    openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
+    id: null,
+  }); //id: Atributo que provê o id caso queira usar para excluir
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -46,8 +53,32 @@ const Classes = (props) => {
     setRows(classes);
   };
 
+  const handleModalConfirm = (id) => {
+    setModalConfirm({
+      openOrClose: !modalConfirm.openOrClose,
+      id: id,
+    });
+  };
+
+  const deleteClasses = async (id) => {
+    const deleted = await deleteClasse(id);
+    if (deleted.status) {
+      const newClasse = rows.filter((e) => e.id !== id);
+      setModalConfirm(!modalConfirm);
+      setRows(newClasse);
+    } else {
+      alert("Erro a remover turma!");
+    }
+  };
+
   return (
     <>
+      <ModalConfirm
+        data={modalConfirm}
+        closeModal={handleModalConfirm}
+        afterFunction={deleteClasses}
+        title="Tem certeza que deseja excluir ?"
+      />
       <Header title="Turmas" />
       <ContentButtons>
         <Button style={Cadastrar} onClick={(event) => props.navTo(event, 6)}>
@@ -95,10 +126,40 @@ const Classes = (props) => {
                                     display: "flex",
                                     margin: 1,
                                     paddingBottom: 10,
-                                    justifyContent: "center",
-                                    alignItems: "center",
                                   }}
-                                ></div>
+                                >
+                                  <Button
+                                    variant="contained"
+                                    style={{
+                                      marginRight: 5,
+                                      backgroundColor: "#1a2845",
+                                      height: 40,
+                                      width: 40,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                    onClick={(event) => props.navTo(event, 9)}
+                                  >
+                                    <Edit fontSize="small" />
+                                  </Button>
+
+                                  <Button
+                                    variant="outlined"
+                                    style={{
+                                      backgroundColor: "#1a2845",
+                                      marginLeft: 5,
+                                      height: 40,
+                                      width: 40,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                    onClick={() => handleModalConfirm(row.id)}
+                                  >
+                                    <Delete />
+                                  </Button>
+                                </div>
                               ) : (
                                 value
                               )}
@@ -123,7 +184,7 @@ const Classes = (props) => {
       </Container>
     </>
   );
-};
+};;;
 
 const Cadastrar = {
   width: "150px",
