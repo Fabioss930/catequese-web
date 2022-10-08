@@ -162,10 +162,8 @@ function Catechizing(props) {
                                       alignItems: "center",
                                     }}
                                     onClick={() =>
-                                      alert(
-                                        "A alteração ainda não esta disponível, tenha paciencia!"
-                                      )
-                                    } //props.navTo('', 8, row.id)
+                                      props.navTo(row.id, 8)
+                                    } 
                                   >
                                     <Edit fontSize="small" />
                                   </Button>
