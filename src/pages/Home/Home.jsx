@@ -37,22 +37,22 @@ const drawerWidth = 240;
 function ResponsiveDrawer(props) {
 
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState({page:0, data:{}});
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigation = useNavigate()
   const [refresh, setRfresh] = useState(false)
-  const [id ,setId] = useState('')
+  // const [id ,setId] = useState('')
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
 
-  const handleListItemClick = (event, index,id='') => { //Função passada por referencia para navegar entre as telas
-    setId(id)
-    setSelectedIndex(index);
+  const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
+    console.log("O que veio::::",data)
+    setSelectedIndex({page:index, data:data});
   };
 
   React.useEffect(()=>{
@@ -222,46 +222,46 @@ function ResponsiveDrawer(props) {
       >
         <Router>
           <Dashboard
-            default={selectedIndex === 0}
+            default={selectedIndex.page === 0}
             path="#home"
             navTo={handleListItemClick}
           />
           <Users
-            default={selectedIndex === 1}
+            default={selectedIndex.page === 1}
             path="#users"
             navTo={handleListItemClick}
           />
           <RegisterUsers
-            default={selectedIndex === 2}
+            default={selectedIndex.page === 2}
             path="#registerUsers"
             navTo={handleListItemClick}
           />
           <Catechizing
-            default={selectedIndex === 3}
+            default={selectedIndex.page === 3}
             path="#catechizing"
             navTo={handleListItemClick}
             refresh={setRfresh}
           />
           <Register
-            default={selectedIndex === 4}
+            default={selectedIndex.page === 4}
             path="#register"
             navTo={handleListItemClick}
           />
           <Classes
-            default={selectedIndex === 5}
+            default={selectedIndex.page === 5}
             path="#classes"
             navTo={handleListItemClick}
           />
           <RegisterClasses
-            default={selectedIndex === 6}
+            default={selectedIndex.page === 6}
             path="#registerClasses"
             navTo={handleListItemClick}
           />
           <Alter 
-          default={selectedIndex===8}
+          default={selectedIndex.page===8}
           path="#alterCatechizing"
           navTo={handleListItemClick}
-          id={id}
+          
         
           />
         </Router>
