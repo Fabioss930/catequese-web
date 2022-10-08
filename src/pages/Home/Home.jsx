@@ -29,13 +29,11 @@ import Dashboard from "../Dashboard";
 import Alter from '../Catechizing/Alter/Alter'
 import { Group } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-
-
+import UpdateClasse from "../Classes/UpdateClasse";
 
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
-
 
   const [selectedIndex, setSelectedIndex] = useState({page:0, data:{}});
 
@@ -45,26 +43,23 @@ function ResponsiveDrawer(props) {
   const [refresh, setRfresh] = useState(false)
   
 
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-
-  const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
+const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
     console.log("O que veio::::",data)
     setSelectedIndex({page:index, data:data});
+
   };
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
+    const loged = JSON.parse(localStorage.getItem("loged")) || null;
+    console.log(loged);
+    if (!loged?.loged) navigation("Login");
+  }, []);
 
-    const loged = JSON.parse(localStorage.getItem('loged')) ||null
-    console.log(loged)
-    if(!loged?.loged) navigation("Login")
-  },[])
-
- 
-
-  
   const drawer = (
     <div>
       <div
@@ -154,8 +149,8 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -257,12 +252,19 @@ function ResponsiveDrawer(props) {
             path="#registerClasses"
             navTo={handleListItemClick}
           />
-          <Alter 
-          default={selectedIndex.page===8}
-          path="#alterCatechizing"
-          navTo={handleListItemClick}
-          
-        
+
+          <Alter
+            default={selectedIndex === 8}
+            path="#alterCatechizing"
+            navTo={handleListItemClick}
+            id={id}
+          />
+          <UpdateClasse
+            default={selectedIndex === 9}
+            path="#updateClasse"
+            navTo={handleListItemClick}
+            id={id}
+
           />
         </Router>
       </Box>
