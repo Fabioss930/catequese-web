@@ -188,13 +188,19 @@ const deleteCatechizing = async (id) => {
 
 }
 const deleteUser = async (id) => {
- 
-
   return api.delete(`/usuario/${id}`).then((a) => a).catch((error) => console.log(error))
 
 }
+const deleteClasse = async (id) => {
+  return api
+    .delete(`/turma/${id}`)
+    .then((a) => a)
+    .catch((error) => console.log(error));
+};
+
 
 const alterCatechizing = async (data,id) => {
+
   console.log(data)
   return await api
     .put(`/catequizando/${id}`, data)
@@ -221,6 +227,7 @@ export {
   getUsers, getOneUser,
   deleteUser,
   getClasses,
+  deleteClasse,
   classeCatechizing,
   api,
   createCatechizing,

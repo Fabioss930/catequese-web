@@ -45,24 +45,22 @@ interface PropsClassesUsers {
   data_cad: string;
 }
 
-interface PropsCatechizing {
-  turmaId: string;
-  usuariosId: string;
-}
-
-const RegisterClasses: React.FC = (props: any) => {
-  const [usuariosId, setUsuariosId] = useState<PropsId[]>([]);
-  const [value, setValue] = React.useState<Dayjs | null>(
-    dayjs("2018-01-01T00:00:00.000Z")
-  );
+const UpdateClasse: React.FC = (props: any) => {
   const [personName, setPersonName] = React.useState({ nomes: [], id: [] });
   const [personNameId, setPersonNameId] = React.useState();
   const [names, setNames] = useState<Props[]>([]);
 
+  const createClasseSchema = yup.object().shape({
+    dia_semana: yup.string(),
+    hora: yup.string(),
+    catequistas: yup.array(),
+    status: yup.string(),
+    data_conclusao: yup.string(),
+  });
+
   useEffect(() => {
     listUsers();
   }, []);
-
 
   const listUsers = useCallback(async () => {
     const users = await getUsers();
@@ -76,6 +74,13 @@ const RegisterClasses: React.FC = (props: any) => {
     setNames(totalUser);
   }, []);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PropsClasses>({ resolver: yupResolver(createClasseSchema) });
+  let dataClasse: any = [];
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -87,132 +92,11 @@ const RegisterClasses: React.FC = (props: any) => {
     },
   };
 
-
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-
-    //@ts-ignore
-    const value: string[] = event.target.value;
-
-    //@ts-ignore
-    let vet = []
-    names.forEach((per, id) => { //compara de 'names' e 'value', se der meet ele adiciona o id correspondente
-      value.forEach(a => {
-        if (a == per.nome) {  
-          vet.push(per.id)
-        }
-      })
-    }
-    )
-    
-    setPersonName({
-      //@ts-ignore
-      nomes: typeof value === "string" ? value.split(",") : value,
-      //@ts-ignore
-      id: typeof vet === "string" ? vet.split(",") : vet
-    }
-
-
-    );
-  };
-
-  const handleChangeUserId = (id: any) => {
-    console.log(id);
-    setUsuariosId([...usuariosId, id]);
-    console.log(usuariosId);
-
-    // const userId = usuariosId.includes(id) ? usuariosId:[...usuariosId, id];
-    // setUsuariosId(userId);
-  };
-
-  const createClasseSchema = yup.object().shape({
-    dia_semana: yup.string(),
-    hora: yup.string(),
-    catequistas: yup.array(),
-    status: yup.string(),
-    data_conclusao: yup.string(),
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PropsClasses>({ resolver: yupResolver(createClasseSchema) });
-  let dataClasse: any = [];
-
-
-
-  const createClasses = async (data: PropsClasses) => {
-    return await api
-      .post("/turma", data)
-      .then((response) => (dataClasse = response.data))
-      .then((data) => {
-        return {
-          
-          status: 200 || 202,
-          message: "Turma cadastrada",
-          data:data
-        };
-      })
-
-      .catch((error) => {
-        return {
-          status: 500,
-          message: error.response.data[0].errors,
-        };
-      });
-  };
-
-  const handleClasse = async () => { //Adicionar os catequistas na turma
-    try {
-      const data = {
-        turmaId: dataClasse.id,
-        usuariosId: personName.id,
-      };
-
-      const response = await classeCatechizing(data);
-
-      if (response.status === 202 || response.status === 200) {
-        alert("Catequistas cadastrados na turma ");
-      }
-     } catch (error) {
-      console.log(error);
-     }
-  };
-
-  const handleSubmitForm: SubmitHandler<PropsClasses> = async (data) => {
-    //Submit do formulario
-
-    try {
-     
-      const resTurma = await createClasses(data);
-      
-      
-
-      if (resTurma.status === 202 || resTurma.status === 200) {
-        //@ts-ignore
-        await handleClasse();
-        
-        
-        alert("Turma cadastrada com sucesso!");
-
-        // const idClasse = data.map((item: PropsId) => item.id);
-        props.navTo("", 5);
-      } else {
-        alert("Erro ao cadastrar turma");
-        console.log(resTurma.message);
-      }
-    } catch (error) {
-      alert("Erro ao cadastrar turma");
-    }
-  };
-  console.log('Person', personName)
-  
-
   return (
     <>
-      <Header title="Cadastro de Turma" />
+      <Header title="Atualizar Turma" />
       <Container>
-        <Form onSubmit={handleSubmit(handleSubmitForm)}>
+        <Form onSubmit={() => console.log("Ok")}>
           <GridBody>
             {/* <FormSelect>
               <Input name="text" type="text" placeholder="Nome da turma" />
@@ -265,7 +149,9 @@ const RegisterClasses: React.FC = (props: any) => {
                   onChange={handleChange}
                   input={<OutlinedInput label="Catequistas" />}
                   //@ts-ignore
-                  renderValue={(selected) => { return selected.join(", ") }}
+                  renderValue={(selected) => {
+                    return selected.join(", ");
+                  }}
                   MenuProps={MenuProps}
                 >
                   {names.map((item) => (
@@ -327,4 +213,4 @@ const Cancelar: CSS.Properties = {
   background: "#e94847",
 };
 
-export default RegisterClasses;
+export default UpdateClasse;

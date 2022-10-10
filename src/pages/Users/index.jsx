@@ -136,7 +136,7 @@ const Users = (props) => {
                               style={{ color: "#576475" }}
                             >
                               {column.id === "action" ? (
-                                <div style={{ display: 'flex', margin: 1, paddingBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', margin: 1, paddingBottom: 10, }}>
                                   <Button
                                     variant="contained"
 
@@ -146,7 +146,7 @@ const Users = (props) => {
                                     onClick={() => alert('A alteração ainda não esta disponível, tenha paciencia!')}
                                   >
 
-                                    <Edit fontSize="small" />
+                                  <Edit fontSize="small" />
                                   </Button>
 
                                   <Button
