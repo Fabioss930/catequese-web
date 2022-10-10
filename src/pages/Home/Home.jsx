@@ -52,7 +52,7 @@ function ResponsiveDrawer(props) {
 
   const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
     console.log("O que veio::::",data)
-    setSelectedIndex({page:index, data:data});
+    setSelectedIndex({page:index, data});
   };
 
   React.useEffect(()=>{
@@ -154,6 +154,8 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
+
+  console.log("Esta no ",selectedIndex.data)
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
@@ -261,8 +263,7 @@ function ResponsiveDrawer(props) {
           default={selectedIndex.page===8}
           path="#alterCatechizing"
           navTo={handleListItemClick}
-          
-        
+          data={selectedIndex.data}
           />
         </Router>
       </Box>

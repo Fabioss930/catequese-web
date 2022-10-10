@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import Input from "../../components/input";
 import Button from "../../components/button";
 import { FiLock, FiUser } from "react-icons/fi";
@@ -15,19 +15,34 @@ const SignIn: React.FC = () => {
  const teste = async (event:any)=> {
     
   
-    const data = await login(event)
-    console.log("O que veio ",data)
-    if(data) {
-      localStorage.setItem('loged',JSON.stringify({loged:data?true:false})) 
-      localStorage.setItem('idUser',data.tokenCatequese.id)
+    const loged = await login(event)
+    if(loged){
       navigation('/')
     }else{
-      alert('Usuario ou senha incorretos')
+      alert('Usuario ou senha incorreta')
     }
+    
    
   }
 
+  useEffect(()=>{
+    
+    testee()
+    
+  },[])
 
+  const testee = async ()=>{
+    let testeServer
+    testeServer = await fetch('http://localhost:3001').then(()=>true).catch(()=>false)
+    !testeServer&&alert("Erro na comunicação com servidor")
+    testeServer&&alert("Conxao estabelecida")
+
+
+      }
+   
+  
+    
+  
   
 
   return (

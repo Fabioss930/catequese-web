@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 
 import './Register.css'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { createCatechizing, getClasses } from '../../../services/api';
+import { createCatechizing, getClasses, insertCatechizingInTurma, insertDocumentsCatechizing } from '../../../services/api';
 import { IMaskInput } from 'react-imask';
 
 
@@ -26,14 +26,14 @@ function Users(props) {
   const [genero, setGenero] = useState("")
   const [data_nascimento, setData_nascimento] = useState(0)
   const [estado_civil, setEstado_civil] = useState("")
-  const [casado_civil, setCasado_civil] = useState("")
+  const [vive_maritalmente, setVive_maritalmente] = useState("")
   const [padrinho_madrinha, setPadrinho_madrinha] = useState("")
   const [status, setStatus] = useState("")
   const [documentos, setDocumentos] = useState({
     cpf: "N",
     rg: "N",
     comprovante_residencia: "N", //Comprovante de Residencia
-    CC: "N" //Comprovante de Casamento
+    casamento_igreja: "N" //Comprovante de Casamento
   })
   const [documentosSacramentos, setDocumentosSacramentos] = useState({
     comprovante_admissao: "N",
@@ -47,7 +47,7 @@ function Users(props) {
     
     const todos_sac = sacramentos_concluidos.length==4?"S":"N"
     
-    console.log(padrinho_madrinha)
+    
 
     const catechizing = {
       nome,
@@ -58,19 +58,44 @@ function Users(props) {
       madrinha: padrinho_madrinha!=null?'S':'N',  
 
     }
+    const documents = {
+      vive_maritalmente,
+      cpf: documentos.cpf,
+      rg: documentos.rg,
+      admissao: sacramentos_concluidos.includes('Admissao')?"S":"N",
+      comprovante_residencia: documentos.comprovante_residencia,
+      casamento_igreja: documentos.casamento_igreja&&estado_civil==='C'?"S":"N",
+      casamento_civil: estado_civil==='C'?"S":"N"
+
+    }
+    console.log("Documentos:",documents)
     try{
     const res = await createCatechizing(catechizing)
-    console.log(res)
+    
     if (res.status === 202) {
       alert("Usuario cadastrado com sucesso!");
-      props.navTo("",3)
+      const resDocuments = await insertDocumentsCatechizing(documents,res.id)
+      if(resDocuments.status==202){
+        alert('Documentos cadastrados com sucesso!')
+        const resTurma = await insertCatechizingInTurma({idCat:res.id,idTurma:turmaSelecionada})
+        if(resTurma.status==202){
+          alert('Catequizando cadastrado em uma turma!')
+          props.navTo("",3)
+        }else{
+          console.log(resTurma.message)
+        }
+        
+
+
+        
+      }
       
     } else {
       alert("Erro ao cadastrar usuario");
       console.log(res.message);
     }
   } catch (error) {
-    alert("Erro ao Cadastrar Usuario");
+    alert("Erro ao acessar api");
   }
 
   }
@@ -125,7 +150,7 @@ function Users(props) {
 
   }
   const onChangeCasadoCivil = (event) => {
-    setCasado_civil(event.target.value)
+    setVive_maritalmente(event.target.value)
 
   }
   const onChangeDocumentos = (event) => {
@@ -135,6 +160,7 @@ function Users(props) {
       [event.target.name]: event.target.value
     })
   }
+  
   const onChangeTurma = (event)=>{
     setTurmaSelecionada(event.target.value)
 
@@ -202,10 +228,7 @@ function Users(props) {
 
     return (
 
-
       sacramentosRestantes.map((name) => {
-
-
 
         return (
           <MenuItem key={name} value={name}>
@@ -282,7 +305,7 @@ function Users(props) {
                   id="demo-simple-select"
                   onChange={onChangeCasadoCivil}
                   label="Casado Civil ou Mora Junto"
-                  value={casado_civil}
+                  value={vive_maritalmente}
                   name="casado"
                   sx={{ height: 50 }}
                 >
@@ -535,6 +558,7 @@ function Users(props) {
                   />
                 </RadioGroup>
               </FormControl>
+              {estado_civil==='C'&&
               <FormControl
                 className="formControlContainer"
                 sx={{ marginTop: 2, marginBottom: 2 }}
@@ -549,8 +573,8 @@ function Users(props) {
                   style={{ display: "block" }}
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue={"Nao Entregue"}
-                  name="CC"
-                  value={documentos?.CC}
+                  name="casamento_igreja"
+                  value={documentos?.casamento_igreja}
                   onChange={onChangeDocumentos}
                 >
                   <FormControlLabel
@@ -558,7 +582,7 @@ function Users(props) {
                     control={<Radio />}
                     label="Sim"
                     sx={
-                      documentos?.CC === "S"
+                      documentos?.casamento_igreja === "S"
                         ? { color: "#000" }
                         : { color: "#aaa" }
                     }
@@ -568,13 +592,14 @@ function Users(props) {
                     control={<Radio />}
                     label="Nao"
                     sx={
-                      documentos?.CC === "N"
+                      documentos?.casamento_igreja === "N"
                         ? { color: "#000" }
                         : { color: "#aaa" }
                     }
                   />
                 </RadioGroup>
               </FormControl>
+              }
             </div>
             <div style={{ marginTop: 20 }}>
               <h3 className="title">
@@ -782,7 +807,7 @@ function Users(props) {
                 sx={{ height: 50 }}
               >
                 {turmas.map((turma) => (
-                  <MenuItem value={turma}>{turma.descricao}</MenuItem>
+                  <MenuItem value={turma.id}>{turma.descricao}</MenuItem>
                 ))}
               </Select>
             </FormControl>
