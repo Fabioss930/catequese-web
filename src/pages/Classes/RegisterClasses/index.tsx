@@ -253,7 +253,7 @@ const RegisterClasses: React.FC = (props: any) => {
             <FormSelect>
               <FormControl style={{ width: "100%" }}>
                 <InputLabel id="demo-multiple-checkbox-label">
-                  Catequistas
+                  Adicionar catequistas
                 </InputLabel>
                 <Select
                   labelId="demo-multiple-checkbox-label"
@@ -263,9 +263,12 @@ const RegisterClasses: React.FC = (props: any) => {
                   value={personName?.nomes}
                   //@ts-ignore
                   onChange={handleChange}
-                  input={<OutlinedInput label="Catequistas" />}
+                  input={<OutlinedInput label="Adicionar catequistas" />}
                   //@ts-ignore
-                  renderValue={(selected) => { return selected.join(", ") }}
+                  renderValue={(selected) => {
+                    //@ts-ignore
+                    return selected.join(", ");
+                  }}
                   MenuProps={MenuProps}
                 >
                   {names.map((item) => (

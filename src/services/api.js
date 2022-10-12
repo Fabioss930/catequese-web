@@ -138,8 +138,9 @@ const deleteClasse = async (id) => {
     .then((a) => a)
     .catch((error) => console.log(error));
 };
+
 const alterCatechizing = async (data) => {
-  console.log(data)
+  console.log(data);
   return await api
     .post("/catequizando", data)
     .then((a) => {
@@ -149,17 +150,42 @@ const alterCatechizing = async (data) => {
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
+};
 
-}
+const updateClasse = async (data, id) => {
+  console.log(data);
+  return await api
+    .put(`/turma/${id}`, data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+};
 
-const documents = async (documents,id)=>{
 
+
+const getOneClasse = async (id) => {
+  return api(`/turma/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
+
+const documents = async (documents, id) => {
   return await api
     .post("/documentos")
     .then((a) => {
@@ -169,18 +195,18 @@ const documents = async (documents,id)=>{
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
-
-}
+};
 
 export {
   createUsers,
-  getUsers, getOneUser,
+  getUsers,
+  getOneUser,
   deleteUser,
   getClasses,
   deleteClasse,
@@ -192,5 +218,6 @@ export {
   deleteCatechizing,
   login,
   alterCatechizing,
-
+  getOneClasse,
+  updateClasse,
 };

@@ -77,9 +77,8 @@ function Users(props) {
 
 
   useEffect(()=>{
-    getTurmas()
-    getUser(props.id)
-
+    getTurmas();
+    getUser(props.id);
   },[])
 
 
