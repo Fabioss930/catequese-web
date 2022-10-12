@@ -29,6 +29,7 @@ import Dashboard from "../Dashboard";
 import Alter from "../Catechizing/Alter/Alter";
 import { Group } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import UpdateClasse from "../Classes/UpdateClasse";
 
 const drawerWidth = 240;
 
@@ -261,6 +262,12 @@ function ResponsiveDrawer(props) {
           navTo={handleListItemClick}
           data={selectedIndex.data}
 
+          />
+          <UpdateClasse
+            default={selectedIndex.page === 9}
+            path="#updateClasse"
+            navTo={handleListItemClick}
+            data={selectedIndex.data}
           />
         </Router>
       </Box>

@@ -84,8 +84,6 @@ const Classes = (props) => {
         <Button style={Cadastrar} onClick={(event) => props.navTo(event, 6)}>
           Cadastrar
         </Button>
-
-        <Button style={Remover}>Remover</Button>
       </ContentButtons>
       <Container>
         <Paper sx={{ overflow: "hidden" }}>
@@ -139,7 +137,7 @@ const Classes = (props) => {
                                       justifyContent: "center",
                                       alignItems: "center",
                                     }}
-                                    onClick={(event) => props.navTo(event, 9)}
+                                    onClick={() => props.navTo(row.id, 9)}
                                   >
                                     <Edit fontSize="small" />
                                   </Button>

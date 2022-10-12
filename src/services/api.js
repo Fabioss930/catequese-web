@@ -210,14 +210,32 @@ const alterCatechizing = async (data,id) => {
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
+};
 
-}
+const updateClasse = async (data, id) => {
+  console.log(data);
+  return await api
+    .put(`/turma/${id}`, data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+};
 
 const insertScraments = async (data,id)=>{
   console.log('ID: ' , id)
@@ -246,9 +264,34 @@ const insertScraments = async (data,id)=>{
 // await api.post(`/sacramento/${id}`,data).then((a)=>console.log("DEU CERTO IRMAO")).catch(()=>conosole.log("VISHHHHHHHHHH"))
 
 
+const getOneClasse = async (id) => {
+  return api(`/turma/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
+
+const documents = async (documents, id) => {
+  return await api
+    .post("/documentos")
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+};
+
 export {
   createUsers,
-  getUsers, getOneUser,
+  getUsers,
+  getOneUser,
   deleteUser,
   getClasses,
   deleteClasse,
@@ -263,6 +306,6 @@ export {
   deleteCatechizing,
   login,
   alterCatechizing,
-  insertScraments
-
-};
+  insertScraments,
+  getOneClasse,
+  updateClasse,
