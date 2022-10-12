@@ -97,7 +97,7 @@ function Catechizing(props) {
       setCatechizingAll(newCatechizing);
       handleModalConfirm(!modalConfirm);
     } else {
-      alert("Erro ao cadastrar usuario!");
+      alert("Erro ao deletar usuario!");
     }
   };
 

@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 
 import './Alter.css'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { createCatechizing, getClasses, getOneCatechizing, getOneUser} from '../../../services/api';
+import { createCatechizing, getClasses, getDocumentsCatechizing, getOneCatechizing, getOneUser} from '../../../services/api';
 
 
 
@@ -26,14 +26,15 @@ function Users(props) {
   const [genero, setGenero] = useState("")
   const [data_nascimento, setData_nascimento] = useState(0)
   const [estado_civil, setEstado_civil] = useState("")
-  const [casado_civil, setCasado_civil] = useState("")
+  const [vive_maritalmente, setVive_maritalmente] = useState("")
   const [padrinho_madrinha, setPadrinho_madrinha] = useState("")
   const [status, setStatus] = useState("")
   const [documentos, setDocumentos] = useState({
     cpf: "N",
     rg: "N",
     comprovante_residencia: "N", //Comprovante de Residencia
-    CC: "N" //Comprovante de Casamento
+    CC: "N", //Comprovante de Casamento
+    vive_maritalmente:"N",
   })
   const [documentosSacramentos, setDocumentosSacramentos] = useState({
     comprovante_admissao: "N",
@@ -77,16 +78,21 @@ function Users(props) {
 
 
   useEffect(()=>{
-    getTurmas();
-    getUser(props.id);
-  },[])
+    
+    
+    getTurmas()
+    getUser(props.data)
+    getDocuments(props.data)
 
+  },[])
 
   useEffect(()=>{
 
     setSacramentos([])
 
   },[sacramentos_concluidos])
+
+  
 
   const getTurmas =  async()=>{
       const turmasApi = await getClasses()
@@ -102,8 +108,19 @@ function Users(props) {
       setNome(user.nome)
       setEstado_civil(user.estado_civil)
       setData_nascimento(date)
+      const years = calcularIdade(date.getFullYear(), date.getMonth(), date.getDate())
+      console.log("Idade",years)
+      setIdade(years)
+      
       setStatus('A')
     
+    
+  }
+  const getDocuments = async (id)=>{
+    const doc = await getDocumentsCatechizing(id)
+    
+    setDocumentos(doc)
+    console.log(doc)
     
   }
 
@@ -129,8 +146,10 @@ function Users(props) {
   const onChangeDataNasc = (event) => {
     if (event) {
       const years = calcularIdade(event.$y, event.$M, event.$D)
+      console.log("Idade",`${event.$y}/${event.$M}/${event.$D}`)
       setIdade(years)
       setData_nascimento(`${event.$D}/${event.$M}/${event.$y}`)
+      
     }
   }
 
@@ -139,13 +158,13 @@ function Users(props) {
 
   }
   const onChangeCasadoCivil = (event) => {
-    setCasado_civil(event.target.value)
+    setDocumentos({...documentos,vive_maritalment:event.target.value})
 
   }
   const onChangeDocumentos = (event) => {
 
     setDocumentos({
-      ...documentos,
+      documentos,
       [event.target.name]: event.target.value
     })
   }
@@ -285,7 +304,7 @@ function Users(props) {
                   id="demo-simple-select"
                   onChange={onChangeCasadoCivil}
                   label="Casado Civil ou Mora Junto"
-                  value={casado_civil}
+                  value={documentos.vive_maritalmente}
                   name='casado'
                   sx={{ height: 50 }}
                 >
@@ -503,7 +522,7 @@ function Users(props) {
 
             <div className='container-buttons'>
               <Button className="button-cadastrar" onClick={onSubmitForm}>Salvar Atualizaçao</Button>
-              <Button className='button-cancelar' onClick={event => props.navTo(event, 4)}>Cancelar</Button>
+              <Button className='button-cancelar' onClick={(event) => props.navTo(event, 3)}>Cancelar</Button>
               <Alert ></Alert>
 
             </div>

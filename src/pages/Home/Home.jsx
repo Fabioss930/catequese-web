@@ -45,10 +45,12 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleListItemClick = (data, index) => {
-    //Função passada por referencia para navegar entre as telas
-    console.log("O que veio::::", data);
-    setSelectedIndex({ page: index, data: data });
+
+
+  const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
+    console.log("O que veio::::",data)
+    setSelectedIndex({page:index, data});
+
   };
 
   React.useEffect(() => {
@@ -146,8 +148,12 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+
+
+  console.log("Esta no ",selectedIndex.data)
+  const container = window !== undefined ? () => window().document.body : undefined;
+
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -249,10 +255,13 @@ function ResponsiveDrawer(props) {
             path="#registerClasses"
             navTo={handleListItemClick}
           />
-          <Alter
-            default={selectedIndex.page === 8}
-            path="#alterCatechizing"
-            navTo={handleListItemClick}
+
+          <Alter 
+          default={selectedIndex.page===8}
+          path="#alterCatechizing"
+          navTo={handleListItemClick}
+          data={selectedIndex.data}
+
           />
           <UpdateClasse
             default={selectedIndex.page === 9}
