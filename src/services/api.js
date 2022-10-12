@@ -46,19 +46,20 @@ const login = async (userLogin) => {
   console.log(userLogin)
 
   return await api
-    .post("/usuario/login", userLogin)
+    .post("/login", userLogin)
     .then((res) => {
-            
+        console.log("RETORNO DO BACKEND: ",res.data)
         localStorage.setItem('loged',JSON.stringify({loged:res.data})) 
-        localStorage.setItem('idUser',res.data.tokenCatequese.id)
+        localStorage.setItem('idUser',res.data.token.id)
         
-        api.defaults.headers.common["Authorization"] = res.data
+        api.defaults.headers["authorization"] = `Bearer ${res.data.token}`
+        console.log("HEADER",api.defaults.headers.authorization)
         
         return res.data
       
     
     })
-    .catch((error) => null);
+    .catch((error) => console.log(error));
 }
 
 
@@ -308,5 +309,5 @@ export {
   alterCatechizing,
   insertScraments,
   getOneClasse,
-  updateClasse,
-};
+  updateClasse, 
+}
