@@ -32,7 +32,7 @@ margin-bottom:20;
 .container-duble{
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
    
 }
 .button-cadastrar{
@@ -52,3 +52,28 @@ margin-bottom:20;
 .container-buttons{
     width: 100%;
 }
+.inputDataSacContainer{
+    display: flex;
+ 
+ 
+    justify-content: center;
+
+   
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px 10px;
+}
+.inputDataSac{
+    border: 1px #b2b2b2 solid;
+    width: 90%;
+    font-size: 12px;
+    border-radius: 10px;
+    text-align: center;
+    
+    
+}
+@media screen and (max-width: 1300px) {
+    .inputDataSacContainer {
+      flex-direction: column;
+    }
+  }

@@ -41,8 +41,8 @@ function Catechizing(props) {
   const [catechizingFilter, setCatechizingFilter] = useState([]);
   const [modalConfirm, setModalConfirm] = useState({
     openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
-    id: null,
-  }); //id: Atributo que provê o id caso queira usar para excluir
+    id: null, //id: Atributo que provê o id caso queira usar para excluir
+  }); 
 
   useEffect(() => {
     getCatequizandos();
