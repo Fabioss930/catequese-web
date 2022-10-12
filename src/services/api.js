@@ -309,5 +309,5 @@ export {
   alterCatechizing,
   insertScraments,
   getOneClasse,
-  updateClasse
+  updateClasse, 
 }
