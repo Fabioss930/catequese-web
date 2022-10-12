@@ -309,3 +309,4 @@ export {
   insertScraments,
   getOneClasse,
   updateClasse,
+};
