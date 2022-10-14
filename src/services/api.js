@@ -198,10 +198,32 @@ const deleteClasse = async (id) => {
     .catch((error) => console.log(error));
 };
 
+const deleteCatClasse = async (data) => {
+  // const token = JSON.parse(localStorage.getItem("loged"));
+  // console.log("TOKEN:", token.loged.token);
+  // api.defaults.headers["authorization"] = `Bearer ${token.loged.token}`;
 
-const alterCatechizing = async (data,id) => {
+  return await api
+    .delete("/turmaCatequista", data)
 
-  console.log(data)
+    .then((a) => {
+      return {
+        status: 202 || 200,
+        message: "Catequista excluido na turma com sucesso",
+      };
+    })
+    .catch((error) => {
+      console.log("API", data);
+      console.log("Erro:", error);
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+};
+
+const alterCatechizing = async (data, id) => {
+  console.log(data);
   return await api
     .put(`/catequizando/${id}`, data)
     .then((a) => {
@@ -238,35 +260,77 @@ const updateClasse = async (data, id) => {
     });
 };
 
-const insertScraments = async (data,id)=>{
-  console.log('ID: ' , id)
-  console.log('DATA: ' , data)
-  const Eucaristia = data.filter((i=> i.tipo_sacramento=='E'))
-  const Admissao = data.filter((i=> i.tipo_sacramento=='A'))
-  const Batismo = data.filter((i=> i.tipo_sacramento=='B'))
-  const Crisma = data.filter((i=> i.tipo_sacramento=='C'))
-  console.log("Eucaristia", Eucaristia[0])
-  console.log("Admissao", Admissao[0])
-  console.log("Batismo", Batismo[0])
-  console.log("Crisma", Crisma[0])
-  
+const insertScraments = async (data, id) => {
+  console.log("ID: ", id);
+  console.log("DATA: ", data);
+  const Eucaristia = data.filter((i) => i.tipo_sacramento == "E");
+  const Admissao = data.filter((i) => i.tipo_sacramento == "A");
+  const Batismo = data.filter((i) => i.tipo_sacramento == "B");
+  const Crisma = data.filter((i) => i.tipo_sacramento == "C");
+  console.log("Eucaristia", Eucaristia[0]);
+  console.log("Admissao", Admissao[0]);
+  console.log("Batismo", Batismo[0]);
+  console.log("Crisma", Crisma[0]);
 
-    Batismo[0] && await api.post(`/sacramento/100`,Batismo[0]).then((a)=>console.log("DEU CERTO IRMAO:","B")).catch((error)=>console.log("VISHHHHHHHHHH",Batismo[0].tipo_sacramento,error.response.data.message))
-    Admissao[0] && await api.post(`/sacramento/100`,Admissao[0]).then((a)=>console.log("DEU CERTO IRMAO:","A")).catch((error)=>console.log("VISHHHHHHHHHH",Admissao[0].tipo_sacramento,error.response.data.message))
-    try {
-      Eucaristia[0] && await api.post(`/sacramento/100`,Eucaristia[0]).then((a)=>console.log("DEU CERTO IRMAO:","E")).catch((error)=>console.log("VISHHHHHHHHHH",Eucaristia[0].tipo_sacramento,error.response.data.message))
-      
-    } catch (error) {
-      console.log(error)
-    }
-    Crisma[0] && await api.post(`/sacramento/100`,Crisma[0]).then((a)=>console.log("DEU CERTO IRMAO:",'C')).catch((error)=>console.log("VISHHHHHHHHHH",Crisma[0].tipo_sacramento,error.response.data.message))
-    
-  };
+  Batismo[0] &&
+    (await api
+      .post(`/sacramento/100`, Batismo[0])
+      .then((a) => console.log("DEU CERTO IRMAO:", "B"))
+      .catch((error) =>
+        console.log(
+          "VISHHHHHHHHHH",
+          Batismo[0].tipo_sacramento,
+          error.response.data.message
+        )
+      ));
+  Admissao[0] &&
+    (await api
+      .post(`/sacramento/100`, Admissao[0])
+      .then((a) => console.log("DEU CERTO IRMAO:", "A"))
+      .catch((error) =>
+        console.log(
+          "VISHHHHHHHHHH",
+          Admissao[0].tipo_sacramento,
+          error.response.data.message
+        )
+      ));
+  try {
+    Eucaristia[0] &&
+      (await api
+        .post(`/sacramento/100`, Eucaristia[0])
+        .then((a) => console.log("DEU CERTO IRMAO:", "E"))
+        .catch((error) =>
+          console.log(
+            "VISHHHHHHHHHH",
+            Eucaristia[0].tipo_sacramento,
+            error.response.data.message
+          )
+        ));
+  } catch (error) {
+    console.log(error);
+  }
+  Crisma[0] &&
+    (await api
+      .post(`/sacramento/100`, Crisma[0])
+      .then((a) => console.log("DEU CERTO IRMAO:", "C"))
+      .catch((error) =>
+        console.log(
+          "VISHHHHHHHHHH",
+          Crisma[0].tipo_sacramento,
+          error.response.data.message
+        )
+      ));
+};
 // await api.post(`/sacramento/${id}`,data).then((a)=>console.log("DEU CERTO IRMAO")).catch(()=>conosole.log("VISHHHHHHHHHH"))
-
 
 const getOneClasse = async (id) => {
   return api(`/turma/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
+
+const getClasseComplete = async (id) => {
+  return api(`/turma/completo/${id}`)
     .then((item) => item.data)
     .catch(() => null);
 };
@@ -309,5 +373,7 @@ export {
   alterCatechizing,
   insertScraments,
   getOneClasse,
-  updateClasse, 
-}
+  updateClasse,
+  getClasseComplete,
+  deleteCatClasse,
+};
