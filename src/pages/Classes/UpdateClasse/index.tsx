@@ -19,6 +19,8 @@ import TextField from "@mui/material/TextField";
 import {
   api,
   classeCatechizing,
+  deleteCatClasse,
+  getClasseComplete,
   getOneClasse,
   getUsers,
   updateClasse,
@@ -64,6 +66,7 @@ interface PropsCatechizing {
 
 const UpdateClasse: React.FC = (props: any) => {
   const [usuariosId, setUsuariosId] = useState<Props[]>([]);
+  const [cat, setCat] = useState<Props[]>([]);
   const [classeId, setClasseId] = useState(props.data);
   const [value, setValue] = React.useState<Dayjs | null>(
     dayjs("2018-01-01T00:00:00.000Z")
@@ -80,28 +83,41 @@ const UpdateClasse: React.FC = (props: any) => {
   });
 
   useEffect(() => {
-    listUsers();
     handleClasseDate(classeId);
+    getCatechizingClasse();
+    listUsers();
   }, []);
 
   const handleClasseDate = useCallback(async (id: string) => {
     const classeDate = await getOneClasse(id);
-    console.log("Dados da turma:", classeDate);
+
     setDia_Semana(classeDate.dia_semana);
     setHora(classeDate.hora);
     setStatus(classeDate.status);
   }, []);
 
+  const getCatechizingClasse = async () => {
+    const response = await getClasseComplete(classeId);
+    const nameCat = response.catequistas;
+    setCat(nameCat);
+    console.log("Cat:", cat);
+  };
+
   const listUsers = useCallback(async () => {
     const users = await getUsers();
+    const idCat = cat.map((item) => item.id);
+
     const usersCat = users.filter(
       (item: PropsClassesUsers) => item.tipo !== "COORDENADOR"
     );
+
     const totalUser = usersCat.map((item: Props) => ({
       id: item.id,
       nome: item.nome,
     }));
-    setNames(totalUser);
+    const filterCat = totalUser.filter((item: any) => item.id !== idCat);
+    setNames(filterCat);
+    console.log("Nomes:", names);
   }, []);
 
   const ITEM_HEIGHT = 48;
@@ -168,7 +184,7 @@ const UpdateClasse: React.FC = (props: any) => {
     //Adicionar os catequistas na turma
 
     try {
-      const data = {
+      let data = {
         turmaId: classeId,
         usuariosId: personName.id,
       };
@@ -178,7 +194,7 @@ const UpdateClasse: React.FC = (props: any) => {
       const response = await classeCatechizing(data);
 
       if (response.status === 202 || response.status === 200) {
-        alert("Catequistas cadastrados na turma ");
+        alert("Catequistas adicionado na turma com sucesso");
       }
     } catch (error) {
       console.log(error);
@@ -213,20 +229,29 @@ const UpdateClasse: React.FC = (props: any) => {
       alert("Erro ao alterar turma");
     }
   };
-  useEffect(() => {
-    //@ts-ignore
-    console.log("Deu");
-    //@ts-ignore
-    setUsuariosId(names);
-  }, []);
 
   //@ts-ignore
   const removeCat = async (id) => {
-    const newNames = usuariosId.filter((item) => item.id !== id);
-    //@ts-ignore
-    setModalConfirm(!modalConfirm);
-    //@ts-ignore
-    setUsuariosId(newNames);
+    try {
+      const data = {
+        turmaId: classeId,
+        usuarioId: id,
+      };
+      console.log("Dados:", data);
+
+      const response = await deleteCatClasse(data);
+      if (response.status === 200 || response.status === 202) {
+        alert("Catequista excluído da turma com sucesso");
+      }
+
+      const newNames = cat.filter((item) => item.id !== id);
+      //@ts-ignore
+      setModalConfirm(!modalConfirm);
+      //@ts-ignore
+      setUsuariosId(newNames);
+    } catch (error) {
+      alert("Erro ao excluir catequista da turma");
+    }
   };
 
   //@ts-ignore
@@ -236,14 +261,6 @@ const UpdateClasse: React.FC = (props: any) => {
       id: id,
     });
   };
-  const nomeCatequistas = [
-    { id: 1, nome: "Fabio Souza" },
-    { id: 2, nome: "Bruno Souza" },
-    { id: 3, nome: "Barbara Souza" },
-  ];
-  //@ts-ignore
-
-  //@ts-ignore
 
   return (
     <>
@@ -348,7 +365,7 @@ const UpdateClasse: React.FC = (props: any) => {
           <InputLabel>Catequistas da turma</InputLabel>
 
           <FormControl>
-            {usuariosId.map((item) => (
+            {cat.map((item) => (
               //@ts-ignore
               <MenuItem key={item.id} value={item.nome}>
                 <ListItemText primary={item.nome} style={{ color: "black" }} />
