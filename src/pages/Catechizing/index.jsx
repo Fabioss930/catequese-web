@@ -19,6 +19,7 @@ import { Form } from "@unform/web";
 import SearchIcon from "@mui/icons-material/Search";
 import { ContentButtons } from "./style";
 import { deleteCatechizing, getCatechizing } from "../../services/api";
+import ModalViewCat   from './modalViewCat'
 
 //<IMaskInput name='number' style={{ maxWidth: 200, height: 50, marginLeft: 10, marginBottom: 10 }} className="form-control" placeholder="(67) 9 0000-0000" mask='(00) 0 0000-0000' onChange={(text) => onChange(text.target)}
 
@@ -43,6 +44,10 @@ function Catechizing(props) {
     openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
     id: null, //id: Atributo que provê o id caso queira usar para excluir
   }); 
+  const [modalViewCat,setModalViewCat] = useState({
+    openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
+    id: null
+  })
 
   useEffect(() => {
     getCatequizandos();
@@ -60,7 +65,7 @@ function Catechizing(props) {
       const date = new Date(a?.data_nascimento);
       return {
         ...a,
-        data_nascimento: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+        data_nascimento: date.toLocaleDateString(),
         todos_sac: a.todos_sac == "S" ? "Sim" : "Nao",
         padrinho: a.padrinho == "S" ? "Sim" : "Nao",
       };
@@ -75,6 +80,18 @@ function Catechizing(props) {
       id: id,
     });
   };
+
+  const handleModalViewCat = (id) => {
+    
+    setModalViewCat({
+      openOrClose: !modalViewCat.openOrClose,
+      id: id
+    })
+    
+
+
+  }
+ 
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -131,6 +148,7 @@ function Catechizing(props) {
                         role="checkbox"
                         tabIndex={-1}
                         key={row.id}
+                        onClick={()=>handleModalViewCat(row.id)}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
@@ -139,6 +157,7 @@ function Catechizing(props) {
                               key={column.id}
                               align={column.align}
                               style={{ color: "#576475" }}
+                              onClick={()=>handleModalViewCat(row.id)}
                             >
                               {column.id == "action" ? (
                                 <div
@@ -217,6 +236,7 @@ function Catechizing(props) {
         afterFunction={deleteCatequizando}
         title="Tem certeza que deseja excluir ?"
       />
+      <ModalViewCat data={modalViewCat} closeModal={handleModalViewCat}/>
       <Header title="Catequizandos" />
       <div style={{ paddingLeft: 50 }}>
         <div style={{ display: "flex", alignItems: "center" }}>
