@@ -206,7 +206,7 @@ const deleteCatClasse = async (data) => {
   // api.defaults.headers["authorization"] = `Bearer ${token.loged.token}`;
 
   return await api
-    .delete("/turmaCatequista", data)
+    .delete("/turmaCatequista", {data:data})
 
     .then((a) => {
       return {
