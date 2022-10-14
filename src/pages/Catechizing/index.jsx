@@ -12,13 +12,13 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Button from "../../components/button";
 import ModalConfirm from '../../components/modalConfirm'
-import { Delete } from "@mui/icons-material";
+import { Delete, RemoveRedEye, Search } from "@mui/icons-material";
 import { Edit } from "@mui/icons-material";
 import Input from "../../components/input";
 import { Form } from "@unform/web";
 import SearchIcon from "@mui/icons-material/Search";
 import { ContentButtons } from "./style";
-import { deleteCatechizing, getCatechizing } from "../../services/api";
+import { deleteCatechizing, getCatechizing, getCatInClasse } from "../../services/api";
 import ModalViewCat   from './modalViewCat'
 
 //<IMaskInput name='number' style={{ maxWidth: 200, height: 50, marginLeft: 10, marginBottom: 10 }} className="form-control" placeholder="(67) 9 0000-0000" mask='(00) 0 0000-0000' onChange={(text) => onChange(text.target)}
@@ -28,8 +28,9 @@ const columns = [
   { id: "nome", label: "Nome", minWidth: 100 },
   { id: "data_nascimento", label: "Data de Nasc", minWidth: 100, align: "center" },
 
+  { id: "telefone_1", label: "Telefone", minWidth: 100, align: "center" },
   { id: "todos_sac", label: "Todos Sacramentos", minWidth: 100, align: "center" },
-  { id: "padrinho", label: "padrinho/Madrinha", minWidth: 100, align: "center" },
+ 
   { id: "turma", label: "Turma", minWidth: 100, align: "center" },
   { id: "action", label: "Ações", minWidth: 50, align: "center" },
 ];
@@ -51,6 +52,7 @@ function Catechizing(props) {
 
   useEffect(() => {
     getCatequizandos();
+    
   }, []);
 
   const onChangeSearch = (text) => {
@@ -58,10 +60,15 @@ function Catechizing(props) {
     const filter = catechizingAll.filter((cat) => cat.nome.includes(text));
     setCatechizingFilter(filter);
   };
+  const getTurma = async (id)=>{
+    const turma = await getCatInClasse(id)
+    return turma[0].descricao
+  }  
 
   const getCatequizandos = async () => {
     const cat = await getCatechizing(); ///Busca na api
     const p = cat.map((a) => {
+      
       const date = new Date(a?.data_nascimento);
       return {
         ...a,
@@ -118,6 +125,11 @@ function Catechizing(props) {
     }
   };
 
+  
+  
+
+
+
   const renderTable = (catechizing) => {
     if (catechizing) {
       return (
@@ -148,7 +160,7 @@ function Catechizing(props) {
                         role="checkbox"
                         tabIndex={-1}
                         key={row.id}
-                        onClick={()=>handleModalViewCat(row.id)}
+                        
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
@@ -157,8 +169,9 @@ function Catechizing(props) {
                               key={column.id}
                               align={column.align}
                               style={{ color: "#576475" }}
-                              onClick={()=>handleModalViewCat(row.id)}
+                              
                             >
+                              
                               {column.id == "action" ? (
                                 <div
                                   style={{
@@ -181,6 +194,23 @@ function Catechizing(props) {
                                       alignItems: "center",
                                     }}
                                     onClick={() =>
+                                      handleModalViewCat(row.id)}
+                                    
+                                  >
+                                    <RemoveRedEye fontSize="small" />
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    style={{
+                                      
+                                      backgroundColor: "#1a2845",
+                                      height: 40,
+                                      width: 40,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                    onClick={() =>
                                       props.navTo(row.id, 8)
                                     } 
                                   >
@@ -190,7 +220,7 @@ function Catechizing(props) {
                                   <Button
                                     variant="outlined"
                                     style={{
-                                      backgroundColor: "#1a2845",
+                                      backgroundColor: "#e94847",
                                       marginLeft: 5,
                                       height: 40,
                                       width: 40,

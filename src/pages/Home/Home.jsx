@@ -41,7 +41,7 @@ function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigation = useNavigate();
-  const [refresh, setRfresh] = useState(false);
+  const [id, setId] = useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -51,19 +51,20 @@ function ResponsiveDrawer(props) {
 
   const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
 
-    setSelectedIndex({page:index, data});
+    setSelectedIndex({ page: index, data });
 
   };
 
   React.useEffect(() => {
     const loged = JSON.parse(localStorage.getItem("loged")) || null;
-  
-   
+    
     if (!loged?.loged) navigation("Login");
     
-    if(!api.defaults.headers["authorization"])api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`
+    if (!api.defaults.headers["authorization"]) api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`
+    setId(loged.loged.id_usuario)
     
   }, []);
+  console.log(id)
 
   const drawer = (
     <div>
@@ -97,23 +98,25 @@ function ResponsiveDrawer(props) {
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link style={{ textDecoration: "none" }} to="#users">
-              <ListItem disablePadding className="Kemer">
-                <ListItemButton
-                  selected={selectedIndex === 1}
-                  onClick={(event) => handleListItemClick(event, 1)}
-                >
-                  <ListItemIcon>
-                    <People style={{ color: "#fff" }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    className="text-button"
-                    primary="Usuários"
-                    style={{ color: "#fff" }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            </Link>
+            {id==0&&
+              <Link style={{ textDecoration: "none" }} to="#users">
+                <ListItem disablePadding className="Kemer">
+                  <ListItemButton
+                    selected={selectedIndex === 1}
+                    onClick={(event) => handleListItemClick(event, 1)}
+                  >
+                    <ListItemIcon>
+                      <People style={{ color: "#fff" }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      className="text-button"
+                      primary="Usuários"
+                      style={{ color: "#fff" }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            }
             <Link style={{ textDecoration: "none" }} to="#catechizing">
               <ListItem disablePadding className="Kemer">
                 <ListItemButton
@@ -241,7 +244,7 @@ function ResponsiveDrawer(props) {
             default={selectedIndex.page === 3}
             path="#catechizing"
             navTo={handleListItemClick}
-            refresh={setRfresh}
+          
           />
           <Register
             default={selectedIndex.page === 4}
@@ -259,11 +262,11 @@ function ResponsiveDrawer(props) {
             navTo={handleListItemClick}
           />
 
-          <Alter 
-          default={selectedIndex.page===8}
-          path="#alterCatechizing"
-          navTo={handleListItemClick}
-          data={selectedIndex.data}
+          <Alter
+            default={selectedIndex.page === 8}
+            path="#alterCatechizing"
+            navTo={handleListItemClick}
+            data={selectedIndex.data}
 
           />
           <UpdateClasse
@@ -273,10 +276,10 @@ function ResponsiveDrawer(props) {
             data={selectedIndex.data}
           />
           <AlterUsers
-          default={selectedIndex.page === 10}
-          path="#updateUser"
-          navTo={handleListItemClick}
-          data={selectedIndex.data}
+            default={selectedIndex.page === 10}
+            path="#updateUser"
+            navTo={handleListItemClick}
+            data={selectedIndex.data}
           />
         </Router>
       </Box>
