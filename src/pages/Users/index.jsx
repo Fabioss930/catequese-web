@@ -16,6 +16,7 @@ import { deleteUser, getUsers } from "../../services/api";
 import { padding } from "polished";
 import { flexbox } from "@mui/system";
 import ModalConfirm from '../../components/modalConfirm'
+import ModalViewUser from './modalViewUser'
 
 const columns = [
   { id: "nome", label: "NOME" },
@@ -34,7 +35,10 @@ const Users = (props) => {
     openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
     id: null
   });  //id: Atributo que provê o id caso queira usar para excluir
-
+  const [modalViewUser,setModalViewUser] = useState({
+    openOrClose: false, //openOrClose: atributo que indica se o modal esta berto ou fechado,
+    id: null
+  })
 
   useEffect(() => {
     getUsersApi();
@@ -47,6 +51,15 @@ const Users = (props) => {
         openOrClose: !modalConfirm.openOrClose,
         id: id
       })
+
+
+  }
+  const handleModalViewUser = (id) => {
+    
+    setModalViewUser({
+      openOrClose: !modalViewUser.openOrClose,
+      id: id
+    })
 
 
   }
@@ -92,6 +105,7 @@ const Users = (props) => {
   return (
     <>
       <ModalConfirm data={modalConfirm} closeModal={handleModalConfirm} afterFunction={deleteUserr} title='Tem certeza que deseja excluir ?' />
+      <ModalViewUser data={modalViewUser} closeModal={handleModalViewUser}/>
       <Header title="Usuários" />
       <ContentButtons>
         <Button style={Cadastrar} onClick={(event) => props.navTo(event, 2)}>
@@ -122,6 +136,7 @@ const Users = (props) => {
                       <TableRow
                         style={{ height: 40 }}
                         hover
+                       
                         role="checkbox"
                         tabIndex={-1}
                         key={row.id}
@@ -134,6 +149,8 @@ const Users = (props) => {
                               key={column.id}
                               align={column.align}
                               style={{ color: "#576475" }}
+                              onClick={()=>handleModalViewUser(row.id)}
+                              /////////////////////////////////////////// 
                             >
                               {column.id === "action" ? (
                                 <div style={{ display: 'flex', margin: 1, paddingBottom: 10, }}>
@@ -143,11 +160,12 @@ const Users = (props) => {
                                     style={{ marginRight: 5, backgroundColor: "#1a2845", height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
 
-                                    onClick={() => alert('A alteração ainda não esta disponível, tenha paciencia!')}
+                                    onClick={() => props.navTo(row.id,10)}
                                   >
 
                                   <Edit fontSize="small" />
                                   </Button>
+                                  
 
                                   <Button
                                     variant="outlined"

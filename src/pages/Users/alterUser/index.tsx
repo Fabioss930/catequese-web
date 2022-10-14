@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/header/header";
 import { Container, GridBody, FormInput, ContentButtons } from "./style";
 import { Form } from "@unform/web";
@@ -14,7 +14,7 @@ import CSS from "csstype";
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import {createUsers} from '../../../services/api'
+import { createUsers, getOneUser } from '../../../services/api'
 
 
 
@@ -37,13 +37,15 @@ const createUserSchema = yup.object().shape({
 }
 )
 
-const RegisterUsers: React.FC = (props: any) => {
+const AlterUsers: React.FC = (props: any) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateUserData>({ resolver: yupResolver(createUserSchema) });
   const [gang, setGang] = React.useState<string[]>([]);
+
+  const [user,setUser] = useState<CreateUserData>()
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -56,26 +58,18 @@ const RegisterUsers: React.FC = (props: any) => {
     },
   };
 
-  // const names = [
-  //   "Turma 1",
-  //   "Turma 2",
-  //   "Turma 3",
-  //   "Turma 4",
-  //   "Turma 5,",
-  //   "Turma 6",
-  //   "Turma 7",
-  //   "Turma 8",
-  //   "Turma 9",
-  // ];
+  useEffect(()=>{
+      console.log(props.data)
+      getUser(props.data)
+  },[])
 
-  // const handleChange = (event: SelectChangeEvent<typeof gang>) => { //Lida com a mudanças do select de turmas
-  //   const {
-  //     target: { value },
-  //   } = event;
-  //   setGang(
-  //     typeof value === 'string' ? value.split(',') : value,
-  //   );
-  // };
+  const getUser = async (id:any)=>{
+    const userCurrent = await getOneUser(id)
+    console.log(userCurrent)
+    setUser(userCurrent)
+
+
+  }
 
   const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {
     //Submit do formulario
@@ -96,84 +90,68 @@ const RegisterUsers: React.FC = (props: any) => {
 
   return (
     <>
-      <Header title="Cadastro de Usuário" />
+      <Header title="Usuario > Alteração" />
       <Container>
         <Form onSubmit={handleSubmit(handleSubmitForm)}>
           <GridBody>
             <FormInput>
               <TextField
                 id="outlined-basic"
-                label="Nome"
+                
                 sx={{ width: "100%" }}
                 type="text"
+                disabled
                 placeholder="Nome"
                 //@ts-ignore
                 name="nome"
+                value={user?.nome}
                 {...register("nome")}
               />
             </FormInput>
             <FormInput>
               <TextField
+                disabled
                 id="outlined-basic"
-                label="Email"
+                
                 sx={{ width: "100%" }}
                 //@ts-ignore
                 name="login"
                 type="text"
-                placeholder="Email"
+                placeholder="Nome"
+                value={user?.login}
+           
                 {...register("login")}
               />
             </FormInput>
             <FormInput>
               <FormControl style={{ width: "100%" }}>
-                <InputLabel id="demo-simple-select-label">Função</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Função"
-                  //@ts-ignore
-                  placeholder="Função"
-                  {...register("tipo")}
-                >
-                  <MenuItem value="CATEQUISTA">Catequista</MenuItem>
-                  <MenuItem value="COORDENADOR">Coordenador</MenuItem>
-                </Select>
+                <FormInput>
+                  <TextField
+                    disabled
+                    id="outlined-basic"
+                    
+                    sx={{ width: "100%" }}
+                  
+                    //@ts-ignore
+                    name="tipo"
+                    type="text"
+                    value={user?.tipo}
+                    placeholder="Função"
+                    {...register("tipo")}
+                  />
+                </FormInput>
               </FormControl>
             </FormInput>
-            {/* <FormInput>
-              <FormControl style={{ width: "100%" }}>
-                <InputLabel id="demo-multiple-checkbox-label">Turma</InputLabel>
-                <Select
-                  labelId="demo-multiple-checkbox-label"
-                  id="demo-multiple-checkbox"
-                  multiple
-                  input={<OutlinedInput label="Turma" />}
-                  //@ts-ignore
-                  renderValue={(selected) => selected.join(", ")}
-                  //@ts-ignore
-                  name="turma"
-                  {...register('turma')}
-                  MenuProps={MenuProps}
-                  value={gang}
-                  onChange={handleChange}
-                >
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      <Checkbox checked={gang.indexOf(name) > -1} />
-                      <ListItemText primary={name} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </FormInput> */}
+           
+         
             <div style={{ display: "flex", width: "100%" }}>
               <FormInput style={{ width: "100%", marginRight: "8px" }}>
                 <TextField
                   id="outlined-basic"
-                  label="Senha"
+                  label="Nova Senha"
                   sx={{ width: "100%" }}
                   type="password"
-                  placeholder="Senha"
+                  placeholder="Nova Senha"
                   //@ts-ignore
                   name="senha"
                   {...register("senha")}
@@ -182,19 +160,20 @@ const RegisterUsers: React.FC = (props: any) => {
               <FormInput style={{ width: "100%", marginLeft: "8px" }}>
                 <TextField
                   id="outlined-basic"
-                  label="Senha"
+                  label="Confirme a nova senha"
                   sx={{ width: "100%" }}
                   type="password"
-                  placeholder="Confirme a senha"
+                  placeholder="Confirme a nova senha"
                   //@ts-ignore
                   name="confirmSenha"
+                  
                   {...register("confirmSenha")}
                 />
               </FormInput>
             </div>
             <ContentButtons>
               <Button type="submit" style={Cadastrar}>
-                Salvar
+                Salvar Alteração
               </Button>
               <Button
                 style={Cancelar}
@@ -223,4 +202,4 @@ const Cancelar: CSS.Properties = {
   background: "#e94847",
 };
 
-export default RegisterUsers;
+export default AlterUsers;

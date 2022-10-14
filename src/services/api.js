@@ -9,6 +9,8 @@ const createUsers = async (data) => {
   delete data.confirmSenha;
   delete data.turma;
   console.log(data);
+  const s = JSON.parse(localStorage.getItem('loged'))
+  console.log("TOKENN",api.defaults.headers["authorization"])
 
   return await api
     .post("/usuario", data)
@@ -48,12 +50,12 @@ const login = async (userLogin) => {
   return await api
     .post("/login", userLogin)
     .then((res) => {
-        console.log("RETORNO DO BACKEND: ",res.data)
+        console.log("RETORNO DO BACKEND: ",res)
         localStorage.setItem('loged',JSON.stringify({loged:res.data})) 
-        localStorage.setItem('idUser',res.data.token.id)
+        
+        localStorage.setItem('idUser',res.data.id_usuario)
         
         api.defaults.headers["authorization"] = `Bearer ${res.data.token}`
-        console.log("HEADER",api.defaults.headers.authorization)
         
         return res.data
       

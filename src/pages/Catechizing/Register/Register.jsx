@@ -4,7 +4,7 @@ import Alert from '@mui/icons-material/CrisisAlert'
 import { Form } from '@unform/web';
 import { Select, MenuItem, Radio, RadioGroup, Grow, FormControl, FormLabel, FormControlLabel, TextField, InputLabel, Stack, OutlinedInput, Checkbox, ListItemText } from '@mui/material'
 import Input from '../../../components/input';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 import Button from '../../../components/button';
 import { useEffect, useState } from 'react'
 import './Register.css'
@@ -12,6 +12,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { createCatechizing, getClasses, insertCatechizingInTurma, insertDocumentsCatechizing, insertScraments } from '../../../services/api';
 import { IMaskInput } from 'react-imask';
 import { Container } from '@mui/system';
+
 
 
 function Users(props) {
@@ -23,11 +24,16 @@ function Users(props) {
   const [turmas, setTurmas] = useState([{}])
   const [turmaSelecionada, setTurmaSelecionada] = useState({})
   const [genero, setGenero] = useState("")
-  const [data_nascimento, setData_nascimento] = useState(0)
+  const [data_nascimento, setData_nascimento] = useState("")
   const [estado_civil, setEstado_civil] = useState("")
   const [vive_maritalmente, setVive_maritalmente] = useState("")
   const [padrinho_madrinha, setPadrinho_madrinha] = useState("")
   const [status, setStatus] = useState("")
+  const [controllerData,setControllerData] =  useState({
+    batismoFinal:"",
+    EucaristiaInit:"",
+    EucaristiaFinal:""
+  })
   const [documentos, setDocumentos] = useState({
     cpf: "N",
     rg: "N",
@@ -41,10 +47,13 @@ function Users(props) {
     comprovante_eucaristia: "N"
 
   })
-  console.log(sacramentos)
-  let ini = '2022-04-01'
   
 
+  const inverterData = (dataOriginal)=>{
+      const arrayData = dataOriginal.split("-")
+      return `${arrayData[2]}/${arrayData[1]}/${arrayData[0]}`
+  }
+ 
   const onSubmitForm = async () => {
 
     const todos_sac = sacramentos_concluidos.length == 4 ? "S" : "N"
@@ -75,12 +84,27 @@ function Users(props) {
     }
     })
 
-    const sacramentosOficial = sacramentos.concat(sacAPerformar)
+    const sacramentosConcatenados = sacramentos.concat(sacAPerformar)
     
-    
-    console.log(sacramentosOficial)
-    console.log("DATA CERTA:" , data_nascimento)
-    insertScraments(sacramentosOficial,2)
+    // const sacramentosOficial = sacramentosConcatenados.map((sac)=>{
+    //   if(sac.data_inicio&&sac.data_fechamento){
+    //     return {
+    //       ...sac,
+    //       data_inicio:inverterData(sac.data_inicio),
+    //       data_fechamento:inverterData(sac.data_fechamento)
+    //     }
+    //   }else{
+    //     return{
+    //       ...sac
+    //     }
+    //   }
+      
+      
+
+    // })
+    console.log("SACRAMENTOS OFICIAL",sacramentosConcatenados)
+    console.log("DATA CERTA:" ,data_nascimento)
+    //insertScraments(sacramentosOficial,2)
     
     // try {
     //   const res = await createCatechizing(catechizing)
@@ -109,7 +133,7 @@ function Users(props) {
     // }
 
   }
-
+ 
 
   useEffect(() => {
     getTurmas()
@@ -150,11 +174,14 @@ function Users(props) {
 
   }
   const onChangeDataNasc = (event) => {
-
+    const { target: { value } } = event;
+    const date = new Date(event)
+    console.log('date',value)
+    const vetorData = value.split('-')
     if (event) {
-      const years = calcularIdade(event.$y, event.$M, event.$D)
+      const years = calcularIdade(vetorData[0], vetorData[1], vetorData[2])
       setIdade(years)
-      setData_nascimento(event.$d.toLocaleDateString())
+      setData_nascimento(value)
     }
   }
 
@@ -206,7 +233,7 @@ function Users(props) {
 
     setSacrametos(sacProv)
   }
-  console.log(sacramentosAPerformar)
+
 
   const onChangeSacramentosAperformar = (event) => { //usado pelo select de sacramentosAPerformar concluidos
 
@@ -226,11 +253,12 @@ function Users(props) {
     const { target: { value } } = event;
     const { target: { name } } = event;
 
-    console.log("Formatado?",new Date(value).toLocaleDateString())
-
+ 
+    if(name[0]=='B')setControllerData({...controllerData, batismoFinal:value})
+    if(name[0]=="E")setControllerData({...controllerData,EucaristiaFinal:value})
     const sacIndex = sacramentos.map(a=>{
       if(a.tipo_sacramento==name){
-        a.data_inicio=new Date(value).toLocaleDateString()
+        a.data_inicio=inverterData(value)
         return a
       }else{
 
@@ -238,18 +266,21 @@ function Users(props) {
       }
     })
 
-    console.log(sacIndex)
+    
 
   }
   const onChangeDataSacramentoFechamento = (event) =>{
     const { target: { value } } = event;
     const { target: { name } } = event;
-
+    
+    if(name[0]=="B")setControllerData({...controllerData,EucaristiaInit:value})
     
     
+    setControllerData({EucaristiaInit:value})
+    console.log("DTA",value)
     const sacIndex = sacramentos.map(a=>{
       if(a.tipo_sacramento==name){
-        a.data_fechamento=new Date(value).toLocaleDateString()
+        a.data_fechamento=inverterData(value)
         return a
       }else{
 
@@ -260,7 +291,6 @@ function Users(props) {
     console.log(sacIndex)
 
   }
-
 
 
 
@@ -291,11 +321,20 @@ function Users(props) {
 
   ];
 
-
+  console.log(sacramentos)
   const renderSacramentosAPerformar = () => {
 
     const sacramentosRestantes = todosSacramentos.filter(i => !sacramentos_concluidos.includes(i));
-
+    // const sacramentosFiltrados = sacramentosRestantes.map((sac)=>{
+    // const b = sacramentos.filter((s)=>s.tipo_sacramento=="B")
+    // const a = sacramentos.filter((s)=>s.tipo_sacramento=="A")
+    // console.log("Aqui",a)
+    // if(b){
+    //   return sacramentosRestantes.filter(i => !i.tipo_sacramento.includes('B'))
+    // }else if(a){
+    //   return sacramentosRestantes.filter(i => !i.tipo_sacramento.includes('A'))
+    // }})
+    console.log("Filtrados",sacramentosRestantes)
     return (
 
       sacramentosRestantes.map((name) => {
@@ -310,7 +349,14 @@ function Users(props) {
       })
     )
   }
+  const batismo = sacramentos.filter(s=>s.tipo_sacramento=='B')
+  // console.log('Batttttt',batismo[0].data_fechamento||null)
 
+  const config = ()=> {  //FAZER O CODIGO DE CONFIGURAÇÂO DE DATA
+    const a = '2022-10-26'
+    const batismo = sacramentos.filter(s=>s.tipo_sacramento=='B')
+    return `${batismo[0].data_fechamento}`
+  }
 
   return (
     <div className="container">
@@ -325,6 +371,7 @@ function Users(props) {
             style={{ width: "100%", display: "flex", flexDirection: "column" }}
           >
             <TextField
+              required
               id="outlined-basic"
               label="Nome"
               name="text"
@@ -387,28 +434,26 @@ function Users(props) {
             <div></div>
 
             <div className="container-duble">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack sx={{ width: "80%" }} spacing={3}>
-                  <DesktopDatePicker
-                    label="Data de nascimento"
-                    inputFormat="DD/MM/YYYY"
-                    value={data_nascimento}
-                    onChange={onChangeDataNasc}
-                    renderInput={(params) => (
-                      <TextField
-                        sx={{
-                          height: "100%",
-                          borderRadius: 10,
-                          padding: 0,
-                          marginTop: 1,
-                          marginRight: 1,
+             
+                      <input className='inputData'            
+                        style={{
+                          height:50,
+                          width: "70%",
+                          borderRadius: 7,
+                          padding: 15,
+                          borderWidth:1,
+                          borderColor:'#b2b2b2',
+                          marginTop:10,
+                          marginRight: 10,
+                          
                         }}
-                        {...params}
+                        required
+                        value={data_nascimento}
+                        onChange={onChangeDataNasc}
+                        type='date'     
+                               
                       />
-                    )}
-                  />
-                </Stack>
-              </LocalizationProvider>
+                    
               <FormControl sx={{ width: "49%" }}>
                 <Input
                   name="idade"
@@ -728,7 +773,7 @@ function Users(props) {
                     <div className='inputDataSacContainer' >
                       <div style={{display:'flex', flexDirection:'column'}}>
                       <FormLabel>Inicio</FormLabel>
-                      <input className='inputDataSac' name='A' onChange={onChangeDataSacramentoInicio} min={ini} type='date'></input>
+                      <input className='inputDataSac' name='A' onChange={onChangeDataSacramentoInicio}  type='date'></input>
                       </div>
                       <div style={{display:'flex', flexDirection:'column'}}>
                       <FormLabel>Conclusão</FormLabel>
@@ -793,7 +838,7 @@ function Users(props) {
                       <div style={{display:'flex', flexDirection:'column'}}>
 
                       <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac' name='B' onChange={onChangeDataSacramentoFechamento} type='date'></input>
+                      <input className='inputDataSac' name='B' onChange={onChangeDataSacramentoFechamento} min={controllerData.batismoFinal} type='date'></input>
                       </div>
                     </div>
                     </Grow>
@@ -881,11 +926,13 @@ function Users(props) {
                     name="comprovante_eucaristia"
                     value={documentosSacramentos?.comprovante_eucaristia}
                     onChange={onChangeDocumentosSacramentos}
+                    
                   >
                     <FormControlLabel
                       value="S"
                       control={<Radio />}
                       label="Entregue"
+                      disabled={!controllerData.EucaristiaInit}
                       sx={
                         documentosSacramentos?.comprovante_eucaristia === "S"
                           ? { color: "#000" }
@@ -910,13 +957,13 @@ function Users(props) {
                     <div className='inputDataSacContainer' >
                       <div style={{display:'flex', flexDirection:'column'}}>
                       <FormLabel>Inicio</FormLabel>
-                      <input required className='inputDataSac' name='E' onChange={onChangeDataSacramentoInicio} type='date'></input>
+                      <input required className='inputDataSac' name='E'  index='inicio' onChange={onChangeDataSacramentoInicio} min={controllerData.EucaristiaInit} type='date'></input>
 
                       </div>
                       <div style={{display:'flex', flexDirection:'column'}}>
 
                       <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac' name='E' onChange={onChangeDataSacramentoFechamento} type='date'></input>
+                      <input className='inputDataSac' name='E' onChange={onChangeDataSacramentoFechamento} min={controllerData.EucaristiaFinal} type='date'></input>
                       </div>
                     </div>
                     </Grow>
@@ -977,6 +1024,7 @@ function Users(props) {
 
             <div className="container-buttons">
               <Button
+                type='onSubmit'
                 style={{ background: "#0aa699" }}
                 className="button-cadastrar"
                 onClick={onSubmitForm}

@@ -7,22 +7,18 @@ export const Container = styled.div`
   height: 100%;
 `;
 
+export const GridBody = styled.div`
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const FormInput = styled.div`
+  margin-bottom: 16px;
+`;
+
 export const ContentButtons = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  padding: 20px;
 `;
-
-export const Title = styled.h4`
-  color: #000;
-  margin-bottom:2px
-`
-export const ContainerTitle = styled.div`
-  display: flex;
-  justify-content: space-around
-`
-export const SubTitle = styled.h5`
-  color: grey;
-  margin-bottom: 20px
-`

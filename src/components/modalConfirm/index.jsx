@@ -22,7 +22,7 @@ const style = {
 export default function BasicModal(props) {
   
 
-  console.log(props.data)
+ 
 
   return (
     <div>

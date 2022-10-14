@@ -30,6 +30,8 @@ import Alter from "../Catechizing/Alter/Alter";
 import { Group } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import UpdateClasse from "../Classes/UpdateClasse";
+import AlterUsers from "../Users/alterUser";
+import { api } from "../../services/api";
 
 const drawerWidth = 240;
 
@@ -48,15 +50,19 @@ function ResponsiveDrawer(props) {
 
 
   const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
-    console.log("O que veio::::",data)
+
     setSelectedIndex({page:index, data});
 
   };
 
   React.useEffect(() => {
     const loged = JSON.parse(localStorage.getItem("loged")) || null;
-    console.log(loged);
+  
+   
     if (!loged?.loged) navigation("Login");
+    
+    if(!api.defaults.headers["authorization"])api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`
+    
   }, []);
 
   const drawer = (
@@ -148,9 +154,6 @@ function ResponsiveDrawer(props) {
     </div>
   );
 
-
-
-  console.log("Esta no ",selectedIndex.data)
   const container = window !== undefined ? () => window().document.body : undefined;
 
 
@@ -268,6 +271,12 @@ function ResponsiveDrawer(props) {
             path="#updateClasse"
             navTo={handleListItemClick}
             data={selectedIndex.data}
+          />
+          <AlterUsers
+          default={selectedIndex.page === 10}
+          path="#updateUser"
+          navTo={handleListItemClick}
+          data={selectedIndex.data}
           />
         </Router>
       </Box>

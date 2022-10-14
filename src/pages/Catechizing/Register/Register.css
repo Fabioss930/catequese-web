@@ -72,6 +72,9 @@ margin-bottom:20;
     
     
 }
+.inputData{
+    height: 30;
+}
 @media screen and (max-width: 1300px) {
     .inputDataSacContainer {
       flex-direction: column;

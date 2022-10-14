@@ -15,9 +15,12 @@ export default function Header(props){
   },[])
 
   const getUser = async ()=>{
-      
-      const user = await getOneUser(localStorage.getItem('idUser'))
-      setNomeUser(user.nome||"Admin")
+      const idUser = await localStorage.getItem('idUser')
+      console.log(idUser)
+      const user = await getOneUser(idUser)
+      console.log(user)
+      const nameUser = user?user.nome:'Admin'
+      setNomeUser(nameUser)
   }
   const logof = ()=>{
     if(localStorage.getItem('loged')) localStorage.removeItem('loged')
