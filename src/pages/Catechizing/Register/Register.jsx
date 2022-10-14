@@ -18,11 +18,12 @@ import { Container } from '@mui/system';
 function Users(props) {
   const [nome, setNome] = useState('')
   const [idade, setIdade] = useState("")
+  const [telefones, setTelefones] = useState({})
   const [sacramentos_concluidos, setSacramentosConcluidos] = useState([])
   const [sacramentosAPerformar, setSacramentosAPerformar] = useState([])
   const [sacramentos, setSacrametos] = useState([])
   const [turmas, setTurmas] = useState([{}])
-  const [turmaSelecionada, setTurmaSelecionada] = useState({})
+  const [turmaSelecionada, setTurmaSelecionada] = useState()
   const [genero, setGenero] = useState("")
   const [data_nascimento, setData_nascimento] = useState("")
   const [estado_civil, setEstado_civil] = useState("")
@@ -30,9 +31,11 @@ function Users(props) {
   const [padrinho_madrinha, setPadrinho_madrinha] = useState("")
   const [status, setStatus] = useState("")
   const [controllerData,setControllerData] =  useState({
+    admissaoFinal:"",
     batismoFinal:"",
     EucaristiaInit:"",
-    EucaristiaFinal:""
+    EucaristiaFinal:"",
+    CrismaInit:""
   })
   const [documentos, setDocumentos] = useState({
     cpf: "N",
@@ -53,18 +56,28 @@ function Users(props) {
       const arrayData = dataOriginal.split("-")
       return `${arrayData[2]}/${arrayData[1]}/${arrayData[0]}`
   }
+  const reinverterData = ()=>{
+    const date = new Date().toLocaleDateString()
+    const arrayData = date.split("/")
+    return `${arrayData[2]}-${arrayData[1]}-${arrayData[0]}`
+}
  
   const onSubmitForm = async () => {
 
-    const todos_sac = sacramentos_concluidos.length == 4 ? "S" : "N"
-
+    const todos_sac = sacramentos_concluidos.length ==  3? "S" : "N"
+    if(nome==""||data_nascimento==""||!telefones.telefone_1){
+      return
+    }
+    if(estado_civil==""||genero==""||!turmaSelecionada) return
     const catechizing = {
       nome,
       todos_sac,
-      data_nascimento,
+      data_nascimento: inverterData(data_nascimento),
       estado_civil,
-      padrinho: padrinho_madrinha != null ? 'S' : 'N',
-      madrinha: padrinho_madrinha != null ? 'S' : 'N',
+      telefone_1:telefones.telefone_1,
+      telefone_2:telefones.telefone_2,
+      sexo: genero
+
 
     }
     const documents = {
@@ -85,53 +98,63 @@ function Users(props) {
     })
 
     const sacramentosConcatenados = sacramentos.concat(sacAPerformar)
+    console.log("Catequizando:::",catechizing)
     
-    // const sacramentosOficial = sacramentosConcatenados.map((sac)=>{
-    //   if(sac.data_inicio&&sac.data_fechamento){
-    //     return {
-    //       ...sac,
-    //       data_inicio:inverterData(sac.data_inicio),
-    //       data_fechamento:inverterData(sac.data_fechamento)
-    //     }
-    //   }else{
-    //     return{
-    //       ...sac
-    //     }
-    //   }
-      
-      
-
-    // })
-    console.log("SACRAMENTOS OFICIAL",sacramentosConcatenados)
-    console.log("DATA CERTA:" ,data_nascimento)
-    //insertScraments(sacramentosOficial,2)
     
-    // try {
-    //   const res = await createCatechizing(catechizing)
+    
+ 
+      const res = await createCatechizing(catechizing)
 
-    //   if (res.status === 202) {
-    //     alert("Usuario cadastrado com sucesso!");
-    //     const resDocuments = await insertDocumentsCatechizing(documents, res.id)
-    //     if (resDocuments.status == 202) {
-    //       alert('Documentos cadastrados com sucesso!')
-    //       const resTurma = await insertCatechizingInTurma({ idCat: res.id, idTurma: turmaSelecionada })
-    //       if (resTurma.status == 202) {
-    //         alert('Catequizando cadastrado em uma turma!')
+      if (res.status === 202) {
+        alert("Usuario cadastrado com sucesso!");
+        const resDocuments = await insertDocumentsCatechizing(documents, res.id)
+        if (resDocuments.status == 202) {
+          alert('Documentos cadastrados com sucesso!')
+          const resTurma = await insertCatechizingInTurma({ idCat: res.id, idTurma: turmaSelecionada })
+          if (resTurma.status == 202) {
+            alert('Catequizando cadastrado em uma turma!')
+            //CADASTRANDO OS SACRAMENTOS
+            const sacramentosOficial = sacramentosConcatenados.map((sac)=>{
+              if(sac.data_inicio&&sac.data_fechamento){
+                return {
+                  ...sac,
+                  data_inicio:sac.data_inicio,
+                  data_fechamento:sac.data_fechamento
+                }
+              }else{
+                return{
+                  ...sac
+                }
+              }
+              
+              
+        
+            })
             
-    //         props.navTo("", 3)
-    //       } else {
-    //         console.log(resTurma.message)
-    //       }
-    //     }
+            const resSac  = await insertScraments(sacramentosOficial,res.id)
+            if (resSac.status == 202){
+             alert("Sacramentos Cadastrados")
+             props.navTo("", 3)
+            }else{
+              alert("Erro ao cadastrar Sacramentos")
+            }
+            
+            
+          } else {
+            alert("Erro ao Castrar Turma")
+            console.log(resTurma.message)
+          }
+        }else{
+          alert("Erro ao cadastrar os documentos");
+          console.log(res.message);
+      
+        }
 
-    //   } else {
-    //     alert("Erro ao cadastrar usuario");
-    //     console.log(res.message);
-    //   }
-    // } catch (error) {
-    //   alert("Erro ao acessar api");
-    // }
-
+      } else {
+        alert("Erro ao cadastrar usuario");
+        console.log(res.message);
+      }
+   
   }
  
 
@@ -176,7 +199,7 @@ function Users(props) {
   const onChangeDataNasc = (event) => {
     const { target: { value } } = event;
     const date = new Date(event)
-    console.log('date',value)
+    
     const vetorData = value.split('-')
     if (event) {
       const years = calcularIdade(vetorData[0], vetorData[1], vetorData[2])
@@ -193,6 +216,18 @@ function Users(props) {
     setVive_maritalmente(event.target.value)
 
   }
+  console.log()
+
+  const onChangeTelefones = (event)=>{
+    const { target: { value } } = event
+    const { target } = event
+    
+    setTelefones({
+      ...telefones,
+      [target.name]:value
+    })
+  }
+
   const onChangeDocumentos = (event) => {
 
     setDocumentos({
@@ -267,17 +302,24 @@ function Users(props) {
     })
 
     
-
   }
+
+
   const onChangeDataSacramentoFechamento = (event) =>{
     const { target: { value } } = event;
     const { target: { name } } = event;
     
-    if(name[0]=="B")setControllerData({...controllerData,EucaristiaInit:value})
+    if(name[0]=="B"||name[0]=="A"){
+      console.log("EXECUTOU AQUI")
+      setControllerData({...controllerData,EucaristiaInit:value})
+    }
+ 
     
+    if(name[0]=="E")setControllerData({...controllerData,CrismaInit:value})
     
-    setControllerData({EucaristiaInit:value})
+   
     console.log("DTA",value)
+
     const sacIndex = sacramentos.map(a=>{
       if(a.tipo_sacramento==name){
         a.data_fechamento=inverterData(value)
@@ -321,23 +363,26 @@ function Users(props) {
 
   ];
 
-  console.log(sacramentos)
+ 
+
+
   const renderSacramentosAPerformar = () => {
 
     const sacramentosRestantes = todosSacramentos.filter(i => !sacramentos_concluidos.includes(i));
-    // const sacramentosFiltrados = sacramentosRestantes.map((sac)=>{
-    // const b = sacramentos.filter((s)=>s.tipo_sacramento=="B")
-    // const a = sacramentos.filter((s)=>s.tipo_sacramento=="A")
-    // console.log("Aqui",a)
-    // if(b){
-    //   return sacramentosRestantes.filter(i => !i.tipo_sacramento.includes('B'))
-    // }else if(a){
-    //   return sacramentosRestantes.filter(i => !i.tipo_sacramento.includes('A'))
-    // }})
-    console.log("Filtrados",sacramentosRestantes)
+    const sacramentosFiltrados = sacramentosRestantes.filter((sac)=>{
+      if(sac!=='Admissao'&&sac!=='Batismo'&&!sacramentos_concluidos.includes('Crisma')) return sac
+      if(sac=='Admissao'){
+        if(!sacramentos_concluidos.includes('Batismo')&&!sacramentos_concluidos.includes('Eucaristia')&&!sacramentos_concluidos.includes('Crisma')) return sac
+      }
+      if(sac=='Batismo'){
+        if(!sacramentos_concluidos.includes('Admissao')&&!sacramentos_concluidos.includes('Eucaristia')&&!sacramentos_concluidos.includes('Crisma')) return sac
+      }
+      
+  })
+    
     return (
 
-      sacramentosRestantes.map((name) => {
+      sacramentosFiltrados.map((name) => {
 
         return (
           <MenuItem key={name} value={name}>
@@ -349,6 +394,33 @@ function Users(props) {
       })
     )
   }
+
+
+  const renderListSacramentosConcluidos = ()=>{ //Renderiza Lista do select sacramentos concluidos
+    const sacramentosFiltrados = todosSacramentos.filter((sac)=>{
+      if(sac!=='Admissao'&&sac!=='Batismo') return sac
+      if(sac=='Admissao'){
+        if(!sacramentos_concluidos.includes('Batismo')) return sac
+      }
+      if(sac=='Batismo'){
+        if(!sacramentos_concluidos.includes('Admissao')) return sac
+      }
+      
+  })
+
+    return(
+    sacramentosFiltrados.map((name) => (
+      <MenuItem key={name} value={name}>
+        <Checkbox
+          checked={sacramentos_concluidos.indexOf(name) > -1}
+        />
+        <ListItemText primary={name} />
+      </MenuItem>
+    )))
+  }
+
+
+
   const batismo = sacramentos.filter(s=>s.tipo_sacramento=='B')
   // console.log('Batttttt',batismo[0].data_fechamento||null)
 
@@ -385,6 +457,7 @@ function Users(props) {
               <FormControl variant="outlined" sx={{ width: "33%" }}>
                 <InputLabel id="demo-select-small">Genero</InputLabel>
                 <Select
+                required
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   onChange={onChangeGenero}
@@ -399,10 +472,11 @@ function Users(props) {
               <FormControl variant="outlined" sx={{ width: "33%" }}>
                 <InputLabel id="demo-select-small">Estado Civil</InputLabel>
                 <Select
+                required
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   onChange={onChangeEstadoCivil}
-                  label="Dia da Semana"
+                  label="Estado Civil"
                   value={estado_civil}
                   name="estado_civil"
                   sx={{ height: 50 }}
@@ -471,7 +545,8 @@ function Users(props) {
             >
               <FormControl sx={{ width: "49%", justifyContent: "center" }}>
                 <IMaskInput
-                  name="number"
+                required
+                  name="telefone_1"
                   style={{
                     marginBottom: -10,
                     height: 50,
@@ -479,14 +554,17 @@ function Users(props) {
                     border: "1px solid #b2b2b2",
                     borderRadius: 5,
                   }}
+                  value={telefones?.telefone_1}
+                  
                   className="form-control"
                   placeholder="Numero 1"
                   mask="(00) 0 0000-0000"
+                  onChange={(a)=>onChangeTelefones(a)}
                 />
               </FormControl>
               <FormControl sx={{ width: "49%" }}>
                 <IMaskInput
-                  name="number"
+                  name="telefone_2"
                   style={{
                     marginBottom: -10,
                     height: 50,
@@ -494,9 +572,12 @@ function Users(props) {
                     border: "1px solid #b2b2b2",
                     borderRadius: 5,
                   }}
+                  required
+                  value={telefones?.telefone_2}
                   className="form-control"
                   placeholder="Numero 2"
                   mask="(00) 0 0000-0000"
+                  onChange={(a)=>onChangeTelefones(a)}
                 />
               </FormControl>
             </div>
@@ -518,14 +599,7 @@ function Users(props) {
                 value={sacramentos_concluidos}
                 onChange={onChangeSacramentosConcluidos}
               >
-                {todosSacramentos.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    <Checkbox
-                      checked={sacramentos_concluidos.indexOf(name) > -1}
-                    />
-                    <ListItemText primary={name} />
-                  </MenuItem>
-                ))}
+                {renderListSacramentosConcluidos()}
               </Select>
             </FormControl>
             {sacramentos_concluidos.includes("Crisma") ||
@@ -777,7 +851,7 @@ function Users(props) {
                       </div>
                       <div style={{display:'flex', flexDirection:'column'}}>
                       <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac'  name='A' onChange={onChangeDataSacramentoFechamento}  type='date'></input>
+                      <input className='inputDataSac'  name='A' onChange={onChangeDataSacramentoFechamento} min={controllerData.admissaoFinal} max={reinverterData()} type='date'></input>
                       </div>
                     </div>
                     </Grow>
@@ -838,76 +912,16 @@ function Users(props) {
                       <div style={{display:'flex', flexDirection:'column'}}>
 
                       <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac' name='B' onChange={onChangeDataSacramentoFechamento} min={controllerData.batismoFinal} type='date'></input>
+                      <input className='inputDataSac' name='B' onChange={onChangeDataSacramentoFechamento} max={reinverterData()} min={controllerData.batismoFinal} type='date'></input>
                       </div>
-                    </div>
-                    </Grow>
-                  </FormControl>
-                  }
-                </FormControl>
-              )}
-              {sacramentos_concluidos.includes("Crisma") && (
-                <FormControl
-                  className="formControlContainer"
-                  sx={{ marginTop: 2, marginBottom: 2 }}
-                >
-                  <FormLabel
-                    id="demo-radio-buttons-group-label"
-                    style={{ color: "#394362" }}
-                  >
-                    Comprovante de Crisma
-                  </FormLabel>
-                  <RadioGroup
-                    style={{ display: "block" }}
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue={"Nao Entregue"}
-                    name="comprovante_crisma"
-                    value={documentosSacramentos?.comprovante_crisma}
-                    onChange={onChangeDocumentosSacramentos}
-                  >
-                    <FormControlLabel
-                      value="S"
-                      control={<Radio />}
-                      label="Entregue"
                       
-                      sx={
-                        documentosSacramentos?.comprovante_crisma === "S"
-                          ? { color: "#000" }
-                          : { color: "#aaa" }
-                      }
-                    />
-                    <FormControlLabel
-                      value="N"
-                      control={<Radio />}
-                      label="Nao Entregue"
-                      sx={
-                        documentosSacramentos?.comprovante_crisma === "N"
-                          ? { color: "#000"}
-                          : { color: "#aaa" }
-                      }
-                    />
-                  </RadioGroup>
-                  {documentosSacramentos.comprovante_crisma=='S'&&
-                  <FormControl sx={{ width: '100%' }}>
-                    <Grow in={true}>
-
-                    <div className='inputDataSacContainer' >
-                      <div style={{display:'flex', flexDirection:'column'}}>
-                      <FormLabel>Inicio</FormLabel>
-                      <input className='inputDataSac' name='C' onChange={onChangeDataSacramentoInicio} type='date'></input>
-
-                      </div>
-                      <div style={{display:'flex', flexDirection:'column'}}>
-
-                      <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac' name='C' onChange={onChangeDataSacramentoFechamento} type='date'></input>
-                      </div>
                     </div>
                     </Grow>
                   </FormControl>
                   }
                 </FormControl>
               )}
+              
               {sacramentos_concluidos.includes("Eucaristia") && (
                 <FormControl
                   className="formControlContainer"
@@ -963,7 +977,70 @@ function Users(props) {
                       <div style={{display:'flex', flexDirection:'column'}}>
 
                       <FormLabel>Conclusão</FormLabel>
-                      <input className='inputDataSac' name='E' onChange={onChangeDataSacramentoFechamento} min={controllerData.EucaristiaFinal} type='date'></input>
+                      <input className='inputDataSac' name='E' onChange={onChangeDataSacramentoFechamento} max={reinverterData()} min={controllerData.EucaristiaFinal} type='date'></input>
+                      </div>
+                    </div>
+                    </Grow>
+                  </FormControl>
+                  }
+                </FormControl>
+              )}
+              {sacramentos_concluidos.includes("Crisma") && (
+                <FormControl
+                  className="formControlContainer"
+                  sx={{ marginTop: 2, marginBottom: 2 }}
+                >
+                  <FormLabel
+                    id="demo-radio-buttons-group-label"
+                    style={{ color: "#394362" }}
+                  >
+                    Comprovante de Crisma
+                  </FormLabel>
+                  <RadioGroup
+                    style={{ display: "block" }}
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue={"Nao Entregue"}
+                    name="comprovante_crisma"
+                    value={documentosSacramentos?.comprovante_crisma}
+                    onChange={onChangeDocumentosSacramentos}
+                  >
+                    <FormControlLabel
+                      value="S"
+                      control={<Radio />}
+                      label="Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_crisma === "S"
+                          ? { color: "#000" }
+                          : { color: "#aaa" }
+                      }
+                      disabled={!controllerData.CrismaInit}
+                    />
+                    <FormControlLabel
+                      value="N"
+                      control={<Radio />}
+                      label="Nao Entregue"
+                      sx={
+                        documentosSacramentos?.comprovante_crisma === "N"
+                          ? { color: "#000"}
+                          : { color: "#aaa" }
+                      }
+                      
+                    />
+                  </RadioGroup>
+                  {documentosSacramentos.comprovante_crisma=='S'&&
+                  <FormControl sx={{ width: '100%' }}>
+                    <Grow in={true}>
+
+                    <div className='inputDataSacContainer' >
+                      <div style={{display:'flex', flexDirection:'column'}}>
+                      <FormLabel>Inicio</FormLabel>
+                      <input className='inputDataSac' name='C' onChange={onChangeDataSacramentoInicio}  type='date'></input>
+
+                      </div>
+                      <div style={{display:'flex', flexDirection:'column'}}>
+
+                      <FormLabel>Conclusão</FormLabel>
+                      <input className='inputDataSac' name='C' onChange={onChangeDataSacramentoFechamento} max={reinverterData()} type='date'></input>
                       </div>
                     </div>
                     </Grow>
@@ -999,6 +1076,7 @@ function Users(props) {
                 id="demo-simple-select"
                 onChange={onChangeTurma}
                 label="Escolha uma Turma"
+                required
                 value={turmaSelecionada}
                 sx={{ height: 50 }}
               >

@@ -65,17 +65,19 @@ const AlterUsers: React.FC = (props: any) => {
 
   const getUser = async (id:any)=>{
     const userCurrent = await getOneUser(id)
-    console.log(userCurrent)
+    console.log("User",userCurrent)
     setUser(userCurrent)
 
 
   }
+  
 
   const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {
     //Submit do formulario
+    
 
     try {
-      const res = await createUsers(data);
+      const res = await createUsers({...user,senha:data.senha});
       if (res.status === 202) {
         alert("Usuario cadastrado com sucesso!");
         props.navTo("", 1);

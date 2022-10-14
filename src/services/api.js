@@ -96,7 +96,7 @@ const classeCatechizing = async (data) => {
 };
 
 const createCatechizing = async (data) => {
-  console.log(data)
+  console.log("O QUE VAI PRA API",data)
   return await api
     .post("/catequizando", data)
     .then((a) => {
@@ -201,9 +201,7 @@ const deleteClasse = async (id) => {
 };
 
 const deleteCatClasse = async (data) => {
-  // const token = JSON.parse(localStorage.getItem("loged"));
-  // console.log("TOKEN:", token.loged.token);
-  // api.defaults.headers["authorization"] = `Bearer ${token.loged.token}`;
+  
 
   return await api
     .delete("/turmaCatequista", {data:data})
@@ -225,7 +223,12 @@ const deleteCatClasse = async (data) => {
 };
 
 const alterCatechizing = async (data, id) => {
-  console.log(data);
+  const token = JSON.parse(localStorage.getItem("loged"));
+  if(token){
+    api.defaults.headers["authorization"] = `Bearer ${token.loged.token}`;
+
+  }
+ 
   return await api
     .put(`/catequizando/${id}`, data)
     .then((a) => {
@@ -274,9 +277,10 @@ const insertScraments = async (data, id) => {
   console.log("Batismo", Batismo[0]);
   console.log("Crisma", Crisma[0]);
 
+  try{
   Batismo[0] &&
     (await api
-      .post(`/sacramento/100`, Batismo[0])
+      .post(`/sacramento/${id}`, Batismo[0])
       .then((a) => console.log("DEU CERTO IRMAO:", "B"))
       .catch((error) =>
         console.log(
@@ -287,7 +291,7 @@ const insertScraments = async (data, id) => {
       ));
   Admissao[0] &&
     (await api
-      .post(`/sacramento/100`, Admissao[0])
+      .post(`/sacramento/${id}`, Admissao[0])
       .then((a) => console.log("DEU CERTO IRMAO:", "A"))
       .catch((error) =>
         console.log(
@@ -299,7 +303,7 @@ const insertScraments = async (data, id) => {
   try {
     Eucaristia[0] &&
       (await api
-        .post(`/sacramento/100`, Eucaristia[0])
+        .post(`/sacramento/${id}`, Eucaristia[0])
         .then((a) => console.log("DEU CERTO IRMAO:", "E"))
         .catch((error) =>
           console.log(
@@ -313,7 +317,7 @@ const insertScraments = async (data, id) => {
   }
   Crisma[0] &&
     (await api
-      .post(`/sacramento/100`, Crisma[0])
+      .post(`/sacramento/${id}`, Crisma[0])
       .then((a) => console.log("DEU CERTO IRMAO:", "C"))
       .catch((error) =>
         console.log(
@@ -322,14 +326,32 @@ const insertScraments = async (data, id) => {
           error.response.data.message
         )
       ));
+      return {status:202}
+        }catch{
+          return {status:400}
+        }
 };
-// await api.post(`/sacramento/${id}`,data).then((a)=>console.log("DEU CERTO IRMAO")).catch(()=>conosole.log("VISHHHHHHHHHH"))
+
+const getSacramentsCatechizing = async (id)=>{
+  return api(`sacramento/catequizando/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+}
+
+
+
 
 const getOneClasse = async (id) => {
   return api(`/turma/${id}`)
     .then((item) => item.data)
     .catch(() => null);
 };
+
+const getCatInClasse = (id)=>{  //Retorna as Turmas de um catequizando
+  return api(`/turma/catequizando/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+}
 
 const getClasseComplete = async (id) => {
   return api(`/turma/completo/${id}`)
@@ -361,6 +383,7 @@ export {
   getOneUser,
   deleteUser,
   getClasses,
+  getCatInClasse,
   deleteClasse,
   classeCatechizing,
   api,
@@ -374,6 +397,7 @@ export {
   login,
   alterCatechizing,
   insertScraments,
+  getSacramentsCatechizing,
   getOneClasse,
   updateClasse,
   getClasseComplete,
