@@ -178,13 +178,13 @@ function Users(props) {
   }, [])
 
 
-  // useEffect(() => {
+    // useEffect(() => {
 
-  //   setSacramentosAPerformar([])
+    //   setSacramentosAPerformar([])
 
 
 
-  // }, [sacramentos_concluidos])
+    // }, [sacramentos_concluidos])
 
   const getDocuments = async (id)=>{    //Pega os documentos do usuario
   const doc = await getDocumentsCatechizing(id)
@@ -201,12 +201,14 @@ const getSacraments = async (id)=>{
     if(sac.data_inicio&&sac.data_fechamento){
       console.log(sac.tipo_sacramento,"INICIO E FECHAENTO")
       sacConcluidos.push(repliceNomeSacramento(sac.tipo_sacramento))
+      
     }else{
       console.log(sac.tipo_sacramento,"SO INICIO")
       sacAPerformar.push(repliceNomeSacramento(sac.tipo_sacramento))
     }
 
   })
+
   console.log("A PERFORMAR",sacAPerformar)
   console.log("CONCLUIDOS",sacConcluidos)
   setSacramentosConcluidos(sacConcluidos)
@@ -250,7 +252,6 @@ console.log("DATE", date)
   const years = calcularIdade(vetorData[0], vetorData[1], vetorData[2])
   console.log("Idade",years)
   setIdade(years)
-  
   setStatus('A')
 
 
@@ -352,6 +353,7 @@ console.log("DATE", date)
     });
 
     setSacrametos(sacProv)
+
   }
 
 
