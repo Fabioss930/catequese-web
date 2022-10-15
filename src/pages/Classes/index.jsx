@@ -13,7 +13,7 @@ import { Container, ContentButtons } from "./style";
 import ModalConfirm from "../../components/modalConfirm";
 import { Delete, Edit } from "@mui/icons-material";
 
-import { deleteClasse, getClasses } from "../../services/api";
+import { deleteClasse, getClasseOneUser, getClasses } from "../../services/api";
 
 const Classes = (props) => {
   const columns = [
@@ -26,6 +26,8 @@ const Classes = (props) => {
     // { id: "data_conclusao", label: "CONCLUSÃO" },
   ];
   const [page, setPage] = useState(0);
+  const [userType, setUserType] = useState(props.payload.tipo);
+  const [userId, setUserId] = useState(props.payload.id);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [modalConfirm, setModalConfirm] = useState({
@@ -49,8 +51,12 @@ const Classes = (props) => {
 
   const getClassesApi = async () => {
     const classes = await getClasses();
-
-    setRows(classes);
+    const classeCatechist = await getClasseOneUser(userId);
+    if (userType === "CATEQUISTA") {
+      setRows(classeCatechist);
+    } else {
+      setRows(classes);
+    }
   };
 
   const handleModalConfirm = (id) => {
@@ -81,10 +87,13 @@ const Classes = (props) => {
       />
       <Header title="Turmas" />
       <ContentButtons>
-        <Button style={Cadastrar} onClick={(event) => props.navTo(event, 6)}>
-          Cadastrar
-        </Button>
+        {userType === "COORDENADOR" && (
+          <Button style={Cadastrar} onClick={(event) => props.navTo(event, 6)}>
+            Cadastrar
+          </Button>
+        )}
       </ContentButtons>
+
       <Container>
         <Paper sx={{ overflow: "hidden" }}>
           <TableContainer sx={{}}>
@@ -126,37 +135,43 @@ const Classes = (props) => {
                                     paddingBottom: 10,
                                   }}
                                 >
-                                  <Button
-                                    variant="contained"
-                                    style={{
-                                      marginRight: 5,
-                                      backgroundColor: "#1a2845",
-                                      height: 40,
-                                      width: 40,
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                    }}
-                                    onClick={() => props.navTo(row.id, 9)}
-                                  >
-                                    <Edit fontSize="small" />
-                                  </Button>
+                                  {userType === "COORDENADOR" && (
+                                    <>
+                                      <Button
+                                        variant="contained"
+                                        style={{
+                                          marginRight: 5,
+                                          backgroundColor: "#1a2845",
+                                          height: 40,
+                                          width: 40,
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                        }}
+                                        onClick={() => props.navTo(row.id, 9)}
+                                      >
+                                        <Edit fontSize="small" />
+                                      </Button>
 
-                                  <Button
-                                    variant="outlined"
-                                    style={{
-                                      backgroundColor: "#1a2845",
-                                      marginLeft: 5,
-                                      height: 40,
-                                      width: 40,
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                    }}
-                                    onClick={() => handleModalConfirm(row.id)}
-                                  >
-                                    <Delete />
-                                  </Button>
+                                      <Button
+                                        variant="outlined"
+                                        style={{
+                                          backgroundColor: "#1a2845",
+                                          marginLeft: 5,
+                                          height: 40,
+                                          width: 40,
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                        }}
+                                        onClick={() =>
+                                          handleModalConfirm(row.id)
+                                        }
+                                      >
+                                        <Delete />
+                                      </Button>
+                                    </>
+                                  )}
                                 </div>
                               ) : (
                                 value
