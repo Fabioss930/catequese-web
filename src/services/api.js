@@ -180,6 +180,27 @@ const getDocumentsCatechizing = async(id)=>{
 
 }
 
+const alterDoumentsCatechizing = async (data,id)=>{
+  console.log("ID:",id)
+  return await api
+    .put(`/documentos/${id}`, data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Usuario cadastrado",
+        id:a.data.id
+      };
+    })
+    .catch((error) => {
+      console.log(error)
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+
+}
+
 const deleteCatechizing = async (id) => {
   try {
     return api.delete(`/catequizando/${id}`).then((a) => a).catch((error) => error)
@@ -235,6 +256,8 @@ const alterCatechizing = async (data, id) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
+        id:a.data.id
+
       };
     })
     .catch((error) => {
@@ -359,23 +382,7 @@ const getClasseComplete = async (id) => {
     .catch(() => null);
 };
 
-const documents = async (documents, id) => {
-  return await api
-    .post("/documentos")
-    .then((a) => {
-      return {
-        status: 202,
-        message: "Usuario cadastrado",
-      };
-    })
-    .catch((error) => {
-      console.log(error);
-      return {
-        status: 500,
-        message: error.response.data[0].errors,
-      };
-    });
-};
+
 
 export {
   createUsers,
@@ -390,6 +397,7 @@ export {
   createCatechizing,
   insertDocumentsCatechizing,
   getDocumentsCatechizing,
+  alterDoumentsCatechizing,
   insertCatechizingInTurma,
   getCatechizing,
   getOneCatechizing,

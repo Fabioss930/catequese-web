@@ -199,6 +199,9 @@ function Catechizing(props) {
                                   >
                                     <RemoveRedEye fontSize="small" />
                                   </Button>
+
+                                  {props.payload.tipo=="COORDENADOR"&&
+                                  <>
                                   <Button
                                     variant="contained"
                                     style={{
@@ -216,7 +219,7 @@ function Catechizing(props) {
                                   >
                                     <Edit fontSize="small" />
                                   </Button>
-
+                                  
                                   <Button
                                     variant="outlined"
                                     style={{
@@ -232,6 +235,8 @@ function Catechizing(props) {
                                   >
                                     <Delete />
                                   </Button>
+                                  </>
+                                  }
                                 </div>
                               ) : (
                                 value
