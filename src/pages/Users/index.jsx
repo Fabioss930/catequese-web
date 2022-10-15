@@ -12,7 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Delete, Edit } from "@mui/icons-material";
 import { Search } from "@mui/icons-material";
-import { deleteUser, getUsers } from "../../services/api";
+import { deleteUser, getOneUser, getUsers } from "../../services/api";
 import { padding } from "polished";
 import { flexbox } from "@mui/system";
 import ModalConfirm from '../../components/modalConfirm'
@@ -42,6 +42,7 @@ const Users = (props) => {
 
   useEffect(() => {
     getUsersApi();
+    console.log("PAYLOADDDDDDDDDD ",props.payload)
   }, []);
 
   const handleModalConfirm = (id) => {
@@ -65,17 +66,29 @@ const Users = (props) => {
   }
 
   const getUsersApi = async () => {
-    const data = await getUsers();
-    const userss = data.map((a) => {
-      const date = new Date(a?.data_cad)
-      return {
-        ...a,
-        data_cad: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+    console.log("PAYLOADDDDDDDDDD ",props.payload)
+    if(props.payload.tipo=="CATEQUISTA"){
+      const oneUser = await getOneUser(props.payload.id)
+      setUsers([oneUser])
 
+    }else{
 
+      const data = await getUsers();
+      const userss = data.map((a) => {
+        const date = new Date(a?.data_cad)
+        return {
+          ...a,
+          data_cad: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+  
+          
+        }
+        
+        
       }
-    })
-    setUsers(userss);
+      )
+    
+      setUsers(userss);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -149,7 +162,7 @@ const Users = (props) => {
                               key={column.id}
                               align={column.align}
                               style={{ color: "#576475" }}
-                              onClick={()=>handleModalViewUser(row.id)}
+                              
                               /////////////////////////////////////////// 
                             >
                               {column.id === "action" ? (
@@ -166,7 +179,7 @@ const Users = (props) => {
                                   <Edit fontSize="small" />
                                   </Button>
                                   
-
+                                  {props.payload.tipo!='CATEQUISTA'&&
                                   <Button
                                     variant="outlined"
                                     style={{ backgroundColor: "#1a2845", marginLeft: 5, height: 40, width: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
@@ -174,6 +187,7 @@ const Users = (props) => {
                                   >
                                     <Delete />
                                   </Button>
+                                  }
                                 </div>
                               ) : (
                                 value

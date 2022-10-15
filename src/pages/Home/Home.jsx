@@ -31,7 +31,7 @@ import { Group } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import UpdateClasse from "../Classes/UpdateClasse";
 import AlterUsers from "../Users/alterUser";
-import { api } from "../../services/api";
+import { api, getOneUser } from "../../services/api";
 
 const drawerWidth = 240;
 
@@ -41,8 +41,7 @@ function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigation = useNavigate();
-  const [id, setId] = useState(null);
-
+  const [userPayload, setUserPayload] = useState({});
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -61,10 +60,24 @@ function ResponsiveDrawer(props) {
     if (!loged?.loged) navigation("Login");
     
     if (!api.defaults.headers["authorization"]) api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`
-    setId(loged.loged.id_usuario)
+    setUserPayload({id: loged.loged.id_usuario})
+    getUser(loged.loged.id_usuario)
     
   }, []);
-  console.log(id)
+
+
+  const getUser = async  (id)=>{
+    if(id!=0){
+
+      const user = await getOneUser(id)
+      console.log(id)
+      console.log("USUARIO LOGADO:",user)
+      setUserPayload({...userPayload,tipo:user.tipo,id:id})
+    }else{
+      setUserPayload({...userPayload,tipo:'COORDENADOR',id:id})
+    }
+  }
+ 
 
   const drawer = (
     <div>
@@ -98,7 +111,7 @@ function ResponsiveDrawer(props) {
                 </ListItemButton>
               </ListItem>
             </Link>
-            {id==0&&
+            {
               <Link style={{ textDecoration: "none" }} to="#users">
                 <ListItem disablePadding className="Kemer">
                   <ListItemButton
@@ -234,6 +247,7 @@ function ResponsiveDrawer(props) {
             default={selectedIndex.page === 1}
             path="#users"
             navTo={handleListItemClick}
+            payload={userPayload}
           />
           <RegisterUsers
             default={selectedIndex.page === 2}
@@ -244,6 +258,7 @@ function ResponsiveDrawer(props) {
             default={selectedIndex.page === 3}
             path="#catechizing"
             navTo={handleListItemClick}
+            payload={userPayload}
           
           />
           <Register

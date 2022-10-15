@@ -4,29 +4,6 @@
 //   setDocumentos(doc)
 //   console.log(doc)
   
-// }
-// const getUser = async (id)=>{
-
-// const user = await getOneCatechizing(id)
-// const date = new Date(user.data_nascimento)
-//   console.log(user)
-//   setNome(user.nome)
-//   setEstado_civil(user.estado_civil)
-//   setData_nascimento(date)
-//   const years = calcularIdade(date.getFullYear(), date.getMonth(), date.getDate())
-//   console.log("Idade",years)
-//   setIdade(years)
-  
-//   setStatus('A')
-
-
-// }
-
-//   const getTurmas = async () => {
-//     const turmasApi = await getClasses()
-//     setTurmas([...turmasApi])
-//   }
-
 
 import Header from '../../../components/header/header';
 import ArrowBack from '@mui/icons-material/ArrowBack'
@@ -39,7 +16,7 @@ import Button from '../../../components/button';
 import { useEffect, useState } from 'react'
 import './Alter.css'
 
-import { alterCatechizing, createCatechizing, getClasses, getDocumentsCatechizing, getOneCatechizing, insertCatechizingInTurma, insertDocumentsCatechizing, insertScraments } from '../../../services/api';
+import { alterCatechizing, alterDoumentsCatechizing, createCatechizing, getClasses, getDocumentsCatechizing, getOneCatechizing, getSacramentsCatechizing, insertCatechizingInTurma, insertDocumentsCatechizing, insertScraments } from '../../../services/api';
 import { IMaskInput } from 'react-imask';
 import { Container } from '@mui/system';
 
@@ -111,19 +88,17 @@ function Users(props) {
       telefone_1:telefones.telefone_1,
       telefone_2:telefones.telefone_2,
       sexo: genero
-
+    }
+    const documents = {
+      vive_maritalmente: vive_maritalmente=="S"?"S":"N",
+      cpf: documentos.cpf,
+      rg: documentos.rg,
+      admissao: sacramentos_concluidos.includes('Admissao') ? "S" : "N",
+      comprovante_residencia: documentos.comprovante_residencia,
+      casamento_igreja: documentos.casamento_igreja && estado_civil === 'C' ? "S" : "N",
+      casamento_civil: estado_civil === 'C' ? "S" : "N"
 
     }
-    // const documents = {
-    //   vive_maritalmente,
-    //   cpf: documentos.cpf,
-    //   rg: documentos.rg,
-    //   admissao: sacramentos_concluidos.includes('Admissao') ? "S" : "N",
-    //   comprovante_residencia: documentos.comprovante_residencia,
-    //   casamento_igreja: documentos.casamento_igreja && estado_civil === 'C' ? "S" : "N",
-    //   casamento_civil: estado_civil === 'C' ? "S" : "N"
-
-    // }
     // const sacAPerformar = sacramentosAPerformar.map(s=>{
     //   return{
     //   tipo_sacramento:s[0],
@@ -138,12 +113,13 @@ function Users(props) {
     
  
       const res = await alterCatechizing(catechizing,nome.id)
+      console.log(res)
 
       if (res.status === 202) {
         alert("Usuario alterado com sucesso!");
-        // const resDocuments = await insertDocumentsCatechizing(documents, res.id)
-        // if (resDocuments.status == 202) {
-        //   alert('Documentos cadastrados com sucesso!')
+        const resDocuments = await alterDoumentsCatechizing(documents, res.id)
+        if (resDocuments.status == 202) {
+          alert('Documentos alterados com sucesso!')
         //   const resTurma = await insertCatechizingInTurma({ idCat: res.id, idTurma: turmaSelecionada })
         //   if (resTurma.status == 202) {
         //     alert('Catequizando cadastrado em uma turma!')
@@ -178,11 +154,11 @@ function Users(props) {
         //     alert("Erro ao Castrar Turma")
         //     console.log(resTurma.message)
         //   }
-        // }else{
-        //   alert("Erro ao cadastrar os documentos");
-        //   console.log(res.message);
+        }else{
+          alert("Erro ao cadastrar os documentos");
+          console.log(res.message);
       
-        // }
+        }
 
       } else {
         alert("Erro ao cadastrar usuario");
@@ -196,18 +172,19 @@ function Users(props) {
       getUser(props.data)
       getDocuments(props.data)
       getTurmas(props.data)
+      getSacraments(props.data)
    
 
   }, [])
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    setSacramentosAPerformar([])
+  //   setSacramentosAPerformar([])
 
 
 
-  }, [sacramentos_concluidos])
+  // }, [sacramentos_concluidos])
 
   const getDocuments = async (id)=>{    //Pega os documentos do usuario
   const doc = await getDocumentsCatechizing(id)
@@ -216,6 +193,49 @@ function Users(props) {
   console.log(doc)
   
 }
+const getSacraments = async (id)=>{
+  const sacraments = await getSacramentsCatechizing(id)
+  let sacConcluidos = []
+  let sacAPerformar = []
+  sacraments.map((sac)=>{
+    if(sac.data_inicio&&sac.data_fechamento){
+      console.log(sac.tipo_sacramento,"INICIO E FECHAENTO")
+      sacConcluidos.push(repliceNomeSacramento(sac.tipo_sacramento))
+    }else{
+      console.log(sac.tipo_sacramento,"SO INICIO")
+      sacAPerformar.push(repliceNomeSacramento(sac.tipo_sacramento))
+    }
+
+  })
+  console.log("A PERFORMAR",sacAPerformar)
+  console.log("CONCLUIDOS",sacConcluidos)
+  setSacramentosConcluidos(sacConcluidos)
+  setSacrametos(sacraments)
+  setSacramentosAPerformar(sacAPerformar)
+  console.log("SACRAMENTOS::::",sacraments)
+}
+
+const repliceNomeSacramento = (tipo)=>{
+    switch (tipo) {
+      case "B":
+        return "Batismo"
+        break;
+      case "A":
+        return "Adimissao"
+        break;
+      case "E":
+        return "Eucaristia"
+        break;
+      case "C":
+        return "Crisma"
+        break;
+    
+      
+    }
+}
+
+
+
 const getUser = async (id)=>{
 
 const user = await getOneCatechizing(id)
@@ -338,7 +358,8 @@ console.log("DATE", date)
   const onChangeSacramentosAperformar = (event) => { //usado pelo select de sacramentosAPerformar concluidos
 
     const { target: { value } } = event;
-    
+    console.log("O QUE JA TAVA", sacramentosAPerformar)
+    console.log("SACS A PERFORMAR STA|TE :", value)
 
     setSacramentosAPerformar(
       typeof value === 'string' ? value.split(',') : value,
@@ -444,6 +465,7 @@ console.log("DATE", date)
       }
       
   })
+  console.log("FILTADOS",sacramentosFiltrados)
     
     return (
 
