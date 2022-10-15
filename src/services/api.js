@@ -203,6 +203,26 @@ const alterDoumentsCatechizing = async (data, id) => {
     });
 };
 
+const updateUser = async (data, id) => {
+  console.log("ID:", id);
+  return await api
+    .put(`/usuario/${id}`, data)
+    .then((a) => {
+      return {
+        status: 202,
+        message: "Dados do usuario atualizado com sucesso",
+        id: a.data.id,
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+      return {
+        status: 500,
+        message: error.response.data[0].errors,
+      };
+    });
+};
+
 const deleteCatechizing = async (id) => {
   try {
     return api
@@ -383,6 +403,7 @@ const getClasseComplete = async (id) => {
 
 export {
   createUsers,
+  updateUser,
   getUsers,
   getOneUser,
   getClasseOneUser,

@@ -14,9 +14,7 @@ import CSS from "csstype";
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { createUsers, getOneUser } from '../../../services/api'
-
-
+import { createUsers, getOneUser, updateUser } from "../../../services/api";
 
 type CreateUserData = {
   nome: string;
@@ -25,7 +23,7 @@ type CreateUserData = {
   login: string;
   turma: [];
   confirmSenha: string;
-}
+};
 
 const createUserSchema = yup.object().shape({
   nome: yup.string(),
@@ -33,9 +31,8 @@ const createUserSchema = yup.object().shape({
   senha: yup.string(),
   login: yup.string(),
   turma: yup.array(),
-  confirmSenha: yup.string()
-}
-)
+  confirmSenha: yup.string(),
+});
 
 const AlterUsers: React.FC = (props: any) => {
   const {
@@ -44,8 +41,9 @@ const AlterUsers: React.FC = (props: any) => {
     formState: { errors },
   } = useForm<CreateUserData>({ resolver: yupResolver(createUserSchema) });
   const [gang, setGang] = React.useState<string[]>([]);
+  const [userId, setUserId] = useState(props.payload.id);
 
-  const [user,setUser] = useState<CreateUserData>()
+  const [user, setUser] = useState<CreateUserData>();
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -58,35 +56,31 @@ const AlterUsers: React.FC = (props: any) => {
     },
   };
 
-  useEffect(()=>{
-      console.log(props.data)
-      getUser(props.data)
-  },[])
+  useEffect(() => {
+    console.log(props.data);
+    getUser(props.data);
+  }, []);
 
-  const getUser = async (id:any)=>{
-    const userCurrent = await getOneUser(id)
-    console.log("User",userCurrent)
-    setUser(userCurrent)
-
-
-  }
-  
+  const getUser = async (id: any) => {
+    const userCurrent = await getOneUser(id);
+    console.log("User", userCurrent);
+    setUser(userCurrent);
+  };
 
   const handleSubmitForm: SubmitHandler<CreateUserData> = async (data) => {
     //Submit do formulario
-    
 
     try {
-      const res = await createUsers({...user,senha:data.senha});
-      if (res.status === 202) {
-        alert("Usuario cadastrado com sucesso!");
+      const res = await updateUser({ ...user, senha: data.senha }, userId);
+      if (res.status === 202 || res.status === 200) {
+        alert("Dados do usuario atualizado com sucesso!");
         props.navTo("", 1);
       } else {
-        alert("Erro ao cadastrar usuario");
+        alert("Erro ao atualizar usuario");
         console.log(res.message);
       }
     } catch (error) {
-      alert("Erro ao Cadastrar Usuario");
+      alert("Erro ao atualizar usuario");
     }
   };
 
@@ -99,7 +93,6 @@ const AlterUsers: React.FC = (props: any) => {
             <FormInput>
               <TextField
                 id="outlined-basic"
-                
                 sx={{ width: "100%" }}
                 type="text"
                 disabled
@@ -114,14 +107,12 @@ const AlterUsers: React.FC = (props: any) => {
               <TextField
                 disabled
                 id="outlined-basic"
-                
                 sx={{ width: "100%" }}
                 //@ts-ignore
                 name="login"
                 type="text"
                 placeholder="Nome"
                 value={user?.login}
-           
                 {...register("login")}
               />
             </FormInput>
@@ -131,9 +122,7 @@ const AlterUsers: React.FC = (props: any) => {
                   <TextField
                     disabled
                     id="outlined-basic"
-                    
                     sx={{ width: "100%" }}
-                  
                     //@ts-ignore
                     name="tipo"
                     type="text"
@@ -144,8 +133,7 @@ const AlterUsers: React.FC = (props: any) => {
                 </FormInput>
               </FormControl>
             </FormInput>
-           
-         
+
             <div style={{ display: "flex", width: "100%" }}>
               <FormInput style={{ width: "100%", marginRight: "8px" }}>
                 <TextField
@@ -168,7 +156,6 @@ const AlterUsers: React.FC = (props: any) => {
                   placeholder="Confirme a nova senha"
                   //@ts-ignore
                   name="confirmSenha"
-                  
                   {...register("confirmSenha")}
                 />
               </FormInput>
