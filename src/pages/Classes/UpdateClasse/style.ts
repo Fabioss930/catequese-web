@@ -1,3 +1,4 @@
+import { style } from "@mui/system";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -21,4 +22,13 @@ export const ContentButtons = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
+`;
+
+export const ContainerLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
