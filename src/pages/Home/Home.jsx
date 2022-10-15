@@ -294,6 +294,7 @@ function ResponsiveDrawer(props) {
             path="#updateUser"
             navTo={handleListItemClick}
             data={selectedIndex.data}
+            payload={userPayload}
           />
         </Router>
       </Box>
