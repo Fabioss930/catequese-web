@@ -1,0 +1,20 @@
+h4{
+    
+    color: #000;
+    margin-bottom:2px
+}
+h5{
+    color: grey;
+    margin-bottom: 20px
+}
+h3{
+    color: #000;
+}
+.formControlContainer{
+    box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+-webkit-box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+-moz-box-shadow: -3px 2px 21px -22px rgba(0,0,0,0.75);
+padding: 2% 2%;
+
+
+}
