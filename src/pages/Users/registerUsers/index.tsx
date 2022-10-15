@@ -115,12 +115,12 @@ const RegisterUsers: React.FC = (props: any) => {
             <FormInput>
               <TextField
                 id="outlined-basic"
-                label="Email"
+                label="Login"
                 sx={{ width: "100%" }}
                 //@ts-ignore
                 name="login"
                 type="text"
-                placeholder="Email"
+                placeholder="Login"
                 {...register("login")}
               />
             </FormInput>

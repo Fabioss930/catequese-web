@@ -44,26 +44,29 @@ const getOneUser = async (id) => {
   return api(`/usuario/${id}`).then((item) => item.data).catch(() => null)
 }
 
+const getClasseOneUser = async (id) => {
+  return api(`/turma/usuario/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
+
 const login = async (userLogin) => {
-  console.log(userLogin)
+  console.log(userLogin);
 
   return await api
     .post("/login", userLogin)
     .then((res) => {
-        console.log("RETORNO DO BACKEND: ",res)
-        localStorage.setItem('loged',JSON.stringify({loged:res.data})) 
-        
-        localStorage.setItem('idUser',res.data.id_usuario)
-        
-        api.defaults.headers["authorization"] = `Bearer ${res.data.token}`
-        
-        return res.data
-      
-    
+      console.log("RETORNO DO BACKEND: ", res);
+      localStorage.setItem("loged", JSON.stringify({ loged: res.data }));
+
+      localStorage.setItem("idUser", res.data.id_usuario);
+
+      api.defaults.headers["authorization"] = `Bearer ${res.data.token}`;
+
+      return res.data;
     })
     .catch((error) => console.log(error));
-}
-
+};
 
 const getClasses = async () => {
   try {
@@ -76,7 +79,7 @@ const getClasses = async () => {
 };
 
 const classeCatechizing = async (data) => {
-  console.log("O que foi para api:",data)
+  console.log("O que foi para api:", data);
   return await api
     .post("/turmaCatequista", data)
     .then((response) => response.data)
@@ -96,70 +99,70 @@ const classeCatechizing = async (data) => {
 };
 
 const createCatechizing = async (data) => {
-  console.log("O QUE VAI PRA API",data)
+  console.log("O QUE VAI PRA API", data);
   return await api
     .post("/catequizando", data)
     .then((a) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
-        id:a.data.id
+        id: a.data.id,
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
+};
 
-}
-
-const insertDocumentsCatechizing = async(data,id)=>{
-  console.log("ID:",id)
+const insertDocumentsCatechizing = async (data, id) => {
+  console.log("ID:", id);
   return await api
     .post(`/documentos/${id}`, data)
     .then((a) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
-        id:a.data.id
+        id: a.data.id,
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
+};
 
-}
-
-const insertCatechizingInTurma = async(data)=>{
-  console.log("IdCat:",data.idCat)
-  console.log("IdTurma:",data.idTurma)
+const insertCatechizingInTurma = async (data) => {
+  console.log("IdCat:", data.idCat);
+  console.log("IdTurma:", data.idTurma);
   return await api
-    .post(`/turmaCatequizando/`, {turmaId:data.idTurma, catequizandosId:[data.idCat]})
+    .post(`/turmaCatequizando/`, {
+      turmaId: data.idTurma,
+      catequizandosId: [data.idCat],
+    })
     .then((a) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
-        id:a.data.id
+        id: a.data.id,
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
-}
+};
 
 const getCatechizing = async () => {
-
   try {
     return await api("/catequizando")
       .then((a) => a.data)
@@ -167,53 +170,55 @@ const getCatechizing = async () => {
   } catch (error) {
     console.log("ERRO");
   }
-
-}
+};
 const getOneCatechizing = async (id) => {
+  return api(`/catequizando/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
 
-  return api(`/catequizando/${id}`).then((item) => item.data).catch(() => null)
-}
+const getDocumentsCatechizing = async (id) => {
+  return api(`/documentos/catequizando/${id}`)
+    .then((item) => item.data)
+    .catch(() => null);
+};
 
-const getDocumentsCatechizing = async(id)=>{
-  return api(`/documentos/catequizando/${id}`).then((item) => item.data).catch(() => null)
-
-
-}
-
-const alterDoumentsCatechizing = async (data,id)=>{
-  console.log("ID:",id)
+const alterDoumentsCatechizing = async (data, id) => {
+  console.log("ID:", id);
   return await api
     .put(`/documentos/${id}`, data)
     .then((a) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
-        id:a.data.id
+        id: a.data.id,
       };
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       return {
         status: 500,
         message: error.response.data[0].errors,
       };
     });
-
-}
+};
 
 const deleteCatechizing = async (id) => {
   try {
-    return api.delete(`/catequizando/${id}`).then((a) => a).catch((error) => error)
+    return api
+      .delete(`/catequizando/${id}`)
+      .then((a) => a)
+      .catch((error) => error);
   } catch (error) {
-    alert('Erro ao deletar usuario verifique sua conexao!')
+    alert("Erro ao deletar usuario verifique sua conexao!");
   }
-  
-
-}
+};
 const deleteUser = async (id) => {
-  return api.delete(`/usuario/${id}`).then((a) => a).catch((error) => console.log(error))
-
-}
+  return api
+    .delete(`/usuario/${id}`)
+    .then((a) => a)
+    .catch((error) => console.log(error));
+};
 const deleteClasse = async (id) => {
   return api
     .delete(`/turma/${id}`)
@@ -222,10 +227,8 @@ const deleteClasse = async (id) => {
 };
 
 const deleteCatClasse = async (data) => {
-  
-
   return await api
-    .delete("/turmaCatequista", {data:data})
+    .delete("/turmaCatequista", { data: data })
 
     .then((a) => {
       return {
@@ -245,19 +248,17 @@ const deleteCatClasse = async (data) => {
 
 const alterCatechizing = async (data, id) => {
   const token = JSON.parse(localStorage.getItem("loged"));
-  if(token){
+  if (token) {
     api.defaults.headers["authorization"] = `Bearer ${token.loged.token}`;
-
   }
- 
+
   return await api
     .put(`/catequizando/${id}`, data)
     .then((a) => {
       return {
         status: 202,
         message: "Usuario cadastrado",
-        id:a.data.id
-
+        id: a.data.id,
       };
     })
     .catch((error) => {
@@ -300,69 +301,66 @@ const insertScraments = async (data, id) => {
   console.log("Batismo", Batismo[0]);
   console.log("Crisma", Crisma[0]);
 
-  try{
-  Batismo[0] &&
-    (await api
-      .post(`/sacramento/${id}`, Batismo[0])
-      .then((a) => console.log("DEU CERTO IRMAO:", "B"))
-      .catch((error) =>
-        console.log(
-          "VISHHHHHHHHHH",
-          Batismo[0].tipo_sacramento,
-          error.response.data.message
-        )
-      ));
-  Admissao[0] &&
-    (await api
-      .post(`/sacramento/${id}`, Admissao[0])
-      .then((a) => console.log("DEU CERTO IRMAO:", "A"))
-      .catch((error) =>
-        console.log(
-          "VISHHHHHHHHHH",
-          Admissao[0].tipo_sacramento,
-          error.response.data.message
-        )
-      ));
   try {
-    Eucaristia[0] &&
+    Batismo[0] &&
       (await api
-        .post(`/sacramento/${id}`, Eucaristia[0])
-        .then((a) => console.log("DEU CERTO IRMAO:", "E"))
+        .post(`/sacramento/${id}`, Batismo[0])
+        .then((a) => console.log("DEU CERTO IRMAO:", "B"))
         .catch((error) =>
           console.log(
             "VISHHHHHHHHHH",
-            Eucaristia[0].tipo_sacramento,
+            Batismo[0].tipo_sacramento,
             error.response.data.message
           )
         ));
-  } catch (error) {
-    console.log(error);
+    Admissao[0] &&
+      (await api
+        .post(`/sacramento/${id}`, Admissao[0])
+        .then((a) => console.log("DEU CERTO IRMAO:", "A"))
+        .catch((error) =>
+          console.log(
+            "VISHHHHHHHHHH",
+            Admissao[0].tipo_sacramento,
+            error.response.data.message
+          )
+        ));
+    try {
+      Eucaristia[0] &&
+        (await api
+          .post(`/sacramento/${id}`, Eucaristia[0])
+          .then((a) => console.log("DEU CERTO IRMAO:", "E"))
+          .catch((error) =>
+            console.log(
+              "VISHHHHHHHHHH",
+              Eucaristia[0].tipo_sacramento,
+              error.response.data.message
+            )
+          ));
+    } catch (error) {
+      console.log(error);
+    }
+    Crisma[0] &&
+      (await api
+        .post(`/sacramento/${id}`, Crisma[0])
+        .then((a) => console.log("DEU CERTO IRMAO:", "C"))
+        .catch((error) =>
+          console.log(
+            "VISHHHHHHHHHH",
+            Crisma[0].tipo_sacramento,
+            error.response.data.message
+          )
+        ));
+    return { status: 202 };
+  } catch {
+    return { status: 400 };
   }
-  Crisma[0] &&
-    (await api
-      .post(`/sacramento/${id}`, Crisma[0])
-      .then((a) => console.log("DEU CERTO IRMAO:", "C"))
-      .catch((error) =>
-        console.log(
-          "VISHHHHHHHHHH",
-          Crisma[0].tipo_sacramento,
-          error.response.data.message
-        )
-      ));
-      return {status:202}
-        }catch{
-          return {status:400}
-        }
 };
 
-const getSacramentsCatechizing = async (id)=>{
+const getSacramentsCatechizing = async (id) => {
   return api(`sacramento/catequizando/${id}`)
     .then((item) => item.data)
     .catch(() => null);
-}
-
-
-
+};
 
 const getOneClasse = async (id) => {
   return api(`/turma/${id}`)
@@ -370,11 +368,12 @@ const getOneClasse = async (id) => {
     .catch(() => null);
 };
 
-const getCatInClasse = (id)=>{  //Retorna as Turmas de um catequizando
+const getCatInClasse = (id) => {
+  //Retorna as Turmas de um catequizando
   return api(`/turma/catequizando/${id}`)
     .then((item) => item.data)
     .catch(() => null);
-}
+};
 
 const getClasseComplete = async (id) => {
   return api(`/turma/completo/${id}`)
@@ -382,12 +381,11 @@ const getClasseComplete = async (id) => {
     .catch(() => null);
 };
 
-
-
 export {
   createUsers,
   getUsers,
   getOneUser,
+  getClasseOneUser,
   deleteUser,
   getClasses,
   getCatInClasse,

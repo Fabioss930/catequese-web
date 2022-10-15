@@ -259,7 +259,6 @@ function ResponsiveDrawer(props) {
             path="#catechizing"
             navTo={handleListItemClick}
             payload={userPayload}
-          
           />
           <Register
             default={selectedIndex.page === 4}
@@ -270,6 +269,7 @@ function ResponsiveDrawer(props) {
             default={selectedIndex.page === 5}
             path="#classes"
             navTo={handleListItemClick}
+            payload={userPayload}
           />
           <RegisterClasses
             default={selectedIndex.page === 6}
@@ -282,7 +282,6 @@ function ResponsiveDrawer(props) {
             path="#alterCatechizing"
             navTo={handleListItemClick}
             data={selectedIndex.data}
-
           />
           <UpdateClasse
             default={selectedIndex.page === 9}
