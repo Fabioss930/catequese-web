@@ -27,11 +27,12 @@ import RegisterUsers from "../Users/registerUsers";
 import Catechizing from "../Catechizing";
 import Dashboard from "../Dashboard";
 import Alter from "../Catechizing/Alter/Alter";
-import { Group } from "@mui/icons-material";
+import { Group, PersonSearch } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import UpdateClasse from "../Classes/UpdateClasse";
 import AlterUsers from "../Users/alterUser";
 import { api, getOneUser } from "../../services/api";
+import Filter from "../filter";
 
 const drawerWidth = 240;
 
@@ -46,38 +47,33 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-
-
-  const handleListItemClick = (data, index) => { //Função passada por referencia para navegar entre as telas
+  const handleListItemClick = (data, index) => {
+    //Função passada por referencia para navegar entre as telas
 
     setSelectedIndex({ page: index, data });
-
   };
 
   React.useEffect(() => {
     const loged = JSON.parse(localStorage.getItem("loged")) || null;
-    
+
     if (!loged?.loged) navigation("Login");
-    
-    if (!api.defaults.headers["authorization"]) api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`
-    setUserPayload({id: loged.loged.id_usuario})
-    getUser(loged.loged.id_usuario)
-    
+
+    if (!api.defaults.headers["authorization"])
+      api.defaults.headers["authorization"] = `Bearer ${loged.loged.token}`;
+    setUserPayload({ id: loged.loged.id_usuario });
+    getUser(loged.loged.id_usuario);
   }, []);
 
-
-  const getUser = async  (id)=>{
-    if(id!=0){
-
-      const user = await getOneUser(id)
-      console.log(id)
-      console.log("USUARIO LOGADO:",user)
-      setUserPayload({...userPayload,tipo:user.tipo,id:id})
-    }else{
-      setUserPayload({...userPayload,tipo:'COORDENADOR',id:id})
+  const getUser = async (id) => {
+    if (id != 0) {
+      const user = await getOneUser(id);
+      console.log(id);
+      console.log("USUARIO LOGADO:", user);
+      setUserPayload({ ...userPayload, tipo: user.tipo, id: id });
+    } else {
+      setUserPayload({ ...userPayload, tipo: "COORDENADOR", id: id });
     }
-  }
- 
+  };
 
   const drawer = (
     <div>
@@ -164,15 +160,31 @@ function ResponsiveDrawer(props) {
                 </ListItemButton>
               </ListItem>
             </Link>
+            <Link style={{ textDecoration: "none" }} to="#filter">
+              <ListItem disablePadding className="Kemer">
+                <ListItemButton
+                  selected={selectedIndex === 11}
+                  onClick={(event) => handleListItemClick(event, 11)}
+                >
+                  <ListItemIcon>
+                    <PersonSearch style={{ color: "#fff" }} />
+                  </ListItemIcon>
+                  <ListItemText
+                    className="text-button"
+                    primary="Consulta detalhada"
+                    style={{ color: "#fff" }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           </List>
         </nav>
       </div>
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
-
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -295,6 +307,11 @@ function ResponsiveDrawer(props) {
             navTo={handleListItemClick}
             data={selectedIndex.data}
             payload={userPayload}
+          />
+          <Filter
+            default={selectedIndex.page === 11}
+            path="#filter"
+            navTo={handleListItemClick}
           />
         </Router>
       </Box>
