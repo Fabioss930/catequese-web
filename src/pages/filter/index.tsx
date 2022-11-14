@@ -54,12 +54,14 @@ const Filter: React.FC = () => {
   };
 
   const names = ["Eucaristia", "Batismo", "Crisma", "Admissao"];
+  
 
-  return (
-    <>
-      <Header title="Consulta detalhada" />
-      <Container>
-        <Form onSubmit={handleSubmit}>
+
+
+  const formulario = ()=>{
+    
+    return(
+      <Form onSubmit={handleSubmit}>
           <GridBody>
             <div style={{ display: "flex", width: "100%" }}>
               <FormInput style={{ width: "100%", marginRight: "8px" }}>
@@ -187,6 +189,14 @@ const Filter: React.FC = () => {
             </ContentButtons>
           </GridBody>
         </Form>
+    )
+  }
+
+  return (
+    <>
+      <Header title="Consulta detalhada" />
+      <Container>
+        {formulario()}
       </Container>
     </>
   );

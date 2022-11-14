@@ -3,7 +3,13 @@ import axios from "axios";
 //Funções Relacionadas a integração com backend
 const api = axios.create({
   baseURL: "http://localhost:3001/api",
+  
 });
+
+api.defaults.timeout = 5000
+
+
+
 
 const createUsers = async (data) => {
   delete data.confirmSenha;
@@ -21,7 +27,9 @@ const createUsers = async (data) => {
       };
     })
     .catch((error) => {
-
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -33,25 +41,38 @@ const getUsers = async () => {
   try {
     return await api("/usuario")
       .then((a) => a.data)
-      .catch((error) => console.log("Erro pegar usuarios", error));
+      .catch((error) => {
+        console.log("Erro pegar usuarios", error)
+      
+        if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      })
+      
   } catch (error) {
     console.log("ERRO");
+   
   }
 };
 
 const getOneUser = async (id) => {
-
-  return api(`/usuario/${id}`).then((item) => item.data).catch(() => null)
+  return api(`/usuario/${id}`).then((item) => item.data).catch((error) => {
+    if(error.message=="Network Error"){
+    alert('Erro na comunicação com o servidor, verifique sua conexão.')
+  }})
 }
 
 const getClasseOneUser = async (id) => {
   return api(`/turma/usuario/${id}`)
     .then((item) => item.data)
-    .catch(() => null);
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+    });
 };
 
 const login = async (userLogin) => {
-  console.log(userLogin);
 
   return await api
     .post("/login", userLogin)
@@ -62,17 +83,34 @@ const login = async (userLogin) => {
       localStorage.setItem("idUser", res.data.id_usuario);
 
       api.defaults.headers["authorization"] = `Bearer ${res.data.token}`;
+      
 
       return res.data;
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error)
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+        return null
+      }else{
+        alert('Usuario ou senha incorreta!')
+      }
+      
+    });
 };
 
 const getClasses = async () => {
   try {
     return await api("/turma")
       .then((a) => a.data)
-      .catch((error) => console.log("Erro", error));
+      .catch((error) => {
+        console.log("Erro", error)
+        if(error.message=="Network Error"){
+          alert('Erro na comunicação com o servidor, verifique sua conexão.')
+        }
+        return null
+      
+      });
   } catch (error) {
     console.log("ERRO");
   }
@@ -91,6 +129,9 @@ const classeCatechizing = async (data) => {
       };
     })
     .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -111,6 +152,9 @@ const createCatechizing = async (data) => {
     })
     .catch((error) => {
       console.log(error);
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -130,6 +174,9 @@ const insertDocumentsCatechizing = async (data, id) => {
       };
     })
     .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       console.log(error);
       return {
         status: 500,
@@ -154,6 +201,9 @@ const insertCatechizingInTurma = async (data) => {
       };
     })
     .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       console.log(error);
       return {
         status: 500,
@@ -166,7 +216,12 @@ const getCatechizing = async () => {
   try {
     return await api("/catequizando")
       .then((a) => a.data)
-      .catch((error) => console.log("Erro pegar usuarios", error));
+      .catch((error) => {
+        console.log("Erro pegar usuarios", error)
+        if(error.message=="Network Error"){
+          alert('Erro na comunicação com o servidor, verifique sua conexão.')
+        }
+      });
   } catch (error) {
     console.log("ERRO");
   }
@@ -174,7 +229,12 @@ const getCatechizing = async () => {
 const getOneCatechizing = async (id) => {
   return api(`/catequizando/${id}`)
     .then((item) => item.data)
-    .catch(() => null);
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      return null
+    });
 };
 
 const getDocumentsCatechizing = async (id) => {
@@ -196,6 +256,9 @@ const alterDoumentsCatechizing = async (data, id) => {
     })
     .catch((error) => {
       console.log(error);
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -213,13 +276,19 @@ const updateUser = async (data, id) => {
         message: "Dados do usuario atualizado com sucesso",
         id: a.data.id,
       };
+      
     })
     .catch((error) => {
       console.log(error);
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
+
       };
+      
     });
 };
 
@@ -237,13 +306,23 @@ const deleteUser = async (id) => {
   return api
     .delete(`/usuario/${id}`)
     .then((a) => a)
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      console.log(error)
+    });
 };
 const deleteClasse = async (id) => {
   return api
     .delete(`/turma/${id}`)
     .then((a) => a)
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      console.log(error)
+    });
 };
 
 const deleteCatClasse = async (data) => {
@@ -283,6 +362,9 @@ const alterCatechizing = async (data, id) => {
     })
     .catch((error) => {
       console.log(error);
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -302,6 +384,9 @@ const updateClasse = async (data, id) => {
     })
     .catch((error) => {
       console.log(error);
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
       return {
         status: 500,
         message: error.response.data[0].errors,
@@ -392,13 +477,23 @@ const getCatInClasse = (id) => {
   //Retorna as Turmas de um catequizando
   return api(`/turma/catequizando/${id}`)
     .then((item) => item.data)
-    .catch(() => null);
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      return null
+    });
 };
 
 const getClasseComplete = async (id) => {
   return api(`/turma/completo/${id}`)
     .then((item) => item.data)
-    .catch(() => null);
+    .catch((error) => {
+      if(error.message=="Network Error"){
+        alert('Erro na comunicação com o servidor, verifique sua conexão.')
+      }
+      return null
+    });
 };
 
 export {

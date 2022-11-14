@@ -18,8 +18,6 @@ const SignIn: React.FC = () => {
     const loged = await login(event)
     if(loged){
       navigation('/')
-    }else{
-      alert('Usuario ou senha incorreta')
     }
     
    
