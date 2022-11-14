@@ -11,6 +11,7 @@ import Alert from '@mui/icons-material/CrisisAlert'
 import { Form } from '@unform/web';
 import { Select, MenuItem, Radio, RadioGroup, Grow, FormControl, FormLabel, FormControlLabel, TextField, InputLabel, Stack, OutlinedInput, Checkbox, ListItemText } from '@mui/material'
 import Input from '../../../components/input';
+import ModalSac from '../modalSac'
 
 import Button from '../../../components/button';
 import { useEffect, useState } from 'react'
@@ -18,11 +19,13 @@ import './Alter.css'
 
 import { alterCatechizing, alterDoumentsCatechizing, createCatechizing, getClasses, getDocumentsCatechizing, getOneCatechizing, getSacramentsCatechizing, insertCatechizingInTurma, insertDocumentsCatechizing, insertScraments } from '../../../services/api';
 import { IMaskInput } from 'react-imask';
+
 import { Container } from '@mui/system';
 
 
 
 function Users(props) {
+  const [modalSac,setModaSac] = useState({openOrClose:false,data:[]})
   const [nome, setNome] = useState({nome:"",id:null})
   const [idade, setIdade] = useState("")
   const [telefones, setTelefones] = useState({})
@@ -44,6 +47,7 @@ function Users(props) {
     EucaristiaFinal:"",
     CrismaInit:""
   })
+  
   const [documentos, setDocumentos] = useState({
     cpf: "N",
     rg: "N",
@@ -57,6 +61,12 @@ function Users(props) {
     comprovante_eucaristia: "N"
 
   })
+
+
+
+  const handleModalSac = ()=>{
+    setModaSac({...modalSac,openOrClose:!modalSac.openOrClose})
+  }
   
 
   const inverterData = (dataOriginal)=>{
@@ -178,13 +188,13 @@ function Users(props) {
   }, [])
 
 
-  // useEffect(() => {
+    // useEffect(() => {
 
-  //   setSacramentosAPerformar([])
+    //   setSacramentosAPerformar([])
 
 
 
-  // }, [sacramentos_concluidos])
+    // }, [sacramentos_concluidos])
 
   const getDocuments = async (id)=>{    //Pega os documentos do usuario
   const doc = await getDocumentsCatechizing(id)
@@ -195,24 +205,8 @@ function Users(props) {
 }
 const getSacraments = async (id)=>{
   const sacraments = await getSacramentsCatechizing(id)
-  let sacConcluidos = []
-  let sacAPerformar = []
-  sacraments.map((sac)=>{
-    if(sac.data_inicio&&sac.data_fechamento){
-      console.log(sac.tipo_sacramento,"INICIO E FECHAENTO")
-      sacConcluidos.push(repliceNomeSacramento(sac.tipo_sacramento))
-    }else{
-      console.log(sac.tipo_sacramento,"SO INICIO")
-      sacAPerformar.push(repliceNomeSacramento(sac.tipo_sacramento))
-    }
-
-  })
-  console.log("A PERFORMAR",sacAPerformar)
-  console.log("CONCLUIDOS",sacConcluidos)
-  setSacramentosConcluidos(sacConcluidos)
   setSacrametos(sacraments)
-  setSacramentosAPerformar(sacAPerformar)
-  console.log("SACRAMENTOS::::",sacraments)
+
 }
 
 const repliceNomeSacramento = (tipo)=>{
@@ -250,7 +244,6 @@ console.log("DATE", date)
   const years = calcularIdade(vetorData[0], vetorData[1], vetorData[2])
   console.log("Idade",years)
   setIdade(years)
-  
   setStatus('A')
 
 
@@ -352,6 +345,7 @@ console.log("DATE", date)
     });
 
     setSacrametos(sacProv)
+
   }
 
 
@@ -391,7 +385,8 @@ console.log("DATE", date)
   }
 
 
-  const onChangeDataSacramentoFechamento = (event) =>{
+  const onChangeDataSacramentoFechamento = (event,data) =>{
+    
     const { target: { value } } = event;
     const { target: { name } } = event;
     
@@ -519,6 +514,7 @@ console.log("DATE", date)
 
   return (
     <div className="container">
+      {modalSac.openOrClose&&<ModalSac openOrClose={modalSac.openOrClose} closeModal={handleModalSac} data={sacramentos}></ModalSac>}
       <Header title="Catequizandos > Alteração" />
       <div style={{ padding: 20 }}>
         <ArrowBack
@@ -669,47 +665,8 @@ console.log("DATE", date)
               </FormControl>
             </div>
 
-            <FormControl style={{ width: "100%", marginTop: 10 }}>
-              <InputLabel id="demo-multiple-checkbox-label">
-                Sacramentos que possui
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-checkbox-label"
-                id="demo-multiple-checkbox"
-                multiple
-                input={<OutlinedInput label="Sacramentos que Possui" />}
-                //@ts-ignore
-                renderValue={(selected) => selected.join(", ")}
-                //@ts-ignore
-                name="sacramentos_concluidos"
-                MenuProps={MenuProps}
-                value={sacramentos_concluidos}
-                onChange={onChangeSacramentosConcluidos}
-              >
-                {renderListSacramentosConcluidos()}
-              </Select>
-            </FormControl>
-            {sacramentos_concluidos.includes("Crisma") ||
-              (sacramentos_concluidos.includes("Batismo") && (
-                <Grow
-                  in={
-                    sacramentos_concluidos.includes("Crisma") ||
-                    sacramentos_concluidos.includes("Batismo")
-                  }
-                  style={{ marginTop: 10 }}
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Padrinho/Madrinha *"
-                    name="text"
-                    value={padrinho_madrinha}
-                    onChange={(event) =>
-                      setPadrinho_madrinha(event.target.value)
-                    }
-                    variant="outlined"
-                  />
-                </Grow>
-              ))}
+            
+            
 
 
             <div style={{ marginTop: 5 }}>
@@ -879,13 +836,10 @@ console.log("DATE", date)
                 </FormControl>
               }
             </div>
-            <div style={{ marginTop: 20, marginBottom:10 }}>
-              <h3 className="title">
-                {" "}
-                Documentações Comprobatorio de Sacramentos
-              </h3>
-            </div>
-            <Container style={{ display: "flex", justifyContent: "flex-start", marginTop:10 }}>
+            <FormControl>
+              <Button onClick={()=>handleModalSac()}>EDIDAR SACRAMENTO</Button>
+            </FormControl>
+            {/* <Container style={{ display: "flex", justifyContent: "flex-start", marginTop:10 }}>
               {sacramentos_concluidos.includes("Admissao") && (
                 <FormControl
                   className="formControlContainer"
@@ -1135,27 +1089,8 @@ console.log("DATE", date)
                   }
                 </FormControl>
               )}
-            </Container>
-            <FormControl style={{ width: "100%", marginTop: 10 }}>
-              <InputLabel id="demo-multiple-checkbox-label">
-                Sacramentos a performar
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-checkbox-label"
-                id="demo-multiple-checkbox"
-                multiple
-                input={<OutlinedInput label="Sacramentos que Possui" />}
-                //@ts-ignore
-                renderValue={(selected) => selected.join(", ")}
-                //@ts-ignore
-                name="sacramentos_concluidos"
-                MenuProps={MenuProps}
-                value={sacramentosAPerformar}
-                onChange={onChangeSacramentosAperformar}
-              >
-                {renderSacramentosAPerformar()}
-              </Select>
-            </FormControl>
+            </Container> */}
+
             <FormControl variant="outlined" sx={{ marginTop: 2 }}>
               <InputLabel id="demo-select-small">Escolha uma Turma</InputLabel>
               <Select
