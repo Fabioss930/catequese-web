@@ -401,6 +401,21 @@ const getClasseComplete = async (id) => {
     .catch(() => null);
 };
 
+const relatorio = async (obj)=>{
+
+
+  
+  
+  
+  
+  return api.get(`/catequizando/`,{params:obj}).then((cats)=>{
+    return cats.data
+
+  }).catch((error)=>{
+    console.log(error)
+  })
+}
+
 export {
   createUsers,
   updateUser,
@@ -429,4 +444,5 @@ export {
   updateClasse,
   getClasseComplete,
   deleteCatClasse,
+  relatorio
 };
