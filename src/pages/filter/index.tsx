@@ -35,8 +35,8 @@ const Filter: React.FC = () => {
 
   const [idadeMin, setIdadeMin] = React.useState(null)
   const [idadeMax, setIdadeMax] = React.useState(null)
-  const [result, setResult] = React.useState([])
-  const [modal,setModal] = React.useState({openOrClose:false,data:[]})
+  const [sac, setSac] = React.useState("T")
+  const [modal, setModal] = React.useState({ openOrClose: false, data: [] })
 
   const changeIdadeMin = (event: any) => {
     setIdadeMin(event.target.value)
@@ -52,33 +52,36 @@ const Filter: React.FC = () => {
 
   // openOrClose closeModal
 
-  const handleModal = ()=>{
-    setModal({...modal, openOrClose: !modal.openOrClose})
+  const handleModal = () => {
+    setModal({ ...modal, openOrClose: !modal.openOrClose })
+  }
+  const handleSac = (event: any) => {
+    setSac(event.target.value)
   }
 
-  const trocarNome  = (nome:any)=>{
+  const trocarNome = (nome: any) => {
     switch (nome) {
       case 'S':
         return 'Solteiro(a)'
-        
+
         break;
       case 'C':
         return 'Casado(a)'
-        
+
         break;
       case 'D':
         return 'Divorciado(a)'
-        
+
         break;
       case 'V':
         return 'Viuvo(a)'
-        
+
         break;
     }
-  
+
   }
 
-  function calcularIdade(ano_aniversario:any, mes_aniversario:any, dia_aniversario:any) {
+  function calcularIdade(ano_aniversario: any, mes_aniversario: any, dia_aniversario: any) {
     var d = new Date,
       ano_atual = d.getFullYear(),
       mes_atual = d.getMonth() + 1,
@@ -100,53 +103,100 @@ const Filter: React.FC = () => {
     return quantos_anos < 0 ? 0 : quantos_anos;
   }
 
+  //@ts-ignore
+  const renderSacConcluidos = (sacs: any) => {
+    let string = ""
+    const sacFilter = sacs.filter((s: any) => s.data_inicio && s.data_fechamento)
+    sacFilter.forEach((s: any) => {
+      if (string == "") {
+        string = s.tipo_sacramento
+      } else {
+        string = string + `,${s.tipo_sacramento}`
+      }
+    })
+    if (string == "") return "Nenhum "
+    return string
+
+  }
+  //@ts-ignore
+  const renderSacEmMprecessos = (sacs) => {
+    let string = ""
+    const sacFilter = sacs.filter((s: any) => s.data_inicio && s.data_fechamento == null)
+    sacFilter.forEach((s: any) => {
+      if (string == "") {
+        string = s.tipo_sacramento
+      } else {
+        string = string + `,${s.tipo_sacramento}`
+      }
+    })
+    if (string == "") return "Nenhum "
+    return string
+
+
+  }
+
   async function handleSubmit() {
     const date = new Date()
-
-    
-    
     const filter = {
       ...cat,
       data_cad_inicial: inverterData(cat.data_cad_inicial),
       data_cad_final: inverterData(cat.data_cad_final),
-      data_nascimento_inicial: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() - (idadeMax||0)}`,
-      data_nascimento_final: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() - (idadeMin||0)}`
-    
+      data_nascimento_inicial: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() - (idadeMax || 0)}`,
+      data_nascimento_final: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() - (idadeMin || 0)}`,
+
+
 
     }
     //@ts-ignore
-    if(idadeMax==null) delete filter.data_nascimento_inicial
+    if (idadeMax == null || "") delete filter.data_nascimento_inicial
     //@ts-ignore
-    if(idadeMin==null) delete filter.data_nascimento_final
+    if (idadeMin == null || "") delete filter.data_nascimento_final
     //@ts-ignore
-    if(cat.data_cad_inicial=="") delete filter.data_cad_inicial
+    if (cat.data_cad_inicial == "") delete filter.data_cad_inicial
     //@ts-ignore
-    if(cat.data_cad_final=="") delete filter.data_cad_final
-    console.log("Inicial:", filter)
+    if (cat.data_cad_final == "") delete filter.data_cad_final
+    //@ts-ignore
+    if (cat.sexo == "T") delete filter.sexo
+
+
+    console.log("Filtro de busca:::::::", filter)
+
 
 
 
     const catequizandos = await relatorio(filter)
 
 
-
-    const catechizing = catequizandos?.map((cat:any)=>{
+    const catechizing = catequizandos?.map((cat: any) => {
       const date = new Date(cat.data_nascimento).toLocaleDateString()
       const dateFormat = date.split('/')
-    
-      console.log("IDADE:", calcularIdade(dateFormat[2],dateFormat[1],dateFormat[0]))
-      return{
+
+      return {
         ...cat,
         data_nascimento: date,
-        idade: calcularIdade(dateFormat[2],dateFormat[1],dateFormat[0]),
-        estado_civil: trocarNome(cat.estado_civil)
-       
+        idade: calcularIdade(dateFormat[2], dateFormat[1], dateFormat[0]),
+        estado_civil: trocarNome(cat.estado_civil),
+        sac_concluidos: renderSacConcluidos(cat.sacramentos),
+        sac_emProcesso: renderSacEmMprecessos(cat.sacramentos)
+
       }
 
     })
-    console.log("O que ta indo:",catechizing)
-    setModal({openOrClose:true,data:catechizing})
+
     
+
+    //@ts-ignore
+
+    const filterCat = catechizing?.filter(cat => {
+      if (sac == "T") return true
+      const exists = cat?.sacramentos.filter((c: any) => c.tipo_sacramento == "C")
+
+
+      return exists.length == 0 ? false : true
+    })
+
+    setModal({ openOrClose: true, data: filterCat })
+
 
 
 
@@ -166,14 +216,14 @@ const Filter: React.FC = () => {
 
   // console.log("IDADE MIN", idadeMin)
   // console.log("IDADE Max", idadeMax)
-  console.log("CAT", cat)
+ 
 
 
 
 
   return (
     <>
-      <ModalConsulta openOrClose={modal.openOrClose} closeModal={handleModal} data={modal.data}/>
+      <ModalConsulta openOrClose={modal.openOrClose} closeModal={handleModal} data={modal.data} />
       <Header title="Consulta detalhada" />
       <Container>
         <Form onSubmit={handleSubmit}>
@@ -253,6 +303,7 @@ const Filter: React.FC = () => {
                     value={cat.sexo}
 
                   >
+                    <MenuItem value="T">Todos</MenuItem>
                     <MenuItem value="M">Masculino</MenuItem>
                     <MenuItem value="F">Feminino</MenuItem>
                   </Select>
@@ -313,7 +364,7 @@ const Filter: React.FC = () => {
                   name="data_cad_inicial"
                   value={cat.data_cad_inicial}
                   onChange={handle}
-                  
+
                   type='date'
 
                 />
@@ -339,12 +390,34 @@ const Filter: React.FC = () => {
                   name="data_cad_final"
                   value={cat.data_cad_final}
                   onChange={handle}
-                  
+
                   type='date'
 
                 />
               </div>
+
             </div>
+            <FormSelect style={{ width: '100%', marginTop: 20 }}>
+              <FormControl style={{ width: '100%' }}>
+                <InputLabel id="demo-simple-select-label">
+                  Sacramento
+                </InputLabel>
+                <Select
+                  id="demo-simple-select"
+                  label="Estado Civil"
+                  placeholder="Estado Civil"
+                  name="estado_civil"
+                  onChange={handleSac}
+                  value={sac}
+                >
+                  <MenuItem value="T">Todos</MenuItem>
+                  <MenuItem value="B">Batismo</MenuItem>
+                  <MenuItem value="E">Eucaristia</MenuItem>
+                  <MenuItem value="A">Admissao</MenuItem>
+                  <MenuItem value="C">Crisma</MenuItem>
+                </Select>
+              </FormControl>
+            </FormSelect>
             <ContentButtons>
               <Button type="submit" style={Buscar}>
                 Buscar
