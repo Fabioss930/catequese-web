@@ -50,6 +50,9 @@ const columns = [
   { id: "estado_civil", label: "Estado Civil", minWidth: 100, align: "center" },
 
   { id: "sexo", label: "Sexo", minWidth: 100, align: "center" },
+  { id: "sac_concluidos", label: "Sac Concluidos", minWidth: 100, align: "center" },
+  { id: "sac_emProcesso", label: "Sac em Processo", minWidth: 100, align: "center" },
+
 ];
 
 export default function BasicModal(props) {

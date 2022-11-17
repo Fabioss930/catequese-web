@@ -30,6 +30,12 @@ export default function(catequizandos){
             },
             {
                 text:cat.estado_civil,fontSize:9,margin:[0,2,0,2]
+            },
+            {
+                text:cat.sac_concluidos,fontSize:9,margin:[0,2,0,2]
+            },
+            {
+                text:cat.sac_emProcesso,fontSize:9,margin:[0,2,0,2]
             }
             
         ]
@@ -38,7 +44,7 @@ export default function(catequizandos){
     const details = [{
         table:{
             headerRows:1,
-            widths:['*','*','*','*','*'],
+            widths:['*','*','*',100,'*','*','*'],
             body:[
                 [  
                 {
@@ -55,6 +61,12 @@ export default function(catequizandos){
                 },
                 {
                     text:"Estado Civil", style:'tableHeader',fontSize:10
+                },
+                {
+                    text:"Sac Concluidos", style:'tableHeader',fontSize:10
+                },
+                {
+                    text:"Sacs em Processo", style:'tableHeader',fontSize:10
                 }
             ],
             ...dados
