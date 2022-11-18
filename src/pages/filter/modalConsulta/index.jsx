@@ -1,11 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+
 import Modal from '@mui/material/Modal';
 import Close from '@mui/icons-material/Close'
-import { getCatInClasse, getDocumentsCatechizing, getOneCatechizing, getOneUser, getSacramentsCatechizing, getUsers } from '../../../services/api';
-import { ArrowDropDown, Article, Assignment, Delete, Expand, Label, People, PictureAsPdf } from '@mui/icons-material';
+
 import Pdf from '@mui/icons-material/PictureAsPdf';
 import './style.css'
 import Paper from "@mui/material/Paper";
@@ -14,11 +12,20 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
+
 import TableRow from "@mui/material/TableRow";
 import pdf from './exportPdf'
+import { CSVLink, CSVDownload } from "react-csv";
 
 
+
+
+const csvData = [
+  ["nome", "sobrenome", "email"],
+  ["Ahmed", "Tomi", "ah@smthing.co.com"],
+  ["Raed", "Labes", "rl@ smthing.co.com"],
+  ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+];
 
 
 
@@ -87,7 +94,36 @@ export default function BasicModal(props) {
     pdf(props.data)
 
 
-}
+  }
+
+  const exportarCvs = () => {
+
+    const dataCvs = []
+    props.data.forEach((d) => {
+      const da = []
+      da.push(d.nome)
+      da.push(d.estado_civil)
+
+      da.push(d.idade)
+    
+      da.push(d.sac_concluidos)
+      da.push(d.sac_emProcesso)
+     
+
+      da.push(d.sexo)
+
+      da.push(d.telefone_1)
+
+      da.push(d.telefone_2)
+
+      da.push(d.todos_sac)
+      dataCvs.push(da)
+    })
+    console.log("CSVVVVV0", dataCvs)
+    return dataCvs
+
+  }
+
 
 
 
@@ -148,7 +184,7 @@ export default function BasicModal(props) {
                 </TableBody>
               </Table>
             </TableContainer>
-                  
+
 
           </Paper>
           Total: {props.data.length}
@@ -157,7 +193,12 @@ export default function BasicModal(props) {
               Exportar<Pdf style={{ color: 'red', marginLeft: 5 }} />
 
             </div>
+            <div id="pdf" >
+              <CSVLink data={exportarCvs()}>Exportar CSV</CSVLink>
+
+            </div>
           </div>
+
         </>
       );
     }
